@@ -1,0 +1,146 @@
+<div class="profile-wrapper">
+    <div class="profile-card">
+
+        <div class="profile-header">
+            <div class="avatar">
+                {% if request.user.profile_image %}
+                    <img src="{{ request.user.profile_image.url }}" alt="{{ request.user.username }}">
+                {% else %}
+                    <img src="https://picsum.photos/seed/{{ request.user.username }}/120/120" alt="{{ request.user.username }}">
+                {% endif %}
+            </div>
+
+            <div class="user-info">
+                <h2>{{ request.user.username }}</h2>
+                <p>{{ request.user.email }}</p>
+            </div>
+        </div>
+
+        <div class="profile-actions">
+            <a href="{% url 'dashboard:orders' %}" class="btn btn-primary">
+                <i class="fas fa-box"></i> Mes commandes
+            </a>
+
+            <a href="{% url 'dashboard:settings' %}" class="btn btn-outline">
+                <i class="fas fa-cog"></i> Paramètres
+            </a>
+
+            <form method="post" action="{% url 'products:logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">
+                    <i class="fas fa-sign-out-alt"></i> Déconnexion
+                </button>
+            </form>
+        </div>
+
+    </div>
+</div>
+<style>
+.profile-wrapper {
+    min-height: 80vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 120px 20px 60px;
+    background: #f8faf9;
+}
+
+.profile-card {
+    background: white;
+    width: 100%;
+    max-width: 500px;
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.05);
+    text-align: center;
+    transition: 0.3s ease;
+}
+
+.profile-card:hover {
+    transform: translateY(-5px);
+}
+
+.profile-header {
+    margin-bottom: 35px;
+}
+
+.avatar {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 20px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 4px solid #014215;
+}
+
+.avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.user-info h2 {
+    font-size: 1.6rem;
+    color: #014215;
+    margin-bottom: 5px;
+}
+
+.user-info p {
+    font-size: 0.9rem;
+    color: #777;
+}
+
+/* Boutons */
+.profile-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.btn {
+    padding: 12px;
+    border-radius: 30px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-align: center;
+    transition: 0.3s;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background: #014215;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #026c25;
+}
+
+.btn-outline {
+    background: transparent;
+    border: 1px solid #014215;
+    color: #014215;
+}
+
+.btn-outline:hover {
+    background: #014215;
+    color: white;
+}
+
+.btn-danger {
+    background: #c0392b;
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #a93226;
+}
+
+/* Responsive */
+@media (max-width: 500px) {
+    .profile-card {
+        padding: 30px 20px;
+    }
+}
+</style>

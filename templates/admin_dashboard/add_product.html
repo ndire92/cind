@@ -1,0 +1,641 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Cinedera</title>
+    
+    <!-- Google Fonts & FontAwesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* --- VARIABLES CSS UNIFIÉES --- */
+        :root {
+            --primary-color: #557C55;
+            --primary-dark: #3A5A40;
+            --primary-light: #6B8E6B;
+            --secondary-color: #A4C3B2;
+            --bg-light: #F4F7F6;
+            --sidebar-width: 260px;
+            --white: #FFFFFF;
+            --text-main: #333333;
+            --text-muted: #666666;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --danger: #c0392b;
+            --border-color: #e0e0e0;
+        }
+
+        /* --- RESET & BASE --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Montserrat', sans-serif; background-color: var(--bg-light); color: var(--text-main); display: flex; min-height: 100vh; overflow-x: hidden; }
+        a { text-decoration: none; color: inherit; }
+
+        /* --- SIDEBAR --- */
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--primary-dark);
+            color: #ecf0f1;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            z-index: 1000;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        }
+
+        .brand {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+            color: white;
+            text-decoration: none;
+        }
+        .brand i { color: var(--secondary-color); }
+
+        .sidebar ul { list-style: none; padding: 0; margin-top: 10px; }
+        .sidebar li form { margin: 0; display: block; }
+
+        /* Style pour les boutons du menu (nav-btn) */
+        .nav-btn {
+            width: 100%;
+            text-align: left;
+            padding: 14px 18px;
+            margin-bottom: 8px;
+            background: transparent;
+            border: none;
+            color: rgba(255,255,255,0.7);
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transform: translateX(5px);
+        }
+
+        .nav-btn.active {
+            background: var(--white);
+            color: var(--primary-color);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            font-weight: 600;
+        }
+
+        .nav-btn i { width: 20px; text-align: center; }
+
+        .user-info {
+            margin-top: auto; padding-top: 20px; 
+            border-top: 1px solid rgba(255,255,255,0.1); 
+            font-size: 0.8rem; color: rgba(255,255,255,0.5); 
+            text-align: center;
+        }
+
+        /* --- MAIN CONTENT --- */
+        .main-content {
+            margin-left: var(--sidebar-width); 
+            width: calc(100% - var(--sidebar-width));
+            display: flex; flex-direction: column;
+            transition: 0.3s;
+        }
+
+        /* --- TOPBAR --- */
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--white);
+            padding: 0 30px;
+            height: 70px;
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+
+        .topbar-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+
+        /* Dropdown Menu Utilisateur */
+        .user-dropdown {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+            padding: 5px 0;
+        }
+
+        .user-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 5px 10px;
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+        .user-toggle:hover { background-color: #f9f9f9; }
+
+        .dropdown-menu-custom {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: white;
+            min-width: 180px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            padding: 8px 0;
+            margin-top: 10px;
+            border: 1px solid #eee;
+            z-index: 2000;
+            animation: slideDown 0.2s ease;
+        }
+
+        .dropdown-item {
+            display: block; padding: 10px 20px; color: #333;
+            font-size: 0.9rem; text-decoration: none; transition: background 0.2s;
+        }
+        .dropdown-item:hover { background-color: #f0f0f0; color: var(--primary-color); }
+
+        /* --- CONTENT AREA --- */
+        .content-area { padding: 40px; max-width: 1400px; margin: 0 auto; width: 100%; }
+
+        .card {
+            background: var(--white); border-radius: 12px; 
+            box-shadow: 0 5px 20px rgba(0,0,0,0.03); 
+            padding: 40px; margin-bottom: 30px;
+        }
+
+        .card-header { 
+            border-bottom: 1px solid #eee; padding-bottom: 20px; margin-bottom: 30px; 
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .card-title { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--primary-color); }
+
+        /* --- FORM GRID --- */
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
+        .form-full { grid-column: span 2; }
+        .form-group { margin-bottom: 20px; }
+        
+        .form-label { 
+            display: block; margin-bottom: 8px; font-weight: 600; 
+            color: var(--text-main); font-size: 0.9rem; 
+        }
+
+        .form-control {
+            width: 100%; padding: 12px 15px;
+            border: 1px solid #ddd; border-radius: 8px;
+            font-size: 0.95rem; font-family: 'Montserrat', sans-serif;
+            background-color: #FAFAFA; transition: 0.3s;
+        }
+        .form-control:focus {
+            border-color: var(--primary-light); background-color: white;
+            outline: none; box-shadow: 0 0 0 3px rgba(85, 124, 85, 0.1);
+        }
+        textarea.form-control { resize: vertical; min-height: 120px; line-height: 1.6; }
+
+        /* Checkbox Styling */
+        .checkbox-wrapper {
+            display: flex; align-items: center; gap: 12px; 
+            padding: 15px; background: #f8f9fa; border-radius: 8px; border: 1px solid #eee;
+        }
+        .checkbox-wrapper input[type="checkbox"] { transform: scale(1.3); accent-color: var(--primary-color); cursor: pointer; }
+        .checkbox-wrapper label { margin: 0; cursor: pointer; font-weight: 500; }
+
+        /* File Upload */
+        .file-upload-wrapper {
+            position: relative; border: 2px dashed var(--secondary-color);
+            border-radius: 8px; padding: 40px; text-align: center;
+            background-color: #fcfcfc; transition: 0.3s; cursor: pointer;
+        }
+        .file-upload-wrapper:hover { background-color: #f0fdf4; border-color: var(--primary-color); }
+        .file-upload-wrapper input[type="file"] { 
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; 
+        }
+
+        /* --- GALERIE 4 IMAGES (GRID FIXE) --- */
+        .gallery-grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .gallery-item-slot {
+            position: relative;
+            border: 2px dashed #ddd;
+            border-radius: 10px;
+            background: #fdfdfd;
+            overflow: hidden;
+            aspect-ratio: 1 / 1;
+            display: flex;
+            flex-direction: column;
+            transition: 0.3s;
+        }
+
+        .gallery-item-slot:hover {
+            border-color: var(--primary-light);
+            background: #f0fdf4;
+        }
+
+        /* En-tête de la vignette (Radio + Suppr) */
+        .slot-header {
+            position: absolute;
+            top: 0; left: 0; width: 100%;
+            padding: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.6), transparent);
+            z-index: 2;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .gallery-item-slot:hover .slot-header,
+        .gallery-item-slot.has-image .slot-header {
+            opacity: 1;
+        }
+
+        .main-label {
+            color: white;
+            font-size: 0.75rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .delete-label {
+            color: #ffcccc;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: 0.2s;
+        }
+        .delete-label:hover { color: white; transform: scale(1.1); }
+
+        /* Aperçu Image */
+        .gallery-preview {
+            width: 100%; height: 100%;
+            position: relative;
+            z-index: 1;
+        }
+        .gallery-preview img {
+            width: 100%; height: 100%; object-fit: cover;
+        }
+
+        /* Placeholder quand vide */
+        .placeholder-slot {
+            width: 100%; height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #ccc;
+        }
+
+        /* Overlay pour le clic */
+        .slot-input-overlay {
+            position: absolute;
+            bottom: 0; left: 0; width: 100%;
+            background: rgba(255,255,255,0.9);
+            padding: 10px;
+            text-align: center;
+            transform: translateY(100%);
+            transition: transform 0.3s;
+            z-index: 3;
+        }
+
+        .gallery-item-slot:hover .slot-input-overlay {
+            transform: translateY(0);
+        }
+
+        .slot-input-overlay label { cursor: pointer; margin: 0; width: 100%; }
+        .upload-text {
+            font-size: 0.8rem; font-weight: 600; color: var(--primary-color);
+        }
+
+        .slot-input-overlay input[type="file"] { display: none; }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 30px; border-radius: 8px; font-weight: 600; cursor: pointer;
+            border: none; display: inline-flex; align-items: center; gap: 10px;
+            text-decoration: none; font-size: 0.95rem; transition: 0.3s;
+        }
+        .btn-primary { background-color: var(--primary-color); color: white; }
+        .btn-primary:hover { background-color: var(--primary-light); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(58, 90, 64, 0.3); }
+        .btn-secondary { background-color: #e2e8f0; color: var(--text-main); }
+        .btn-secondary:hover { background-color: #cbd5e0; }
+
+        /* Errors */
+        .error-msg { color: var(--danger); font-size: 0.8rem; margin-top: 5px; display: block; }
+        .alert-box { background: #ffebee; color: #c62828; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #c62828; }
+
+        /* Responsive */
+        @media (max-width: 992px) { .form-grid { grid-template-columns: 1fr; } .form-full { grid-column: span 1; } }
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); transition: 0.3s; }
+            .sidebar.active { transform: translateX(0); }
+            .main-content { margin-left: 0; width: 100%; }
+            .topbar { padding: 15px 20px; }
+            .content-area { padding: 20px; }
+            .gallery-grid-4 { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @keyframes slideDown { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR CORRIGÉE -->
+    <aside class="sidebar">
+        <div class="brand"><i class="fas fa-leaf"></i> Cinedera</div>
+        <ul>
+            <li>
+                <form action="{% url 'dashboard:overview' %}" method="get">
+                    <button type="submit" class="nav-btn {% if request.resolver_match.url_name == 'overview' %}active{% endif %}">
+                        <i class="fas fa-chart-line"></i> Vue d'ensemble
+                    </button>
+                </form>
+            </li>
+            <li>
+                <form action="{% url 'dashboard:orders' %}" method="get">
+                    <button type="submit" class="nav-btn {% if request.resolver_match.url_name == 'orders' %}active{% endif %}">
+                        <i class="fas fa-shopping-bag"></i> Commandes
+                    </button>
+                </form>
+            </li>
+            <li>
+                <form action="{% url 'dashboard:products' %}" method="get">
+                    <button type="submit" class="nav-btn {% if request.resolver_match.url_name == 'products' %}active{% endif %}">
+                        <i class="fas fa-box-open"></i> Produits
+                    </button>
+                </form>
+            </li>
+            <li>
+                <form action="{% url 'dashboard:blog_posts' %}" method="get">
+                    <button type="submit" class="nav-btn {% if request.resolver_match.url_name == 'blog_posts' %}active{% endif %}">
+                        <i class="fas fa-pen-nib"></i> Blog
+                    </button>
+                </form>
+            </li>
+             <li>
+                <form action="{% url 'dashboard:category_list' %}" method="get">
+                    <button type="submit" class="nav-btn {% if request.resolver_match.url_name == 'category_list' %}active{% endif %}">
+                        <i class="fas fa-list"></i> Catégories
+                    </button>
+                </form>
+            </li>
+            <li>
+                <form action="{% url 'dashboard:settings' %}" method="get">
+                    <button type="submit" class="nav-btn {% if request.resolver_match.url_name == 'settings' %}active{% endif %}">
+                        <i class="fas fa-cog"></i> Réglages
+                    </button>
+                </form>
+            </li>
+        </ul>
+        <div class="user-info">Connecté en tant que <strong>{{ request.user.username }}</strong></div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+        
+        <!-- TOPBAR -->
+        <header class="topbar">
+            <div class="topbar-title">Tableau de bord</div>
+            
+            <!-- Dropdown Utilisateur -->
+            <div class="user-dropdown" id="userDropdown">
+                <div class="user-toggle">
+                    <span>{{ request.user.username }}</span>
+                    <i class="fas fa-chevron-down" style="font-size: 0.8rem; color: #999;"></i>
+                </div>
+                <ul class="dropdown-menu-custom">
+                    <li><a href="{% url 'products:profile' %}" class="dropdown-item"><i class="fas fa-user"></i> Mon Profil</a></li>
+                    <li><hr style="border: 0; border-top: 1px solid #eee; margin: 5px 0;"></li>
+                    <li><a href="{% url 'products:logout' %}" class="dropdown-item" style="color: var(--danger);"><i class="fas fa-sign-out-alt"></i> Déconnexion</a></li>
+                </ul>
+            </div>
+        </header>
+
+        <div class="content-area">
+            
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">{{ form.instance.name|default:"Nouveau Produit" }}</h2>
+                    <a href="{% url 'dashboard:products' %}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Retour
+                    </a>
+                </div>
+
+                {% if form.non_field_errors %}
+                    <div class="alert-box">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+                    </div>
+                {% endif %}
+
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <div class="form-grid">
+                        <!-- Nom -->
+                        <div class="form-group">
+                            <label class="form-label">Nom du produit</label>
+                            {{ form.name }}
+                            {% if form.name.errors %}<span class="error-msg">{{ form.name.errors.0 }}</span>{% endif %}
+                        </div>
+
+                        <!-- Catégorie -->
+                        <div class="form-group">
+                            <label class="form-label">Catégorie</label>
+                            {{ form.category }}
+                            {% if form.category.errors %}<span class="error-msg">{{ form.category.errors.0 }}</span>{% endif %}
+                        </div>
+
+                        <!-- Prix HT -->
+                        <div class="form-group">
+                            <label class="form-label">Prix HT (€)</label>
+                            {{ form.price_ht }}
+                            {% if form.price_ht.errors %}<span class="error-msg">{{ form.price_ht.errors.0 }}</span>{% endif %}
+                        </div>
+
+                        <!-- TVA -->
+                        <div class="form-group">
+                            <label class="form-label">Taux de TVA (%)</label>
+                            {{ form.tax_rate }}
+                            {% if form.tax_rate.errors %}<span class="error-msg">{{ form.tax_rate.errors.0 }}</span>{% endif %}
+                        </div>
+
+                        <!-- Slug -->
+                        <div class="form-group">
+                            <label class="form-label">Slug (URL)</label>
+                            {{ form.slug }}
+                            <small style="color: #999; font-size: 0.75rem;">Généré automatiquement</small>
+                            {% if form.slug.errors %}<span class="error-msg">{{ form.slug.errors.0 }}</span>{% endif %}
+                        </div>
+
+                        <!-- Stock -->
+                        <div class="form-group">
+                            <label class="form-label">Stock disponible</label>
+                            {{ form.stock }}
+                            {% if form.stock.errors %}<span class="error-msg">{{ form.stock.errors.0 }}</span>{% endif %}
+                        </div>
+
+                        <!-- Checkbox Disponible -->
+                        <div class="form-group form-full">
+                            <div class="checkbox-wrapper">
+                                {{ form.available }}
+                                <label for="{{ form.available.id_for_label }}">Ce produit est visible et disponible à la vente</label>
+                            </div>
+                        </div>
+
+                        <!-- Description Courte -->
+                        <div class="form-group form-full">
+                            <label class="form-label">Description courte</label>
+                            {{ form.short_description }}
+                            <small style="color: #999; font-size: 0.8rem;">Apparaît sur les cartes produits (max 300 caract.)</small>
+                            {% if form.short_description.errors %}<span class="error-msg">{{ form.short_description.errors.0 }}</span>{% endif %}
+                        </div>
+
+                        <!-- Description Complète -->
+                        <div class="form-group form-full">
+                            <label class="form-label">Description complète</label>
+                            {{ form.description }}
+                            {% if form.description.errors %}<span class="error-msg">{{ form.description.errors.0 }}</span>{% endif %}
+                        </div>
+
+                        <!-- Image Principale -->
+                        <div class="form-group form-full">
+                            <label class="form-label">Image principale</label>
+                            {% if form.instance.image %}
+                                <div style="margin-bottom: 10px;">
+                                    <small style="color: #666;">Image actuelle :</small>
+                                    <br>
+                                    <img src="{{ form.instance.image.url }}" alt="Image actuelle" style="height: 100px; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                                </div>
+                            {% endif %}
+                            <div class="file-upload-wrapper">
+                                <i class="fas fa-cloud-upload-alt" style="font-size: 2rem; color: var(--primary-light); margin-bottom: 10px;"></i>
+                                <p style="color: var(--text-main); font-weight: 500;">Glisser une image ou cliquer pour parcourir</p>
+                                <small style="color: #999;">JPG, PNG, WEBP (Max 2MB)</small>
+                                {{ form.image }}
+                            </div>
+                            {% if form.image.errors %}<span class="error-msg">{{ form.image.errors.0 }}</span>{% endif %}
+                        </div>
+
+                        <!-- GALERIE D'IMAGES (FORMSET) -->
+                        <div class="form-group form-full" style="margin-top: 30px; border-top: 1px solid #eee; padding-top: 30px;">
+                            <label class="form-label" style="font-size: 1.1rem; color: var(--primary-color);">
+                                <i class="fas fa-images"></i> Galerie Photos (Max 4)
+                            </label>
+                            
+                            {{ formset.management_form }}
+                            
+                            <!-- Grille fixe à 4 colonnes -->
+                            <div class="gallery-grid-4">
+                                {% for image_form in formset.forms|slice:":4" %}
+                                    <div class="gallery-item-slot {% if image_form.instance.image %}has-image{% endif %}">
+                                        <!-- Case pour cocher l'image principale -->
+                                        <div class="slot-header">
+                                            <input type="radio" name="{{ image_form.is_main.html_name }}" value="{{ image_form.instance.id|default:forloop.counter0 }}" 
+                                                {% if image_form.instance.is_main %}checked{% endif %} 
+                                                {% if forloop.first and not form.instance.pk %}checked{% endif %} 
+                                                id="id_main_{{ forloop.counter }}" class="main-radio">
+                                            <label for="id_main_{{ forloop.counter }}" class="main-label">Principale</label>
+                                            
+                                            <!-- Case à cocher de suppression -->
+                                            {% if image_form.instance.id %}
+                                                <label class="delete-label" title="Supprimer cette image">
+                                                    {{ image_form.DELETE }} 
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </label>
+                                            {% endif %}
+                                        </div>
+
+                                        <!-- Zone d'aperçu -->
+                                        <div class="gallery-preview">
+                                            {% if image_form.instance.image %}
+                                                <img src="{{ image_form.instance.image.url }}" alt="Galerie">
+                                            {% else %}
+                                                <div class="placeholder-slot">
+                                                    <i class="fas fa-plus fa-2x"></i>
+                                                    <span>Ajouter</span>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                        
+                                        <!-- Champ fichier (Invisible mais cliquable) -->
+                                        <div class="slot-input-overlay">
+                                            <label for="{{ image_form.image.id_for_label }}">
+                                                {{ image_form.image }}
+                                                <span class="upload-text">Choisir une photo</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                    </div> <!-- Fin Form Grid -->
+
+                    <!-- Boutons d'action -->
+                    <div class="form-group form-full" style="margin-top: 40px; border-top: 1px solid #eee; padding-top: 30px;">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Enregistrer le produit
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const dropdown = document.getElementById("userDropdown");
+        const menu = dropdown.querySelector(".dropdown-menu-custom");
+
+        dropdown.addEventListener("click", function(e) {
+            e.stopPropagation();
+            menu.style.display = menu.style.display === "block" ? "none" : "block";
+        });
+
+        document.addEventListener("click", function() {
+            menu.style.display = "none";
+        });
+    });
+
+    // Script pour gérer le choix automatique de l'image principale si aucune n'est cochée
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function(e) {
+        const radios = document.querySelectorAll('input[type="radio"][name$="-is_main"]');
+        let isChecked = false;
+        radios.forEach(radio => { if (radio.checked) isChecked = true; });
+
+        if (!isChecked && radios.length > 0) {
+            radios[0].checked = true;
+        }
+    });
+    </script>
+</body>
+</html>

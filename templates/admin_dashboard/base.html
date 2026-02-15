@@ -1,0 +1,83 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/admin_dashboard.css' %}">
+    <style>
+        :root {
+            --primary-color: #2a9d8f;
+            --primary-dark: #21867a;
+            --success: #4caf50;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --text-light: #888;
+        }
+        body { font-family: Arial, sans-serif; margin:0; padding:0; display:flex; }
+        .sidebar { width:220px; background:#1b1b1b; color:white; height:100vh; padding:20px; }
+        .nav-link { padding:10px; cursor:pointer; display:flex; align-items:center; gap:10px; border-radius:6px; }
+        .nav-link.active, .nav-link:hover { background:var(--primary-color); }
+        .main-content { flex:1; padding:20px; background:#f5f5f5; height:100vh; overflow-y:auto; }
+        .section-container { display:none; }
+        .section-container.active { display:block; }
+        .data-table { width:100%; border-collapse:collapse; }
+        .data-table th, .data-table td { padding:8px; border:1px solid #ddd; text-align:left; }
+        .status-badge { padding:4px 8px; border-radius:4px; color:white; font-size:0.85rem; }
+        .status-paid { background:var(--success); }
+        .status-pending { background:var(--warning); }
+        .status-shipped { background:#3498db; }
+        .status-delivered { background:var(--primary-dark); }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+<aside class="sidebar">
+    <div class="brand"><i class="fas fa-leaf"></i> Terra <span>Admin</span></div>
+    <ul>
+        <li>
+            <a href="{% url 'dashboard:overview' %}" class="nav-link {% if request.path == '/admine/' %}active{% endif %}">
+                <i class="fas fa-chart-line"></i> Vue d'ensemble
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'dashboard:orders' %}" class="nav-link {% if request.path == '/admine/orders/' %}active{% endif %}">
+                <i class="fas fa-shopping-bag"></i> Commandes
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'dashboard:products' %}" class="nav-link {% if request.path == '/admine/products/' %}active{% endif %}">
+                <i class="fas fa-box-open"></i> Produits
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'dashboard:export_transactions_csv' %}" class="nav-link">
+                <i class="fas fa-calculator"></i> Comptabilité
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'dashboard:settings' %}" class="nav-link {% if request.path == '/admine/settings/' %}active{% endif %}">
+                <i class="fas fa-cog"></i> Réglages
+            </a>
+        </li>
+    </ul>
+    <div style="margin-top:20px;">Connecté en tant que <strong>Admin</strong></div>
+</aside>
+
+
+    <!-- Main -->
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <script>
+        function showSection(id, el){
+            document.querySelectorAll('.section-container').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
+            el.classList.add('active');
+        }
+    </script>
+</body>
+</html>

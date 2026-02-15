@@ -1,0 +1,773 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Panier | Terra & Pure</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* --- VARIABLES CSS --- */
+     /* --- VARIABLES CSS --- */
+        :root {
+            --primary-color: #014215;
+            --primary-dark: #014215;
+            --secondary-color: #A4C3B2;
+            --accent-color: #DAD7CD;
+            --bg-color: #FAF9F6;
+            --text-color: #333333;
+            --text-light: #666666;
+            --white: #FFFFFF;
+            --shadow-soft: 0 10px 30px rgba(0,0,0,0.05);
+            --radius: 12px;
+            --transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); /* Animation plus fluide */
+        }
+
+        /* --- RESET --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Montserrat', sans-serif; background-color: var(--bg-color); color: var(--text-color); line-height: 1.6; }
+        h1, h2, h3 { font-family: 'Playfair Display', serif; color: var(--primary-dark); }
+        a { text-decoration: none; color: inherit; transition: 0.3s; }
+        ul { list-style: none; }
+        img { max-width: 100%; display: block; border-radius: var(--radius); }
+
+        /* --- BUTTONS --- */
+        .btn {
+            display: inline-flex; justify-content: center; align-items: center; padding: 12px 28px; 
+            border-radius: 50px; font-weight: 500; cursor: pointer; border: none; transition: 0.3s; font-size: 0.95rem;
+        }
+        .btn-primary { background-color: var(--primary-color); color: white; }
+        .btn-primary:hover { background-color: var(--primary-dark); transform: translateY(-2px); }
+        .btn-outline { border: 1px solid var(--primary-color); color: var(--primary-color); background: transparent; }
+        .btn-outline:hover { background-color: var(--primary-color); color: white; }
+        .btn-sm { padding: 6px 14px; font-size: 0.85rem; border-radius: 6px; }
+        .btn-text { background: none; color: var(--text-muted); padding: 0; font-weight: 400; }
+        .btn-text:hover { color: var(--primary-color); }
+    /* --- HEADER --- */
+              /* --- HEADER MISE À JOUR --- */
+       header {
+            position: fixed; /* FIXE LE MENU */
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000; /* Au-dessus de tout */
+            background-color: #014215; /* Vert foncé demandé */
+            padding: 10px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+/* --- MENU DÉROULANT COMPTE (CSS Pur - Sans Bootstrap) --- */
+
+/* Conteneur du dropdown */
+.dropdown {
+    position: relative;
+    display: inline-block; /* S'aligne correctement dans le header */
+    margin-right: 20px;    /* Espace avec l'icône panier */
+}
+
+/* Lien principal (Déclencheur) */
+.dropdown-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none !important; /* Important pour ne pas souligner */
+    padding: 5px 10px;
+    border-radius: 4px;
+    transition: var(--transition);
+    cursor: pointer;
+    background: transparent;
+    border: none;
+}
+
+.dropdown-toggle:hover {
+    color: #ff8c00; /* Orange au survol */
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Petit triangle sous le texte pour indiquer un menu */
+.dropdown-toggle::after {
+    content: '\f107'; /* Code Unicode FontAwesome pour la flèche vers le bas */
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    margin-left: 5px;
+    font-size: 0.8rem;
+    transition: transform 0.3s;
+}
+
+.dropdown:hover .dropdown-toggle::after {
+    transform: rotate(180deg); /* La flèche monte au survol */
+}
+
+/* Le menu lui-même (Caché par défaut) */
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 120%; /* Un peu en dessous du lien */
+    right: 0;  /* Aligné à droite (car le compte est à droite) */
+    background-color: #ffffff;
+    min-width: 200px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    z-index: 1001; /* Au-dessus de tout */
+    border-radius: 8px;
+    padding: 10px 0;
+    border-top: 3px solid #ff8c00; /* Ligne orange en haut */
+    animation: slideDown 0.3s ease;
+}
+
+/* Afficher le menu au survol du parent */
+.dropdown:hover .dropdown-menu {
+    display: block;
+}
+
+/* Animation d'apparition */
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Les liens à l'intérieur du menu */
+/* --- CORRECTION DU DROPDOWN (Anti-disparition rapide) --- */
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+    margin-right: 20px;
+    
+    /* LA SOLUTION : On ajoute un padding en haut du parent */
+    /* Cela crée une zone "invisible" sous le bouton où la souris peut passer */
+    padding-top: 20px; 
+    
+    /* On remonte le bouton pour compenser ce padding (optionnel) */
+    margin-top: -20px; 
+}
+
+.dropdown-toggle {
+    position: relative; /* Pour s'assurer qu'il est au-dessus */
+    z-index: 2;
+    background-color: #014215; /* Fond vert foncé pour cacher le padding */
+    /* ... vos autres styles ... */
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    
+    /* On colle le menu tout en haut de la zone tampon (donc juste sous le bouton) */
+    top: 20px; 
+    
+    right: 0;
+    background-color: #ffffff;
+    min-width: 200px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    z-index: 1001;
+    border-radius: 8px;
+    padding: 10px 0;
+    border-top: 3px solid #ff8c00;
+}
+
+/* Animation pour l'apparition */
+@keyframes fadeInMenu {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.dropdown:hover .dropdown-menu {
+    display: block;
+    animation: fadeInMenu 0.2s ease-out;
+}
+        .nav-container { max-width: 1200px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; }
+
+        /* --- LOGO IMAGE --- */
+        .logo-img-wrapper { height: 50px; display: flex; align-items: center; }
+        .logo-img-wrapper img { height: 100%; object-fit: contain; /* Garde les proportions du logo */ }
+
+        /* --- NAVIGATION --- */
+        .nav-links { display: flex; gap: 30px; }
+        .nav-links a { 
+            font-size: 0.9rem; font-weight: 500; 
+            color: rgba(255,255,255,0.8); /* Texte blanc un peu transparent par défaut */
+            transition: 0.3s;
+            position: relative;
+        }
+
+        /* Effet au survol et État Actif en ORANGE */
+        .nav-links a:hover, .nav-links a.active {
+            color: #ff8c00; /* Orange demandé */
+        }
+        
+        /* Petite ligne sous le lien actif */
+        .nav-links a.active::after {
+            content: ''; position: absolute; bottom: -5px; left: 0; width: 100%; height: 2px; background: #ff8c00;
+        }
+
+                .hero-wellness {
+            /* ... vos autres styles ... */
+            
+            /* AJOUTEZ CECI pour l'effet fixe sur l'image */
+            background-attachment: fixed;
+            background-position: center;
+            background-size: cover;
+        }
+
+        /* --- ICONS HEADER --- */
+        .header-icons { display: flex; gap: 20px; align-items: center; }
+
+        /* Lien Créer Compte */
+        .create-account-link {
+            display: flex; align-items: center; gap: 8px;
+            color: rgba(255,255,255,0.9); /* Blanc par défaut */
+            font-size: 0.9rem; font-weight: 500;
+            transition: 0.3s; cursor: pointer;
+        }
+        .create-account-link:hover { color: #ff8c00; transform: translateY(-2px); } /* Devient orange au survol */
+
+        /* Icône Panier */
+        .cart-icon-wrapper { 
+            position: relative; cursor: pointer; transition: 0.2s; color: white; font-size: 1.2rem;
+        }
+        .cart-icon-wrapper:hover { color: #ff8c00; transform: scale(1.1); }
+        
+        .cart-count { 
+            position: absolute; top: -5px; right: -8px; background-color: #ff8c00; /* Badge orange aussi */
+            color: white; font-size: 0.7rem; width: 16px; height: 16px; 
+            border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: bold;
+        }
+        /* --- HEADER --- */
+        header { background: #014215; backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid var(--border-color); padding: 15px 0; }
+        .nav-container { max-width: 1200px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 700; color: var(--primary-dark); }
+        .cart-icon-wrapper { position: relative; cursor: pointer; }
+        .cart-count { position: absolute; top: -5px; right: -8px; background: #ff8c00; color: white; font-size: 0.7rem; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid white; }
+
+        /* --- MAIN LAYOUT --- */
+        .page-container { max-width: 1200px; margin: 60px auto; padding: 0 20px; display: grid; grid-template-columns: 2fr 1fr; gap: 50px; }
+
+        /* --- TABLE STYLE (GRID) --- */
+        .cart-wrapper { background: transparent; }
+        
+        /* En-têtes du tableau */
+        .cart-header {
+            display: grid; 
+            grid-template-columns: 3fr 1fr 1fr 1fr 0.5fr; /* Produit | Prix | Quantité | Total | Action */
+            padding: 0 20px 15px 20px; 
+            border-bottom: 2px solid var(--border-color); 
+            margin-bottom: 20px;
+            font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); font-weight: 600;
+        }
+
+        /* Ligne Produit (Card Row) */
+        .cart-row {
+            display: grid;
+            grid-template-columns: 3fr 1fr 1fr 1fr 0.5fr;
+            align-items: center;
+            background: white;
+            margin-bottom: 15px;
+            padding: 20px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .cart-row:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.05); border-color: var(--primary-light); }
+
+        /* Cellules */
+        .col-product { display: flex; align-items: center; gap: 20px; }
+        .col-img { width: 70px; height: 70px; object-fit: cover; border-radius: 8px; border: 1px solid #f0f0f0; flex-shrink: 0; }
+        .col-info h4 { font-family: 'Playfair Display', serif; font-size: 1.1rem; margin-bottom: 4px; }
+        .col-info span { font-size: 0.85rem; color: var(--text-muted); }
+        
+        .col-price { font-weight: 600; font-size: 1.05rem; color: var(--text-color); }
+        
+        .col-qty { display: flex; align-items: center; }
+        .qty-box { display: flex; border: 1px solid var(--border-color); border-radius: 6px; overflow: hidden; }
+        .qty-btn { background: #f8f9fa; border: none; width: 32px; height: 32px; cursor: pointer; color: var(--text-muted); transition: 0.2s; }
+        .qty-btn:hover { background: var(--primary-color); color: white; }
+        .qty-input { width: 40px; text-align: center; border: none; font-weight: 600; outline: none; }
+        
+        .col-total { font-weight: 700; color: var(--primary-dark); font-size: 1.1rem; font-family: 'Playfair Display', serif; }
+        
+        .col-action { text-align: right; }
+        .btn-remove { color: #ccc; cursor: pointer; transition: 0.2s; background: none; border: none; font-size: 1.1rem; }
+        .btn-remove:hover { color: var(--danger); transform: scale(1.1); }
+
+        .cart-footer { margin-top: 20px; display: flex; justify-content: space-between; align-items: center; }
+
+        /* --- SUMMARY --- */
+        .summary-card { background: white; padding: 30px; border-radius: var(--radius); border: 1px solid var(--border-color); position: sticky; top: 110px; box-shadow: 0 10px 30px rgba(0,0,0,0.04); }
+        .summary-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 0.95rem; color: var(--text-muted); }
+        .summary-total { border-top: 2px dashed var(--border-color); padding-top: 15px; margin-top: 15px; font-weight: 700; font-size: 1.5rem; color: var(--primary-dark); font-family: 'Playfair Display', serif; display: flex; justify-content: space-between; }
+        
+        /* --- RESPONSIVE TABLE --- */
+        @media (max-width: 900px) {
+            .cart-header { display: none; } /* Masquer les titres sur mobile */
+            .cart-row { 
+                grid-template-columns: 1fr; 
+                gap: 15px; text-align: center; 
+                display: flex; flex-direction: column; align-items: center;
+            }
+            .col-product { flex-direction: column; text-align: center; }
+            .page-container { grid-template-columns: 1fr; }
+            .col-price, .col-qty, .col-total, .col-action { width: 100%; justify-content: center; }
+            .col-qty { margin: 10px 0; }
+        }
+        /* BOUTON HAMBURGER */
+.menu-toggle {
+    display: none;
+    font-size: 26px;
+    color: white;
+    cursor: pointer;
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+
+    .menu-toggle {
+        display: block;
+    }
+
+    .nav-links {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 70px;
+        left: 0;
+        width: 100%;
+        background: #014215;
+        padding: 20px 0;
+        text-align: center;
+        gap: 20px;
+    }
+
+    .nav-links.active {
+        display: flex;
+    }
+
+    .dropdown {
+        display: none; /* On cache le dropdown compte sur mobile */
+    }
+}
+
+    </style>
+</head>
+<body>
+
+
+<header>
+    <div class="nav-container">
+        
+        <!-- LOGO IMAGE -->
+        <a href="{% url 'home' %}" class="logo-img-wrapper">
+            <!-- Remplacez 'logo.png' par le nom de votre fichier -->
+            <img src="{% static 'img/logo.jpg' %}" alt="Terra & Pure">
+        </a>
+<div class="menu-toggle" onclick="toggleMenu()">☰</div>
+
+        <nav>
+            <ul class="nav-links">
+                <li><a href="{% url 'home' %}" class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">Accueil</a></li>
+                
+                <!-- À propos -->
+                <li><a href="{% url 'products:about' %}" class="{% if request.resolver_match.url_name == 'about' %}active{% endif %}">À propos</a></li>
+                
+                <!-- Boutique -->
+                <li><a href="{% url 'products:shop' %}" class="{% if request.resolver_match.url_name == 'shop' %}active{% endif %}">Boutique</a></li>
+                
+                <!-- Bien-être (Active sur cette page) -->
+                <li><a href="{% url 'products:bien_etre' %}" class="{% if request.resolver_match.url_name == 'bien_etre' %}active{% endif %}">Bien-être</a></li>
+            </ul>
+        </nav>
+
+        <div class="header-icons">
+            <!-- Lien Créer Compte (ICÔNE + TEXTE ORANGE AU SURVOL) -->
+                      <!-- Le lien pointe vers la page de login -->
+<!-- NAVBAR Compte -->
+<!-- NAVBAR Compte -->
+<div class="dropdown">
+    <!-- Le lien principal : Pas besoin de href="#" si on utilise onclick, mais gardons le pour la structure -->
+    <button class="dropdown-toggle" type="button">
+        <i class="fas fa-user"></i>
+        <span>
+            {% if request.user.is_authenticated %}
+                {{ request.user.username }}
+            {% else %}
+                Mon Compte
+            {% endif %}
+        </span>
+    </button>
+
+    <ul class="dropdown-menu">
+        {% if request.user.is_authenticated %}
+            <!-- Utilisateur connecté -->
+            <li>
+                <a class="dropdown-item" href="{% url 'products:profile' %}">
+                    <i class="far fa-user-circle" style="width:20px;"></i> Mon Profil
+                </a>
+            </li>
+            <li>
+                <a class="dropdown-item" href="">
+                    <i class="fas fa-cog" style="width:20px;"></i> Paramètres
+                </a>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+                <a class="dropdown-item" href="{% url 'products:logout' %}" style="color: #e74c3c;">
+                    <i class="fas fa-sign-out-alt" style="width:20px;"></i> Déconnexion
+                </a>
+            </li>
+        {% else %}
+            <!-- Visiteur -->
+            <li>
+                <a class="dropdown-item" href="{% url 'products:login' %}">
+                    <i class="fas fa-sign-in-alt" style="width:20px;"></i> Connexion
+                </a>
+            </li>
+            <li>
+                <a class="dropdown-item" href="{% url 'products:register' %}">
+                    <i class="fas fa-user-plus" style="width:20px;"></i> Créer un compte
+                </a>
+            </li>
+        {% endif %}
+    </ul>
+</div>
+    <a href="{% url 'products:cart_detail' %}" class="cart-icon-wrapper">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span class="cart-count">{{ cart|length }}</span>
+                </a>
+        </div>
+    </div>
+</header>
+    <section class="page-container">
+        
+        <!-- Colonne Gauche : Tableau Produits -->
+        <div class="cart-wrapper">
+            <h1>Votre Panier <span style="font-size:0.6em; color:var(--text-muted); font-family:'Montserrat'">({{ cart|length }})</span></h1>
+
+            <!-- En-têtes (visible desktop) -->
+            <div class="cart-header">
+                <div>Produit</div>
+                <div>Prix</div>
+                <div>Quantité</div>
+            
+                <div></div>
+            </div>
+
+            <!-- Liste des produits -->
+            <div class="cart-list">
+                {% if cart %}
+                    {% for item in cart %}
+                    <div class="cart-row">
+                        <!-- Colonne Produit -->
+                        <div class="col-product">
+                            {% if item.product.image %}
+                                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="col-img">
+                            {% else %}
+                                <img src="https://picsum.photos/seed/{{ item.product.id }}/100/100" class="col-img">
+                            {% endif %}
+                            <div class="col-info">
+                                <h4>{{ item.product.name }}</h4>
+                                <span>{% if item.variant %}{{ item.variant }}{% else %}Standard{% endif %}</span>
+                            </div>
+                        </div>
+
+                        <!-- Colonne Prix Unitaire -->
+                        
+                        <div class="col-price">
+                  {{ item.price_ttc|floatformat:2 }} €
+                </div>
+
+
+                        <!-- Colonne Quantité -->
+                        <div class="col-qty">
+                            <form action="{% url 'products:cart_update' item.product.id %}" method="post" class="qty-box">
+                                {% csrf_token %}
+                                <button type="button" class="qty-btn" onclick="this.form.quantity.value--;">-</button>
+                                <input type="number" name="quantity" value="{{ item.quantity }}" min="1" class="qty-input">
+                                <button type="button" class="qty-btn" onclick="this.form.quantity.value++;">+</button>
+                                <button type="submit" style="display:none;"></button>
+                            </form>
+                        </div>
+
+                        <!-- Colonne Action -->
+                        <div class="col-action">
+                            <a href="{% url 'products:cart_remove' item.product.id %}" class="btn-remove">
+                                <i class="fas fa-trash-alt"></i>
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+
+                    <!-- Footer du panier -->
+                    <div class="cart-footer">
+                        <a href="{% url 'products:shop' %}" class="btn-text"><i class="fas fa-arrow-left"></i> Continuer mes achats</a>
+                        <button class="btn btn-outline btn-sm" onclick="document.querySelectorAll('form').forEach(f => f.submit())">
+                            Mettre à jour le panier
+                        </button>
+                    </div>
+
+                {% else %}
+                    <div style="text-align: center; padding: 40px; background: white; border-radius: var(--radius); grid-column: 1/-1;">
+                        <i class="fas fa-shopping-basket" style="font-size: 3rem; color: #ddd; margin-bottom: 15px;"></i>
+                        <p>Votre panier est vide.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Colonne Droite : Récapitulatif -->
+        <div class="cart-summary">
+            {% if cart %}
+            <div class="summary-card">
+                <h3 style="margin-bottom: 20px; font-family:'Playfair Display', serif">Récapitulatif</h3>
+                
+                <div class="summary-row">
+                    <div class="col-info">
+                                <h4>{{ item.product.name }}</h4>
+                            </div>
+                    <span>Sous-total</span>
+                    <span>{{ cart.get_total_price }} €</span>
+                </div>
+
+                {% if cart.coupon %}
+                <div class="summary-row" style="color: var(--primary-color);">
+                    <span>Code Promo ({{ cart.coupon.code }})</span>
+                    <span>- {{ cart.get_discount }} €</span>
+                </div>
+                {% endif %}
+
+                <div class="summary-total">
+                    <span>Total</span>
+                    <span>{{ cart.get_total_ttc }} €</span>
+                </div>
+
+                <div style="margin-top: 25px;">
+                    <a href="{% url 'products:checkout' %}" class="btn btn-primary" style="width: 100%;">
+                        Passer la commande
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+    </section>
+      <!-- Footer -->
+<footer id="footer">
+    <div class="footer-container">
+
+        <!-- Colonne 1 : Marque -->
+        <div class="footer-col">
+            <div class="footer-logo">
+                <img src="{% static 'img/logo.jpg' %}" alt="Terra & Pure"></div>
+            <p class="footer-text">
+                La nature est notre meilleure source d'inspiration.  
+                Des soins authentiques, formulés avec passion pour révéler votre beauté naturelle.
+            </p>
+
+            <div class="footer-socials">
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                <a href="#"><i class="fab fa-pinterest-p"></i></a>
+            </div>
+        </div>
+
+        <!-- Colonne 2 : Boutique -->
+   
+<div class="footer-col">
+    <h4>Catégories</h4>
+    <ul>
+        {% for category in categories %}
+            <li>
+                <a href="{% url 'products:shop' %}?category={{ category.id }}">
+                    {{ category.name }}
+                </a>
+            </li>
+        {% empty %}
+            <li>Aucune catégorie</li>
+        {% endfor %}
+    </ul>
+</div>
+
+        <!-- Colonne 3 : Informations -->
+        <div class="footer-col">
+            <h4>Informations</h4>
+            <ul>
+                <li><a href="#">À propos</a></li>
+                <li><a href="#">Livraison & Retours</a></li>
+                <li><a href="#">Conditions Générales</a></li>
+                <li><a href="#">Politique de confidentialité</a></li>
+            </ul>
+        </div>
+
+        <!-- Colonne 4 : Newsletter -->
+        <div class="footer-col">
+            <h4>Newsletter</h4>
+            <p>Recevez -10% sur votre première commande.</p>
+            <form class="footer-newsletter">
+                <input type="email" placeholder="Votre email">
+                <button type="submit">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </form>
+        </div>
+
+    </div>
+
+    <!-- Bottom bar -->
+    <div class="footer-bottom">
+        © 2026 Cinedera — Tous droits réservés.
+    </div>
+</footer>
+<style>
+#footer {
+    background: #014215;
+    color: rgba(255,255,255,0.8);
+    padding-top: 80px;
+    margin-top: 100px;
+}
+
+.footer-container {
+    max-width: 1200px;
+    margin: auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 50px;
+    padding: 0 20px 60px;
+}
+
+.footer-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    color: white;
+    margin-bottom: 20px;
+}
+
+.footer-logo span {
+    color: #ff8c00;
+}
+
+.footer-text {
+    line-height: 1.8;
+    font-size: 0.95rem;
+    margin-bottom: 20px;
+}
+
+.footer-col h4 {
+    color: white;
+    margin-bottom: 20px;
+    font-size: 1rem;
+}
+
+.footer-col ul {
+    list-style: none;
+}
+
+.footer-col ul li {
+    margin-bottom: 12px;
+}
+
+.footer-col ul li a {
+    color: rgba(255,255,255,0.7);
+    font-size: 0.9rem;
+    transition: 0.3s;
+}
+
+.footer-col ul li a:hover {
+    color: #ff8c00;
+    padding-left: 5px;
+}
+
+/* Social icons */
+.footer-socials {
+    display: flex;
+    gap: 15px;
+}
+
+.footer-socials a {
+    width: 35px;
+    height: 35px;
+    background: rgba(255,255,255,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    color: white;
+    transition: 0.3s;
+}
+
+.footer-socials a:hover {
+    background: #ff8c00;
+    transform: translateY(-3px);
+}
+
+/* Newsletter */
+.footer-newsletter {
+    display: flex;
+    margin-top: 15px;
+}
+
+.footer-newsletter input {
+    flex: 1;
+    padding: 10px;
+    border-radius: 30px 0 0 30px;
+    border: none;
+    outline: none;
+}
+
+.footer-newsletter button {
+    padding: 0 18px;
+    border-radius: 0 30px 30px 0;
+    border: none;
+    background: #ff8c00;
+    color: white;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.footer-newsletter button:hover {
+    background: #e67600;
+}
+
+/* Bottom */
+.footer-bottom {
+    border-top: 1px solid rgba(255,255,255,0.1);
+    text-align: center;
+    padding: 20px;
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.6);
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .footer-container {
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+    }
+}
+
+@media (max-width: 600px) {
+    .footer-container {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+
+    .footer-socials {
+        justify-content: center;
+    }
+}
+</style>
+<script>
+function toggleMenu() {
+    document.querySelector('.nav-links').classList.toggle('active');
+}
+</script>
+
+</body>
+</html>

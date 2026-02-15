@@ -1,0 +1,878 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bien étre</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome pour les icônes -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* --- VARIABLES CSS --- */
+        :root {
+            --primary-color: #014215;
+            --primary-dark: #014215;
+            --secondary-color: #A4C3B2;
+            --accent-color: #DAD7CD;
+            --bg-color: #FAF9F6;
+            --text-color: #333333;
+            --text-light: #666666;
+            --white: #FFFFFF;
+            --shadow-soft: 0 10px 30px rgba(0,0,0,0.05);
+            --radius: 12px;
+            --transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); /* Animation plus fluide */
+        }
+
+        /* --- RESET & GLOBAL --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Montserrat', sans-serif; background-color: var(--bg-color); color: var(--text-color); line-height: 1.6; overflow-x: hidden; }
+        h1, h2, h3, h4 { font-family: 'Playfair Display', serif; color: var(--primary-dark); }
+        a { text-decoration: none; color: inherit; transition: var(--transition); }
+        ul { list-style: none; }
+        img { max-width: 100%; display: block; }
+        
+        /* Styles globaux pour les sections standard (mais pas pour le Hero) */
+        section { padding: 80px 20px; max-width: 1200px; margin: 0 auto; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+        /* --- BOUTONS --- */
+        .btn { display: inline-block; padding: 14px 35px; border-radius: 50px; font-weight: 500; cursor: pointer; border: 2px solid transparent; transition: var(--transition); font-size: 1rem; letter-spacing: 0.5px; }
+        .btn-primary { background-color: var(--primary-color); color: var(--white); box-shadow: 0 4px 15px rgba(85, 124, 85, 0.3); }
+        .btn-primary:hover { background-color: var(--primary-dark); transform: translateY(-3px); box-shadow: 0 8px 20px rgba(85, 124, 85, 0.4); }
+        .btn-outline { border-color: var(--primary-color); color: var(--primary-color); background: transparent; }
+        .btn-outline:hover { background-color: var(--primary-color); color: var(--white); }
+
+        /* --- HEADER --- */
+              /* --- HEADER MISE À JOUR --- */
+       header {
+            position: fixed; /* FIXE LE MENU */
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000; /* Au-dessus de tout */
+            background-color: #014215; /* Vert foncé demandé */
+            padding: 10px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+/* --- MENU DÉROULANT COMPTE (CSS Pur - Sans Bootstrap) --- */
+
+/* Conteneur du dropdown */
+.dropdown {
+    position: relative;
+    display: inline-block; /* S'aligne correctement dans le header */
+    margin-right: 20px;    /* Espace avec l'icône panier */
+}
+
+/* Lien principal (Déclencheur) */
+.dropdown-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none !important; /* Important pour ne pas souligner */
+    padding: 5px 10px;
+    border-radius: 4px;
+    transition: var(--transition);
+    cursor: pointer;
+    background: transparent;
+    border: none;
+}
+
+.dropdown-toggle:hover {
+    color: #ff8c00; /* Orange au survol */
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Petit triangle sous le texte pour indiquer un menu */
+.dropdown-toggle::after {
+    content: '\f107'; /* Code Unicode FontAwesome pour la flèche vers le bas */
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+    margin-left: 5px;
+    font-size: 0.8rem;
+    transition: transform 0.3s;
+}
+
+.dropdown:hover .dropdown-toggle::after {
+    transform: rotate(180deg); /* La flèche monte au survol */
+}
+
+/* Le menu lui-même (Caché par défaut) */
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 120%; /* Un peu en dessous du lien */
+    right: 0;  /* Aligné à droite (car le compte est à droite) */
+    background-color: #ffffff;
+    min-width: 200px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    z-index: 1001; /* Au-dessus de tout */
+    border-radius: 8px;
+    padding: 10px 0;
+    border-top: 3px solid #ff8c00; /* Ligne orange en haut */
+    animation: slideDown 0.3s ease;
+}
+
+/* Afficher le menu au survol du parent */
+.dropdown:hover .dropdown-menu {
+    display: block;
+}
+
+/* Animation d'apparition */
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Les liens à l'intérieur du menu */
+/* --- CORRECTION DU DROPDOWN (Anti-disparition rapide) --- */
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+    margin-right: 20px;
+    
+    /* LA SOLUTION : On ajoute un padding en haut du parent */
+    /* Cela crée une zone "invisible" sous le bouton où la souris peut passer */
+    padding-top: 20px; 
+    
+    /* On remonte le bouton pour compenser ce padding (optionnel) */
+    margin-top: -20px; 
+}
+
+.dropdown-toggle {
+    position: relative; /* Pour s'assurer qu'il est au-dessus */
+    z-index: 2;
+    background-color: #014215; /* Fond vert foncé pour cacher le padding */
+    /* ... vos autres styles ... */
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    
+    /* On colle le menu tout en haut de la zone tampon (donc juste sous le bouton) */
+    top: 20px; 
+    
+    right: 0;
+    background-color: #ffffff;
+    min-width: 200px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    z-index: 1001;
+    border-radius: 8px;
+    padding: 10px 0;
+    border-top: 3px solid #ff8c00;
+}
+
+/* Animation pour l'apparition */
+@keyframes fadeInMenu {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.dropdown:hover .dropdown-menu {
+    display: block;
+    animation: fadeInMenu 0.2s ease-out;
+}
+        .nav-container { max-width: 1200px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; }
+
+        /* --- LOGO IMAGE --- */
+        .logo-img-wrapper { height: 50px; display: flex; align-items: center; }
+        .logo-img-wrapper img { height: 100%; object-fit: contain; /* Garde les proportions du logo */ }
+
+        /* --- NAVIGATION --- */
+        .nav-links { display: flex; gap: 30px; }
+        .nav-links a { 
+            font-size: 0.9rem; font-weight: 500; 
+            color: rgba(255,255,255,0.8); /* Texte blanc un peu transparent par défaut */
+            transition: 0.3s;
+            position: relative;
+        }
+
+        /* Effet au survol et État Actif en ORANGE */
+        .nav-links a:hover, .nav-links a.active {
+            color: #ff8c00; /* Orange demandé */
+        }
+        
+        /* Petite ligne sous le lien actif */
+        .nav-links a.active::after {
+            content: ''; position: absolute; bottom: -5px; left: 0; width: 100%; height: 2px; background: #ff8c00;
+        }
+
+                .hero-wellness {
+            /* ... vos autres styles ... */
+            
+            /* AJOUTEZ CECI pour l'effet fixe sur l'image */
+            background-attachment: fixed;
+            background-position: center;
+            background-size: cover;
+        }
+
+        /* --- ICONS HEADER --- */
+        .header-icons { display: flex; gap: 20px; align-items: center; }
+
+        /* Lien Créer Compte */
+        .create-account-link {
+            display: flex; align-items: center; gap: 8px;
+            color: rgba(255,255,255,0.9); /* Blanc par défaut */
+            font-size: 0.9rem; font-weight: 500;
+            transition: 0.3s; cursor: pointer;
+        }
+        .create-account-link:hover { color: #ff8c00; transform: translateY(-2px); } /* Devient orange au survol */
+
+        /* Icône Panier */
+        .cart-icon-wrapper { 
+            position: relative; cursor: pointer; transition: 0.2s; color: white; font-size: 1.2rem;
+        }
+        .cart-icon-wrapper:hover { color: #ff8c00; transform: scale(1.1); }
+        
+        .cart-count { 
+            position: absolute; top: -5px; right: -8px; background-color: #ff8c00; /* Badge orange aussi */
+            color: white; font-size: 0.7rem; width: 16px; height: 16px; 
+            border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; } /* Cacher menu sur mobile */
+        }.nav-container { max-width: 1200px; margin: 0 auto; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 700; color: var(--primary-dark); }
+        .logo span { color: var(--secondary-color); }
+        .nav-links { display: flex; gap: 30px; }
+        .nav-links a { font-size: 0.9rem; font-weight: 500; position: relative; }
+        .nav-links a::after { content: ''; position: absolute; bottom: -5px; left: 0; width: 0; height: 2px; background-color: var(--primary-color); transition: var(--transition); }
+        .nav-links a:hover::after { width: 100%; }
+        .header-icons { display: flex; gap: 20px; align-items: center; }
+        .cart-icon-wrapper { position: relative; cursor: pointer; transition: transform 0.2s; }
+        .cart-icon-wrapper:hover { transform: scale(1.1); }
+        .cart-count { position: absolute; top: -8px; right: -8px; background-color:#ff8c00; color: white; font-size: 0.7rem; width: 18px; height: 18px; border-radius: 50%; display: flex; justify-content: center; align-items: center; animation: bounce 0.5s; }
+
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+        }
+
+        /* --- HERO SECTION BIEN-ETRE --- */
+        .hero-wellness {
+            position: relative;
+            height: 70vh;
+            min-height: 500px;
+            background-image: url('https://images.unsplash.com/photo-1545205597-3d9d02c29597?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            margin: 0;
+            max-width: 100%; /* Pleine largeur */
+        }
+        .hero-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.3); /* Voile sombre léger */
+        }
+        .hero-content { position: relative; z-index: 2; max-width: 800px; padding: 20px; }
+        .hero-title { font-size: 3.5rem; margin-bottom: 20px; text-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+        .hero-subtitle { font-size: 1.2rem; font-weight: 300; margin-bottom: 30px; }
+
+        /* --- PHILOSOPHY TEXT --- */
+        .philosophy-text { text-align: center; max-width: 800px; margin: 0 auto 60px; }
+        .philosophy-text p { font-size: 1.1rem; color: #555; line-height: 1.8; }
+
+        /* --- RITUELS GRID --- */
+        .rituals-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        .ritual-card { 
+            background: white; padding: 40px; border-radius: var(--radius); 
+            text-align: center; border: 1px solid #eee; transition: 0.3s;
+        }
+        .ritual-card:hover { transform: translateY(-10px); box-shadow: var(--shadow-soft); border-color: var(--secondary-color); }
+        
+        .ritual-icon { 
+            width: 80px; height: 80px; background: var(--accent-color); color: var(--primary-dark); 
+            border-radius: 50%; display: flex; align-items: center; justify-content: center; 
+            font-size: 2rem; margin: 0 auto 25px;
+        }
+        
+        /* --- SECTION BLOG / ARTICLES --- */
+        .blog-section {
+            padding: 80px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .blog-header { text-align: center; margin-bottom: 50px; }
+        .blog-header h2 { font-family: 'Playfair Display', serif; font-size: 2.2rem; color: var(--primary-dark); }
+        .blog-header p { color: var(--text-light); margin-top: 10px; }
+
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .blog-card {
+            background: white;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.03);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #f0f0f0;
+        }
+
+        .blog-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+        }
+
+        .blog-image {
+            height: 220px;
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .blog-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .blog-card:hover .blog-image img {
+            transform: scale(1.05);
+        }
+
+        .blog-content {
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .blog-meta {
+            font-size: 0.8rem;
+            color: var(--secondary-color);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .blog-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            color: var(--text-color);
+            margin-bottom: 15px;
+            line-height: 1.3;
+        }
+
+        .blog-excerpt {
+            font-size: 0.95rem;
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            flex-grow: 1; /* Pousse le bouton vers le bas */
+        }
+
+        .read-more-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--primary-dark);
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: gap 0.3s ease;
+            margin-top: auto;
+        }
+
+        .read-more-btn:hover {
+            gap: 12px; /* La flèche s'éloigne au survol */
+            color: var(--primary-color);
+        }
+        
+        /* --- FOOTER SIMPLE --- */
+        footer { background: var(--primary-dark); color: white; padding: 40px 20px; text-align: center; }
+        .footer-links a { margin: 0 10px; color: rgba(255,255,255,0.7); font-size: 0.9rem; }
+        .footer-links a:hover { color: white; }
+
+        @media (max-width: 768px) {
+            .hero-title { font-size: 2.5rem; }
+            .nav-links { display: none; }
+        }
+        /* BOUTON HAMBURGER */
+.menu-toggle {
+    display: none;
+    font-size: 26px;
+    color: white;
+    cursor: pointer;
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+
+    .menu-toggle {
+        display: block;
+    }
+
+    .nav-links {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 70px;
+        left: 0;
+        width: 100%;
+        background: #014215;
+        padding: 20px 0;
+        text-align: center;
+        gap: 20px;
+    }
+
+    .nav-links.active {
+        display: flex;
+    }
+
+    .dropdown {
+        display: none; /* On cache le dropdown compte sur mobile */
+    }
+}
+
+    </style>
+</head>
+<body>
+
+    <!-- Header (Version Corrigée : Un seul bloc, Liens corrigés) -->
+        <!-- Header -->
+<header>
+    <div class="nav-container">
+        
+        <!-- LOGO IMAGE -->
+        <a href="{% url 'home' %}" class="logo-img-wrapper">
+            <!-- Remplacez 'logo.png' par le nom de votre fichier -->
+            <img src="{% static 'img/logo.jpg' %}" alt="Terra & Pure">
+        </a>
+<div class="menu-toggle" onclick="toggleMenu()">☰</div>
+
+        <nav>
+            <ul class="nav-links">
+                <li><a href="{% url 'home' %}" class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">Accueil</a></li>
+                
+                <!-- À propos -->
+                <li><a href="{% url 'products:about' %}" class="{% if request.resolver_match.url_name == 'about' %}active{% endif %}">À propos</a></li>
+                
+                <!-- Boutique -->
+                <li><a href="{% url 'products:shop' %}" class="{% if request.resolver_match.url_name == 'shop' %}active{% endif %}">Boutique</a></li>
+                
+                <!-- Bien-être (Active sur cette page) -->
+                <li><a href="{% url 'products:bien_etre' %}" class="{% if request.resolver_match.url_name == 'bien_etre' %}active{% endif %}">Bien-être</a></li>
+            </ul>
+        </nav>
+
+        <div class="header-icons">
+            <!-- Lien Créer Compte (ICÔNE + TEXTE ORANGE AU SURVOL) -->
+                      <!-- Le lien pointe vers la page de login -->
+<!-- NAVBAR Compte -->
+<!-- NAVBAR Compte -->
+<div class="dropdown">
+    <!-- Le lien principal : Pas besoin de href="#" si on utilise onclick, mais gardons le pour la structure -->
+    <button class="dropdown-toggle" type="button">
+        <i class="fas fa-user"></i>
+        <span>
+            {% if request.user.is_authenticated %}
+                {{ request.user.username }}
+            {% else %}
+                Mon Compte
+            {% endif %}
+        </span>
+    </button>
+
+    <ul class="dropdown-menu">
+        {% if request.user.is_authenticated %}
+            <!-- Utilisateur connecté -->
+            <li>
+                <a class="dropdown-item" href="{% url 'products:profile' %}">
+                    <i class="far fa-user-circle" style="width:20px;"></i> Mon Profil
+                </a>
+            </li>
+            <li>
+                <a class="dropdown-item" href="">
+                    <i class="fas fa-cog" style="width:20px;"></i> Paramètres
+                </a>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+                <a class="dropdown-item" href="{% url 'products:logout' %}" style="color: #e74c3c;">
+                    <i class="fas fa-sign-out-alt" style="width:20px;"></i> Déconnexion
+                </a>
+            </li>
+        {% else %}
+            <!-- Visiteur -->
+            <li>
+                <a class="dropdown-item" href="{% url 'products:login' %}">
+                    <i class="fas fa-sign-in-alt" style="width:20px;"></i> Connexion
+                </a>
+            </li>
+            <li>
+                <a class="dropdown-item" href="{% url 'products:register' %}">
+                    <i class="fas fa-user-plus" style="width:20px;"></i> Créer un compte
+                </a>
+            </li>
+        {% endif %}
+    </ul>
+</div>
+    <a href="{% url 'products:cart_detail' %}" class="cart-icon-wrapper">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span class="cart-count">{{ cart|length }}</span>
+                </a>
+        </div>
+    </div>
+</header>
+
+    <!-- Hero Section -->
+    <div class="hero-wellness">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1 class="hero-title">Sérénité & Équilibre</h1>
+            <p class="hero-subtitle">Retrouvez votre harmonie naturelle à travers nos rituels de soins et de bien-être.</p>
+            <a href="#rituels" style="background: white; color: var(--primary-dark); padding: 12px 30px; border-radius: 50px; font-weight: 600; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">Découvrir nos rituels</a>
+        </div>
+    </div>
+
+    <!-- Section Philosophie -->
+    <section>
+        <div class="philosophy-text">
+            <h2 style="margin-bottom: 20px;">Notre Philosophie</h2>
+            <p>
+                Chez Terra & Pure, nous croyons que la véritable beauté rayonne de l'intérieur. Le bien-être n'est pas seulement une question de produits, c'est un art de vivre. Nous vous proposons une approche holistique qui allie soins naturels, nutrition consciente et sérénité d'esprit.
+            </p>
+        </div>
+    </section>
+
+    <!-- Section Rituels (Grille 3 colonnes) -->
+    <section id="rituels">
+        <div class="section-header" style="text-align: center; margin-bottom: 50px;">
+            <span style="color: var(--secondary-color); font-weight: 600; text-transform: uppercase;">Nos Piliers</span>
+            <h2 style="font-size: 2.5rem; margin-top: 10px;">Les 3 Rituels Essentiels</h2>
+        </div>
+
+        <div class="rituals-grid">
+            <!-- Rituel 1 -->
+            <div class="ritual-card">
+                <div class="ritual-icon"><i class="fas fa-spa"></i></div>
+                <h3>Soin de la Peau</h3>
+                <p style="color: #666; margin-top: 15px;">Des rituels quotidiens pour nourrir et protéger votre épiderme avec des ingrédients bruts.</p>
+            </div>
+
+            <!-- Rituel 2 -->
+            <div class="ritual-card">
+                <div class="ritual-icon"><i class="fas fa-leaf"></i></div>
+                <h3>Nutrition Consciente</h3>
+                <p style="color: #666; margin-top: 15px;">L'impact de l'alimentation sur votre beauté : choisir le bio pour rayonner de santé.</p>
+            </div>
+
+            <!-- Rituel 3 -->
+            <div class="ritual-card">
+                <div class="ritual-icon"><i class="fas fa-brain"></i></div>
+                <h3>Sérénité Mentale</h3>
+                <p style="color: #666; margin-top: 15px;">Techniques de méditation et de relaxation pour apaiser l'esprit et réduire le stress.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION BLOG / CONSEILS -->
+    <section class="blog-section">
+        <div class="blog-header">
+            <h2>Notre Journal de Bien-être</h2>
+            <p>Conseils, astuces et rituels pour prendre soin de vous au quotidien.</p>
+        </div>
+
+        <div class="blog-grid">
+            {% for post in blog_posts %}
+                <article class="blog-card">
+                    <div class="blog-image">
+                        {% if post.image %}
+                            <img src="{{ post.image.url }}" alt="{{ post.title }}">
+                        {% else %}
+                            <!-- Image par défaut si pas d'image uploadée -->
+                            <img src="https://picsum.photos/seed/{{ post.slug }}/400/300" alt="{{ post.title }}">
+                        {% endif %}
+                    </div>
+                    <div class="blog-content">
+                        <span class="blog-meta">{{ post.category }}</span>
+                        <h3 class="blog-title">{{ post.title }}</h3>
+                        <p class="blog-excerpt">{{ post.excerpt }}</p>
+                        
+                                   <!-- LIEN VERS LE DÉTAIL (MODIFIÉ ICI) -->
+                <a href="{% url 'products:post_detail' slug=post.slug %}" class="read-more-btn" style="display: inline-flex; align-items: center; gap: 8px; color: #014215; font-weight: 600; text-decoration: none; border-bottom: 2px solid transparent; transition: 0.3s;">
+                    Lire l'article 
+                    <i class="fas fa-arrow-right" style="font-size: 0.8rem;"></i>
+                </a>
+                    </div>
+                </article>
+            {% empty %}
+                <p style="text-align:center; grid-column: 1/-1; color: #888;">
+                    Aucun article publié pour le moment. Connectez-vous à l'admin pour en ajouter.
+                </p>
+            {% endfor %}
+            
+        </div>
+        <!-- Pagination -->
+{% if blog_posts.has_other_pages %}
+<div style="display: flex; justify-content: center; gap: 10px; margin-top: 40px;">
+    {% if blog_posts.has_previous %}
+        <a href="?page={{ blog_posts.previous_page_number }}" class="btn btn-outline" style="padding: 10px 25px; border: 1px solid var(--primary-color); border-radius: 50px; text-decoration: none; color: var(--primary-color); transition: 0.3s;">
+            <i class="fas fa-chevron-left"></i> Précédent
+        </a>
+    {% endif %}
+
+    <span style="font-weight: 600; color: var(--text-main);">
+        Page {{ blog_posts.number }} / {{ blog_posts.paginator.num_pages }}
+    </span>
+
+    {% if blog_posts.has_next %}
+        <a href="?page={{ blog_posts.next_page_number }}" class="btn btn-primary" style="padding: 10px 25px; border-radius: 50px; text-decoration: none; background: var(--primary-color); color: white; transition: 0.3s; box-shadow: 0 4px 10px rgba(1,66, 21, 0.2);">
+            Suivant <i class="fas fa-chevron-right" style="margin-left: 5px;"></i>
+        </a>
+    {% endif %}
+</div>
+{% endif %}
+    </section>
+
+    <!-- Image Break -->
+    <section style="padding: 0; max-width: 100%;">
+        <img src="https://images.unsplash.com/photo-1600334129128-685c5582fd35?q=80&w=2070" alt="Ambiance Zen" style="width: 100%; height: 400px; object-fit: cover;">
+    </section>
+
+    <!-- Call to Action -->
+    <section style="text-align: center; background: var(--secondary-color); border-radius: var(--radius); margin: 60px auto;">
+        <h2 style="margin-bottom: 20px;">Prêt à commencer votre transformation ?</h2>
+        <p style="margin-bottom: 30px;">Rejoignez notre communauté bien-être.</p>
+        <a href="{% url 'products:shop' %}" style="background: var(--primary-dark); color: white; padding: 15px 40px; border-radius: 50px; font-weight: 600; display: inline-block;">Explorer la Boutique</a>
+    </section>
+
+    <!-- Footer -->
+  <!-- Footer -->
+<footer id="footer">
+    <div class="footer-container">
+
+        <!-- Colonne 1 : Marque -->
+        <div class="footer-col">
+            <div class="footer-logo">
+                <img src="{% static 'img/logo.jpg' %}" alt="Terra & Pure"></div>
+            <p class="footer-text">
+                La nature est notre meilleure source d'inspiration.  
+                Des soins authentiques, formulés avec passion pour révéler votre beauté naturelle.
+            </p>
+
+            <div class="footer-socials">
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                <a href="#"><i class="fab fa-pinterest-p"></i></a>
+            </div>
+        </div>
+
+        <!-- Colonne 2 : Boutique -->
+   
+<div class="footer-col">
+    <h4>Catégories</h4>
+    <ul>
+        {% for category in categories %}
+            <li>
+                <a href="{% url 'products:shop' %}?category={{ category.id }}">
+                    {{ category.name }}
+                </a>
+            </li>
+        {% empty %}
+            <li>Aucune catégorie</li>
+        {% endfor %}
+    </ul>
+</div>
+
+        <!-- Colonne 3 : Informations -->
+        <div class="footer-col">
+            <h4>Informations</h4>
+            <ul>
+                <li><a href="#">À propos</a></li>
+                <li><a href="#">Livraison & Retours</a></li>
+                <li><a href="#">Conditions Générales</a></li>
+                <li><a href="#">Politique de confidentialité</a></li>
+            </ul>
+        </div>
+
+        <!-- Colonne 4 : Newsletter -->
+        <div class="footer-col">
+            <h4>Newsletter</h4>
+            <p>Recevez -10% sur votre première commande.</p>
+            <form class="footer-newsletter">
+                <input type="email" placeholder="Votre email">
+                <button type="submit">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </form>
+        </div>
+
+    </div>
+
+    <!-- Bottom bar -->
+    <div class="footer-bottom">
+        © 2026 Cinedera — Tous droits réservés.
+    </div>
+</footer>
+<style>
+#footer {
+    background: #014215;
+    color: rgba(255,255,255,0.8);
+    padding-top: 80px;
+    margin-top: 100px;
+}
+
+.footer-container {
+    max-width: 1200px;
+    margin: auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 50px;
+    padding: 0 20px 60px;
+}
+
+.footer-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    color: white;
+    margin-bottom: 20px;
+}
+
+.footer-logo span {
+    color: #ff8c00;
+}
+
+.footer-text {
+    line-height: 1.8;
+    font-size: 0.95rem;
+    margin-bottom: 20px;
+}
+
+.footer-col h4 {
+    color: white;
+    margin-bottom: 20px;
+    font-size: 1rem;
+}
+
+.footer-col ul {
+    list-style: none;
+}
+
+.footer-col ul li {
+    margin-bottom: 12px;
+}
+
+.footer-col ul li a {
+    color: rgba(255,255,255,0.7);
+    font-size: 0.9rem;
+    transition: 0.3s;
+}
+
+.footer-col ul li a:hover {
+    color: #ff8c00;
+    padding-left: 5px;
+}
+
+/* Social icons */
+.footer-socials {
+    display: flex;
+    gap: 15px;
+}
+
+.footer-socials a {
+    width: 35px;
+    height: 35px;
+    background: rgba(255,255,255,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    color: white;
+    transition: 0.3s;
+}
+
+.footer-socials a:hover {
+    background: #ff8c00;
+    transform: translateY(-3px);
+}
+
+/* Newsletter */
+.footer-newsletter {
+    display: flex;
+    margin-top: 15px;
+}
+
+.footer-newsletter input {
+    flex: 1;
+    padding: 10px;
+    border-radius: 30px 0 0 30px;
+    border: none;
+    outline: none;
+}
+
+.footer-newsletter button {
+    padding: 0 18px;
+    border-radius: 0 30px 30px 0;
+    border: none;
+    background: #ff8c00;
+    color: white;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.footer-newsletter button:hover {
+    background: #e67600;
+}
+
+/* Bottom */
+.footer-bottom {
+    border-top: 1px solid rgba(255,255,255,0.1);
+    text-align: center;
+    padding: 20px;
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.6);
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .footer-container {
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+    }
+}
+
+@media (max-width: 600px) {
+    .footer-container {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+
+    .footer-socials {
+        justify-content: center;
+    }
+}
+</style>
+<script>
+function toggleMenu() {
+    document.querySelector('.nav-links').classList.toggle('active');
+}
+</script>
+
+</body>
+</html>
