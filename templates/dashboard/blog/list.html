@@ -1,0 +1,68 @@
+{% extends "dashboard/base_dashboard.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Gestion du Blog</h2>
+    <a href="{% url 'dashboard:blog_add' %}" class="btn btn-primary">
+        <i class="bi bi-plus-circle me-2"></i> Nouvel article
+    </a>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="bg-light text-muted small text-uppercase">
+                <tr>
+                    <th class="ps-4">Image</th>
+                    <th>Titre</th>
+                    <th>Catégorie</th>
+                    <th>Statut</th>
+                    <th>Date</th>
+                    <th class="text-end pe-4">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for post in posts %}
+                <tr>
+                    <td class="ps-4">
+                        {% if post.image %}
+                            <img src="{{ post.image.url }}" alt="{{ post.title }}" class="rounded" style="width: 60px; height: 40px; object-fit: cover;">
+                        {% else %}
+                            <div class="bg-secondary rounded" style="width: 60px; height: 40px;"></div>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <strong>{{ post.title }}</strong><br>
+                        <small class="text-muted">{{ post.slug }}</small>
+                    </td>
+                    <td>{{ post.category.name|default:"Non classé" }}</td>
+                    <td>
+                        {% if post.is_active %}
+                            <span class="badge bg-success-subtle text-success">Publié</span>
+                        {% else %}
+                            <span class="badge bg-secondary-subtle text-secondary">Brouillon</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ post.created_at|date:"d M Y" }}</td>
+                    <td class="text-end pe-4">
+                        <a href="{% url 'dashboard:blog_edit' post.id %}" class="btn btn-sm btn-outline-primary me-1" title="Modifier">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        <a href="{% url 'dashboard:blog_delete' post.id %}" class="btn btn-sm btn-outline-danger" title="Supprimer">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center py-5 text-muted">
+                        <i class="bi bi-journal-x fs-1 d-block mb-2"></i>
+                        Aucun article de blog pour le moment.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends "dashboard/base_dashboard.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between mb-4">
+    <h3>Moyens de Paiement</h3>
+    <a href="{% url 'dashboard:add_payment_method' %}" class="btn btn-primary">
+        <i class="bi bi-plus"></i> Ajouter
+    </a>
+</div>
+
+<div class="card shadow">
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Actif</th>
+                    <th>Frais Suppl.</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for method in methods %}
+                <tr>
+                    <td>{{ method.name }}</td>
+                    <td>
+                        {% if method.is_active %}
+                            <span class="badge bg-success">Oui</span>
+                        {% else %}
+                            <span class="badge bg-secondary">Non</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ method.extra_fee }} €</td>
+                    <td>
+                        <a href="{% url 'dashboard:edit_payment_method' method.id %}" class="btn btn-sm btn-outline-info">Modifier</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

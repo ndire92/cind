@@ -1,0 +1,77 @@
+{% extends "dashboard/base_dashboard.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <h2 class="mb-4">
+        {% if form.instance.pk %}
+            Modifier la catégorie
+        {% else %}
+            Ajouter une nouvelle catégorie
+        {% endif %}
+    </h2>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow">
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <!-- Affichage des erreurs globales -->
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                {{ form.non_field_errors }}
+                            </div>
+                        {% endif %}
+
+                        <!-- Champ Nom -->
+                        <div class="mb-3">
+                            <label for="id_name" class="form-label fw-bold">Nom de la catégorie</label>
+                            {{ form.name }}
+                            {% if form.name.errors %}
+                                <small class="text-danger">{{ form.name.errors.0 }}</small>
+                            {% endif %}
+                        </div>
+
+                        <!-- Champ Slug -->
+                        <div class="mb-3">
+                            <label for="id_slug" class="form-label fw-bold">Slug (URL)</label>
+                            {{ form.slug }}
+                            <small class="text-muted">Laissez vide pour une génération automatique (recommandé).</small>
+                        </div>
+
+                        <!-- Champ Description -->
+                        <div class="mb-3">
+                            <label for="id_description" class="form-label fw-bold">Description</label>
+                            {{ form.description }}
+                        </div>
+
+                        <!-- Champ Image -->
+                        <div class="mb-3">
+                            <label for="id_image" class="form-label fw-bold">Image</label>
+                            {{ form.image }}
+                            
+                            <!-- Afficher l'image actuelle si on modifie -->
+                            {% if form.instance.image %}
+                                <div class="mt-2">
+                                    <p>Image actuelle :</p>
+                                    <img src="{{ form.instance.image.url }}" class="img-thumbnail" style="max-width: 200px;">
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <hr>
+
+                        <div class="d-flex justify-content-end">
+                            <a href="{% url 'dashboard:category_list' %}" class="btn btn-secondary me-2">Annuler</a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-lg"></i> Enregistrer
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

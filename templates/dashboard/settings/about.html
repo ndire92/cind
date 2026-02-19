@@ -1,0 +1,58 @@
+{% extends "dashboard/base_dashboard.html" %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <h2 class="fw-bold mb-4"><i class="bi bi-seedling text-success me-2"></i>Section À Propos</h2>
+    
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold">Image</label>
+                        
+                        {% if form.instance.about_image %}
+                            <div class="d-flex align-items-center gap-3 mb-3 p-3 bg-light rounded border">
+                                <img src="{{ form.instance.about_image.url }}" class="rounded" style="width: 100px; height: 80px; object-fit: cover;">
+                                <div class="form-check">
+                                    <input type="checkbox" name="about_image-clear" id="about-clear_id" class="form-check-input">
+                                    <label for="about-clear_id" class="form-check-label text-danger fw-bold">Supprimer</label>
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        <div class="image-upload-area h-100 d-flex flex-column justify-content-center">
+                            <i class="bi bi-camera fs-1 text-muted"></i>
+                            <p class="small text-muted">Image "À Propos"</p>
+                            <input type="file" name="about_image" accept="image/*">
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-8">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Titre</label>
+                            <input type="text" name="about_title" value="{{ form.about_title.value|default:'' }}" class="form-control">
+                        </div>
+                        <div>
+                            <label class="form-label fw-bold">Description</label>
+                            <textarea name="about_description" rows="5" class="form-control">{{ form.about_description.value|default:'' }}</textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-end mt-4">
+                    <button type="submit" class="btn btn-success btn-lg px-5 shadow-sm">Enregistrer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .image-upload-area { border: 2px dashed #ced4da; padding: 30px; text-align: center; border-radius: 8px; background-color: #f8f9fa; cursor: pointer; position: relative; overflow: hidden; min-height: 200px; }
+    .image-upload-area:hover { border-color: #198754; background-color: #f1f9f5; }
+    .image-upload-area input[type="file"] { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+</style>
+{% endblock %}

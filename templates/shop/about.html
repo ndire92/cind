@@ -1,585 +1,350 @@
+{% extends "base.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>À Propos | Terra & Pure</title>
-    
-    <!-- Google Fonts & FontAwesome -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <style>
-        /* --- VARIABLES CSS --- */
-        :root {
-            --primary-color: #014215;
-            --primary-dark: #014215;
-            --secondary-color: #A4C3B2;
-            --accent-color: #ff8c00; /* Orange pour hover/actions */
-            --bg-color: #FAF9F6;
-            --text-color: #333333;
-            --text-light: #666666;
-            --white: #FFFFFF;
-            --shadow-soft: 0 10px 30px rgba(0,0,0,0.05);
-            --radius: 12px;
-            --transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-        }
+{% block title %}À Propos - Cindera{% endblock %}
 
-        /* --- RESET & GLOBAL --- */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
-        body { font-family: 'Montserrat', sans-serif; background-color: var(--bg-color); color: var(--text-color); line-height: 1.6; overflow-x: hidden; }
-        h1, h2, h3, h4 { font-family: 'Playfair Display', serif; color: var(--primary-dark); }
-        a { text-decoration: none; color: inherit; transition: var(--transition); }
-        ul { list-style: none; }
-        img { max-width: 100%; display: block; }
-        section { padding: 80px 20px; max-width: 1200px; margin: 0 auto; }
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+{% block content %}
 
-        /* --- BOUTONS --- */
-        .btn { display: inline-block; padding: 14px 35px; border-radius: 50px; font-weight: 500; cursor: pointer; border: 2px solid transparent; transition: var(--transition); font-size: 1rem; letter-spacing: 0.5px; text-decoration: none; }
-        .btn-primary { background-color: var(--primary-color); color: var(--white); box-shadow: 0 4px 15px rgba(1, 66, 21, 0.3); }
-        .btn-primary:hover { background-color: var(--primary-dark); transform: translateY(-3px); box-shadow: 0 8px 20px rgba(1, 66, 21, 0.4); }
+<!-- HERO SECTION -->
+<section class="hero-about">
+    <div class="hero-about-content">
+        <h1>Retour aux sources</h1>
+        <p>Une aventure humaine et botanique au cœur de la nature.</p>
+    </div>
+</section>
 
-        /* --- HEADER FIXE --- */
-        header {
-            position: fixed;
-            top: 0; left: 0; width: 100%;
-            z-index: 1000;
-            background-color: var(--primary-color);
-            padding: 10px 0;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-        }
-
-        .nav-container { max-width: 1200px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; }
-
-        /* --- LOGO --- */
-        .logo-img-wrapper { height: 50px; display: flex; align-items: center; }
-        .logo-img-wrapper img { height: 100%; object-fit: contain; }
-
-        /* --- NAVIGATION --- */
-        .nav-links { display: flex; gap: 30px; }
-        .nav-links a { font-size: 0.9rem; font-weight: 500; color: rgba(255,255,255,0.8); transition: 0.3s; position: relative; }
-        .nav-links a:hover, .nav-links a.active { color: var(--accent-color); }
-        .nav-links a.active::after { content: ''; position: absolute; bottom: -5px; left: 0; width: 100%; height: 2px; background: var(--accent-color); }
-
-        /* --- DROPDOWN (Compte) CSS Pur --- */
-        .dropdown {
-            position: relative; display: inline-block; margin-right: 20px;
-            padding-top: 20px; margin-top: -20px; /* Zone tampon anti-disparition */
-        }
-        .dropdown-toggle {
-            position: relative; z-index: 2; background-color: var(--primary-color);
-            display: flex; align-items: center; gap: 8px;
-            color: rgba(255, 255, 255, 0.9); font-size: 0.9rem; font-weight: 500;
-            text-decoration: none !important; padding: 5px 10px;
-            border-radius: 4px; transition: 0.3s; cursor: pointer; border: none;
-        }
-        .dropdown-toggle:hover { color: var(--accent-color); background: rgba(255, 255, 255, 0.1); }
-        .dropdown-toggle::after { content: '\f107'; font-family: "Font Awesome 6 Free"; font-weight: 900; margin-left: 5px; font-size: 0.8rem; transition: transform 0.3s; }
-        .dropdown:hover .dropdown-toggle::after { transform: rotate(180deg); }
-
-        .dropdown-menu {
-            display: none;
-            position: absolute;
-            top: 20px; right: 0;
-            background-color: #ffffff;
-            min-width: 200px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-            z-index: 1001;
-            border-radius: 8px;
-            padding: 10px 0;
-            border-top: 3px solid var(--accent-color);
-            animation: fadeInMenu 0.2s ease-out;
-        }
-        .dropdown:hover .dropdown-menu { display: block; }
-        .dropdown-item { display: flex; align-items: center; gap: 10px; padding: 10px 20px; color: #333; text-decoration: none; font-size: 0.9rem; transition: 0.2s; }
-        .dropdown-item:hover { background-color: #f9f9f9; color: var(--primary-color); }
-        .dropdown-item:hover i { color: var(--primary-color); }
-        .dropdown-divider { margin: 0; border-top: 1px solid #eee; }
-
-        @keyframes fadeInMenu { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* --- ICONS HEADER --- */
-        .header-icons { display: flex; gap: 20px; align-items: center; }
-        .cart-icon-wrapper { position: relative; cursor: pointer; color: white; font-size: 1.2rem; transition: 0.2s; }
-        .cart-icon-wrapper:hover { color: var(--accent-color); transform: scale(1.1); }
-        .cart-count { position: absolute; top: -5px; right: -8px; background-color: var(--accent-color); color: white; font-size: 0.7rem; width: 16px; height: 16px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: bold; }
-
-        /* --- HERO SECTION ABOUT --- */
-        .hero-about {
-            height: 60vh; min-height: 400px;
-            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://picsum.photos/seed/herbgarden/1920/800') no-repeat center center/cover;
-            background-attachment: fixed; /* Correction : appliqué ici */
-            display: flex; align-items: center; justify-content: center; text-align: center; color: var(--white); padding: 0 20px; margin-top: 60px;
-        }
-        .hero-about h1 { font-size: 3rem; color: var(--white); margin-bottom: 15px; }
-        .hero-about p { font-size: 1.2rem; font-weight: 300; }
-
-        /* --- NOTRE HISTOIRE (Split) --- */
-        .about-narrative { padding-top: 40px; } /* Ajout padding-top car margin-bottom du hero est géré par section */
-        .story-container { display: flex; align-items: center; gap: 60px; flex-wrap: wrap; }
-        .story-image { flex: 1; min-width: 300px; position: relative; }
-        .story-image img { width: 100%; border-radius: var(--radius); box-shadow: var(--shadow-soft); object-fit: cover; }
-        .story-image::before { content: ''; position: absolute; top: -20px; left: -20px; width: 100%; height: 100%; border: 2px solid var(--secondary-color); border-radius: var(--radius); z-index: -1; }
-        .story-text { flex: 1; min-width: 300px; }
-        .story-text h4 { color: var(--secondary-color); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; font-weight: 600; font-size: 0.9rem; }
-        .story-text h2 { font-size: 2.5rem; margin-bottom: 25px; color: var(--primary-dark); }
-        .story-text p { margin-bottom: 20px; color: var(--text-light); line-height: 1.8; }
-        .signature { font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.5rem; color: var(--primary-color); margin-top: 30px; }
-
-        /* --- NOS VALEURS (Grid) --- */
-        #valeurs { background-color: white; width: 100%; }
-        .values-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; max-width: 1200px; margin: 0 auto; }
-        .value-card { text-align: center; padding: 40px 20px; background: var(--bg-color); border-radius: var(--radius); transition: var(--transition); border: 1px solid transparent; }
-        .value-card:hover { transform: translateY(-10px); box-shadow: var(--shadow-soft); border-color: #eee; }
-        .value-icon { font-size: 3rem; color: var(--primary-color); margin-bottom: 20px; }
-        .value-card h3 { margin-bottom: 15px; font-size: 1.4rem; }
-
-        /* --- PROCESSUS (Parallax) --- */
-        .process-section {
-            background: fixed url('https://picsum.photos/seed/flowers/1920/1080') center/cover; /* Fixed Parallax */
-            height: 400px; display: flex; align-items: center; justify-content: center; position: relative; margin: 80px 20px; border-radius: var(--radius); overflow: hidden; /* Overflow hidden pour contenir l'overlay */
-        }
-        .process-overlay { background: rgba(1, 66, 21, 0.85); width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 40px; color: white; border-radius: var(--radius); text-align: center; }
-        .process-overlay h2 { color: white; margin-bottom: 20px; }
-        .steps { display: flex; gap: 40px; margin-top: 30px; flex-wrap: wrap; justify-content: center; }
-        .step { display: flex; flex-direction: column; align-items: center; gap: 10px; }
-        .step-num { width: 40px; height: 40px; border-radius: 50%; border: 2px solid white; display: flex; align-items: center; justify-content: center; font-weight: 600; }
-
-        /* --- L'ÉQUIPE --- */
-        #team { padding: 80px 20px; max-width: 1200px; margin: 0 auto; }
-        .section-header { text-align: center; margin-bottom: 50px; }
-        .team-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; text-align: center; }
-        .team-member img { width: 200px; height: 200px; border-radius: 50%; object-fit: cover; margin: 0 auto 20px; border: 3px solid var(--accent-color); transition: transform 0.3s; }
-        .team-member:hover img { transform: scale(1.05); }
-        .team-role { color: var(--primary-color); font-size: 0.9rem; font-weight: 500; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
-
-        /* --- FOOTER --- */
-        footer { background-color: var(--primary-dark); color: white; padding: 80px 20px 20px; margin-top: 80px; }
-        .footer-content { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; margin-bottom: 60px; }
-        .footer-col h4 { color: white; margin-bottom: 20px; font-size: 1.2rem; }
-        .footer-col p { color: rgba(255,255,255,0.7); font-size: 0.9rem; margin-bottom: 10px; }
-        .footer-links li { margin-bottom: 10px; }
-        .copyright { text-align: center; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; font-size: 0.8rem; color: rgba(255,255,255,0.5); }
-
-        /* --- RESPONSIVE --- */
-        @media (max-width: 768px) {
-            .nav-links { display: none; } /* Menu burger à implémenter si besoin */
-            .hero-about h1 { font-size: 2.2rem; }
-            .story-image::before { display: none; }
-            .steps { flex-direction: column; gap: 20px; }
-            .story-container { flex-direction: column; }
-            .process-section { margin: 40px 20px; }
-        }
-
-/* BOUTON HAMBURGER */
-.menu-toggle {
-    display: none;
-    font-size: 26px;
-    color: white;
-    cursor: pointer;
-}
-
-/* MOBILE */
-@media (max-width: 768px) {
-
-    .menu-toggle {
-        display: block;
-    }
-
-    .nav-links {
-        display: none;
-        flex-direction: column;
-        position: absolute;
-        top: 70px;
-        left: 0;
-        width: 100%;
-        background: #014215;
-        padding: 20px 0;
-        text-align: center;
-        gap: 20px;
-    }
-
-    .nav-links.active {
-        display: flex;
-    }
-
-    .dropdown {
-        display: none; /* On cache le dropdown compte sur mobile */
-    }
-}
-
-    </style>
-</head>
-<body>
-
-    <!-- Header -->
-    <header>
-        <div class="nav-container">
-            <!-- LOGO -->
-            <a href="{% url 'home' %}" class="logo-img-wrapper">
-                <img src="{% static 'img/logo.jpg' %}" alt="Terra & Pure">
-            </a>
-<div class="menu-toggle" onclick="toggleMenu()">☰</div>
-
-            <nav>
-                <ul class="nav-links">
-                    <li><a href="{% url 'home' %}">Accueil</a></li>
-                    <!-- Page Active -->
-                    <li><a href="{% url 'products:about' %}" class="active">À propos</a></li>
-                    <li><a href="{% url 'products:shop' %}">Boutique</a></li>
-                    <li><a href="{% url 'products:bien_etre' %}">Bien-être</a></li>
-                </ul>
-            </nav>
-
-            <div class="header-icons">
-                <!-- Dropdown Compte -->
-                <div class="dropdown">
-                    <button class="dropdown-toggle" type="button">
-                        <i class="fas fa-user"></i>
-                        <span>
-                            {% if request.user.is_authenticated %}{{ request.user.username }}{% else %}Mon Compte{% endif %}
-                        </span>
-                    </button>
-                    <ul class="dropdown-menu">
-                        {% if request.user.is_authenticated %}
-                            <li><a class="dropdown-item" href="{% url 'products:profile' %}"><i class="far fa-user-circle"></i> Mon Profil</a></li>
-                            <li><a class="dropdown-item" href="#"><i class="fas fa-cog"></i> Paramètres</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="{% url 'products:logout' %}" style="color: #e74c3c;"><i class="fas fa-sign-out-alt"></i> Déconnexion</a></li>
-                        {% else %}
-                            <li><a class="dropdown-item" href="{% url 'products:login' %}"><i class="fas fa-sign-in-alt"></i> Connexion</a></li>
-                            <li><a class="dropdown-item" href="{% url 'products:register' %}"><i class="fas fa-user-plus"></i> Créer un compte</a></li>
-                        {% endif %}
-                    </ul>
-                </div>
-
-                <!-- Panier -->
-                <a href="{% url 'products:cart_detail' %}" class="cart-icon-wrapper">
-                    <i class="fas fa-shopping-bag"></i>
-                    <span class="cart-count">{{ cart|length }}</span>
-                </a>
-            </div>
+<!-- NOTRE HISTOIRE -->
+<section class="about-narrative">
+    <div class="story-container">
+        <div class="story-image">
+            {% if shop_info.about_image %}
+                <img src="{{ shop_info.about_image.url }}" alt="{{ shop_info.about_title }}">
+            {% else %}
+                <img src="https://picsum.photos/seed/woman1/600/700" alt="Fondatrice">
+            {% endif %}
         </div>
-    </header>
-
-    <!-- Hero Section -->
-    <section class="hero-about">
-        <div>
-            <h1>Retour aux sources</h1>
-            <p>Une aventure humaine et botanique au cœur de la nature.</p>
+        
+        <div class="story-text">
+            <h4>Notre Origine</h4>
+            <h2>{{ shop_info.about_title|default:"Engagés pour la nature" }}</h2>
+            <p>{{ shop_info.about_description|linebreaks|default:"Chez Cindera, nous croyons en la puissance des plantes. Tous nos ingrédients sont sourcés éthiquement." }}</p>
+            <div class="signature">Cinedera</div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Notre Histoire -->
-    <section class="about-narrative">
-        <div class="story-container">
-            <div class="story-image">
-                {% if config.about_image %}
-                    <img src="{{ config.about_image.url }}" alt="{{ config.about_title }}">
-                {% else %}
-                    <!-- Correction HTML : Image par défaut si vide -->
-                    <img src="https://picsum.photos/seed/woman1/600/700" alt="Fondatrice">
-                {% endif %}
-            </div>
-            
-            <div class="story-text">
-                <h4>Notre Origine</h4>
-                <h2>{{ config.about_title|default:"Engagés pour la nature" }}</h2>
-                <p>{{ config.about_description|linebreaks|default:"Chez Terra & Pure, nous croyons en la puissance des plantes. Tous nos ingrédients sont sourcés éthiquement." }}
-         </p>
-               <div class="signature">Camille L.</div>
-            </div>
+<!-- NOS VALEURS -->
+<section id="valeurs">
+    <div class="section-header">
+        <span class="sub-title">Ce qui nous anime</span>
+        <h2>Nos Valeurs</h2>
+    </div>
+    <div class="values-grid">
+        <div class="value-card">
+            <i class="fas fa-seedling value-icon"></i>
+            <h3>Ingrédients Bruts</h3>
+            <p>Nous utilisons des extraits de plantes à l'état pur, sans transformations chimiques agressives.</p>
         </div>
-    </section>
-
-    <!-- Nos Valeurs -->
-    <section id="valeurs">
-        <div class="values-grid">
-            <div class="value-card">
-                <i class="fas fa-seedling value-icon"></i>
-                <h3>Ingrédients Bruts</h3>
-                <p>Nous utilisons des extraits de plantes à l'état pur ou huiles premières, sans transformations chimiques agressives.</p>
-            </div>
-            <div class="value-card">
-                <i class="fas fa-balance-scale value-icon"></i>
-                <h3>Transparence Totale</h3>
-                <p>Chaque ingrédient est listé. Nous n'avons rien à cacher. La liste INCI de nos produits est aussi lisible qu'une recette de cuisine.</p>
-            </div>
-            <div class="value-card">
-                <i class="fas fa-globe-europe value-icon"></i>
-                <h3>Local & Éthique</h3>
-                <p>Nous privilégions les circuits courts et le commerce équitable pour soutenir les producteurs locaux et réduire notre empreinte carbone.</p>
-            </div>
+        <div class="value-card">
+            <i class="fas fa-balance-scale value-icon"></i>
+            <h3>Transparence Totale</h3>
+            <p>Chaque ingrédient est listé. Nous n'avons rien à cacher. La liste INCI est aussi lisible qu'une recette.</p>
         </div>
-    </section>
+        <div class="value-card">
+            <i class="fas fa-globe-europe value-icon"></i>
+            <h3>Local & Éthique</h3>
+            <p>Nous privilégions les circuits courts pour soutenir les producteurs locaux et réduire notre empreinte.</p>
+        </div>
+    </div>
+</section>
 
-    <!-- Processus (Banner) -->
-    <div class="process-section">
-        <div class="process-overlay">
-            <h2>De la plante au pot</h2>
-            <p>Un processus lent et respectueux, garanti sans chauffe excessive pour préserver les actifs.</p>
-            
-            <div class="steps">
-                <div class="step">
-                    <span class="step-num">1</span>
-                    <span>Cueillette à la main</span>
-                </div>
-                <div class="step">
-                    <span class="step-num">2</span>
-                    <span>Maceration à froid</span>
-                </div>
-                <div class="step">
-                    <span class="step-num">3</span>
-                    <span>Conditionnement artisanal</span>
-                </div>
+<!-- PROCESSUS (Bannière) -->
+<div class="process-section">
+    <div class="process-overlay">
+        <h2>De la plante au pot</h2>
+        <p>Un processus lent et respectueux, garanti sans chauffe excessive.</p>
+        
+        <div class="steps">
+            <div class="step">
+                <span class="step-num">1</span>
+                <span>Cueillette à la main</span>
+            </div>
+            <div class="step">
+                <span class="step-num">2</span>
+                <span>Macération à froid</span>
+            </div>
+            <div class="step">
+                <span class="step-num">3</span>
+                <span>Conditionnement artisanal</span>
             </div>
         </div>
     </div>
-
-    <!-- L'Équipe -->
-    <section id="team">
-        <div class="section-header">
-            <h2>Rencontrez l'équipe</h2>
-            <p>Les esprits créatifs derrière Terra & Pure.</p>
-        </div>
-        <div class="team-grid">
-            <div class="team-member">
-                <img src="https://picsum.photos/seed/person1/300/300" alt="Camille">
-                <div class="team-role">Fondatrice</div>
-                <h3>Camille Durand</h3>
-                <p>Herboriste experte et visionnaire.</p>
-            </div>
-            <div class="team-member">
-                <img src="https://picsum.photos/seed/person2/300/300" alt="Thomas">
-                <div class="team-role">Responsable Production</div>
-                <h3>Thomas Petit</h3>
-                <p>Garant de la qualité et de l'éco-conception.</p>
-            </div>
-            <div class="team-member">
-                <img src="https://picsum.photos/seed/person3/300/300" alt="Sarah">
-                <div class="team-role">Responsable Communication</div>
-                <h3>Sarah Lemoine</h3>
-                <p>Votre contact privilégié pour vos conseils.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-     <!-- Footer -->
-<footer id="footer">
-    <div class="footer-container">
-
-        <!-- Colonne 1 : Marque -->
-        <div class="footer-col">
-            <div class="footer-logo">
-                <img src="{% static 'img/logo.jpg' %}" alt="Terra & Pure"></div>
-            <p class="footer-text">
-                La nature est notre meilleure source d'inspiration.  
-                Des soins authentiques, formulés avec passion pour révéler votre beauté naturelle.
-            </p>
-
-            <div class="footer-socials">
-                <a href="#"><i class="fab fa-instagram"></i></a>
-                <a href="#"><i class="fab fa-facebook-f"></i></a>
-                <a href="#"><i class="fab fa-pinterest-p"></i></a>
-            </div>
-        </div>
-
-        <!-- Colonne 2 : Boutique -->
-   
-<div class="footer-col">
-    <h4>Catégories</h4>
-    <ul>
-        {% for category in categories %}
-            <li>
-                <a href="{% url 'products:shop' %}?category={{ category.id }}">
-                    {{ category.name }}
-                </a>
-            </li>
-        {% empty %}
-            <li>Aucune catégorie</li>
-        {% endfor %}
-    </ul>
 </div>
 
-        <!-- Colonne 3 : Informations -->
-        <div class="footer-col">
-            <h4>Informations</h4>
-            <ul>
-                <li><a href="#">À propos</a></li>
-                <li><a href="#">Livraison & Retours</a></li>
-                <li><a href="#">Conditions Générales</a></li>
-                <li><a href="#">Politique de confidentialité</a></li>
-            </ul>
-        </div>
-
-        <!-- Colonne 4 : Newsletter -->
-        <div class="footer-col">
-            <h4>Newsletter</h4>
-            <p>Recevez -10% sur votre première commande.</p>
-            <form class="footer-newsletter">
-                <input type="email" placeholder="Votre email">
-                <button type="submit">
-                    <i class="fas fa-paper-plane"></i>
-                </button>
-            </form>
-        </div>
-
+<!-- L'ÉQUIPE -->
+<section id="team">
+    <div class="section-header">
+        <h2>Rencontrez l'équipe</h2>
+        <p>Les esprits créatifs derrière Cindera.</p>
     </div>
-
-    <!-- Bottom bar -->
-    <div class="footer-bottom">
-        © 2026 Cinedera — Tous droits réservés.
+    <div class="team-grid">
+        <div class="team-member">
+            <img src="https://picsum.photos/seed/person1/300/300" alt="Camille">
+            <div class="team-role">Fondatrice</div>
+            <h3>Camille Durand</h3>
+            <p>Herboriste experte et visionnaire.</p>
+        </div>
+        <div class="team-member">
+            <img src="https://picsum.photos/seed/person2/300/300" alt="Thomas">
+            <div class="team-role">Responsable Production</div>
+            <h3>Thomas Petit</h3>
+            <p>Garant de la qualité et de l'éco-conception.</p>
+        </div>
+        <div class="team-member">
+            <img src="https://picsum.photos/seed/person3/300/300" alt="Sarah">
+            <div class="team-role">Responsable Communication</div>
+            <h3>Sarah Lemoine</h3>
+            <p>Votre contact privilégié pour vos conseils.</p>
+        </div>
     </div>
-</footer>
+</section>
+
+<!-- ==========================================
+     CSS COMPLET (Page + Footer)
+     ========================================== -->
 <style>
-#footer {
-    background: #014215;
-    color: rgba(255,255,255,0.8);
-    padding-top: 80px;
-    margin-top: 100px;
-}
-
-.footer-container {
-    max-width: 1200px;
-    margin: auto;
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 50px;
-    padding: 0 20px 60px;
-}
-
-.footer-logo {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.8rem;
-    color: white;
-    margin-bottom: 20px;
-}
-
-.footer-logo span {
-    color: #ff8c00;
-}
-
-.footer-text {
-    line-height: 1.8;
-    font-size: 0.95rem;
-    margin-bottom: 20px;
-}
-
-.footer-col h4 {
-    color: white;
-    margin-bottom: 20px;
-    font-size: 1rem;
-}
-
-.footer-col ul {
-    list-style: none;
-}
-
-.footer-col ul li {
-    margin-bottom: 12px;
-}
-
-.footer-col ul li a {
-    color: rgba(255,255,255,0.7);
-    font-size: 0.9rem;
-    transition: 0.3s;
-}
-
-.footer-col ul li a:hover {
-    color: #ff8c00;
-    padding-left: 5px;
-}
-
-/* Social icons */
-.footer-socials {
-    display: flex;
-    gap: 15px;
-}
-
-.footer-socials a {
-    width: 35px;
-    height: 35px;
-    background: rgba(255,255,255,0.1);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    color: white;
-    transition: 0.3s;
-}
-
-.footer-socials a:hover {
-    background: #ff8c00;
-    transform: translateY(-3px);
-}
-
-/* Newsletter */
-.footer-newsletter {
-    display: flex;
-    margin-top: 15px;
-}
-
-.footer-newsletter input {
-    flex: 1;
-    padding: 10px;
-    border-radius: 30px 0 0 30px;
-    border: none;
-    outline: none;
-}
-
-.footer-newsletter button {
-    padding: 0 18px;
-    border-radius: 0 30px 30px 0;
-    border: none;
-    background: #ff8c00;
-    color: white;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.footer-newsletter button:hover {
-    background: #e67600;
-}
-
-/* Bottom */
-.footer-bottom {
-    border-top: 1px solid rgba(255,255,255,0.1);
-    text-align: center;
-    padding: 20px;
-    font-size: 0.85rem;
-    color: rgba(255,255,255,0.6);
-}
-
-/* Responsive */
-@media (max-width: 992px) {
-    .footer-container {
-        grid-template-columns: 1fr 1fr;
-        gap: 40px;
-    }
-}
-
-@media (max-width: 600px) {
-    .footer-container {
-        grid-template-columns: 1fr;
-        text-align: center;
+    /* === VARIABLES === */
+    :root {
+        --primary-dark: #014215;
+        --secondary-color: #fd7e14;
+        --text-color: #333;
     }
 
-    .footer-socials {
+    /* === SECTION HERO === */
+    .hero-about {
+        height: 70vh;
+        min-height: 500px;
+        background-image: url('https://images.unsplash.com/photo-1505917349737-5b40051939e2?q=80&w=2070');
+        background-size: cover;
+        background-position: center;
+        position: relative;
+        display: flex;
+        align-items: center;
         justify-content: center;
+        text-align: center;
+        color: white;
+        margin-top: -56px; /* Remonte sous la navbar */
     }
-}
+    .hero-about::before {
+        content: '';
+        position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+        background: linear-gradient(to right, rgba(1,66,21,0.8), rgba(1,66,21,0.3));
+    }
+    .hero-about-content { position: relative; z-index: 2; max-width: 700px; padding: 20px; }
+    .hero-about h1 {
+        font-family: 'Playfair Display', serif;
+        font-size: 4rem;
+        text-shadow: 2px 2px 10px rgba(0,0,0,0.3);
+        margin-bottom: 20px;
+    }
+    .hero-about p { font-size: 1.2rem; opacity: 0.9; }
+
+    /* === SECTION NARRATIVE (HISTOIRE) === */
+    .about-narrative { padding: 100px 0; background-color: #f8f9fa; }
+    .story-container {
+        display: flex;
+        align-items: center;
+        max-width: 1200px;
+        margin: 0 auto;
+        gap: 80px;
+        padding: 0 20px;
+    }
+    .story-image { flex: 1; }
+    .story-image img {
+        width: 100%;
+        border-radius: 15px;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+    }
+    .story-text { flex: 1; }
+    .story-text h4 {
+        color: var(--secondary-color);
+        text-transform: uppercase;
+        font-weight: 700;
+        letter-spacing: 2px;
+        font-size: 0.9rem;
+        margin-bottom: 15px;
+    }
+    .story-text h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.8rem;
+        color: var(--primary-dark);
+        margin-bottom: 25px;
+    }
+    .story-text p { font-size: 1.1rem; color: #555; line-height: 1.8; }
+    .signature {
+        font-family: 'Playfair Display', serif;
+        font-style: italic;
+        color: var(--primary-dark);
+        font-size: 1.5rem;
+        margin-top: 30px;
+    }
+
+    /* === SECTION VALEURS === */
+    #valeurs { padding: 100px 20px; background: white; }
+    .section-header { text-align: center; margin-bottom: 60px; }
+    .section-header .sub-title { color: var(--secondary-color); font-weight: 600; text-transform: uppercase; }
+    .section-header h2 { font-family: 'Playfair Display', serif; font-size: 2.5rem; color: var(--primary-dark); margin-top: 10px; }
+
+    .values-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 30px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    .value-card {
+        background: white;
+        padding: 50px 30px;
+        border-radius: 15px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        border-bottom: 4px solid transparent;
+        transition: all 0.4s ease;
+    }
+    .value-card:hover {
+        transform: translateY(-10px);
+        border-bottom-color: var(--secondary-color);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+    }
+    .value-icon {
+        font-size: 3.5rem;
+        color: var(--primary-dark);
+        margin-bottom: 25px;
+        transition: transform 0.3s;
+    }
+    .value-card:hover .value-icon { transform: scale(1.1); color: var(--secondary-color); }
+    .value-card h3 { font-size: 1.3rem; margin-bottom: 15px; color: var(--primary-dark); }
+    .value-card p { color: #666; line-height: 1.7; }
+
+    /* === SECTION PROCESSUS === */
+    .process-section {
+        background-image: url('https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?q=80&w=2070');
+        background-size: cover;
+        background-attachment: fixed;
+        position: relative;
+        padding: 100px 20px;
+        text-align: center;
+        color: white;
+    }
+    .process-overlay {
+        position: relative; z-index: 2;
+        background: rgba(1, 66, 21, 0.9);
+        padding: 60px;
+        border-radius: 15px;
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+    .process-section h2 { font-family: 'Playfair Display', serif; font-size: 2.5rem; margin-bottom: 15px; }
+    .steps { display: flex; justify-content: space-around; margin-top: 50px; flex-wrap: wrap; gap: 20px; }
+    .step { display: flex; flex-direction: column; align-items: center; max-width: 250px; }
+    .step-num {
+        width: 70px; height: 70px;
+        background: var(--secondary-color);
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 2rem; font-weight: bold;
+        margin-bottom: 20px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+    .step span:last-child { font-size: 1.1rem; font-weight: 500; }
+
+    /* === SECTION EQUIPE === */
+    #team { padding: 100px 20px; background: #f8f9fa; }
+    .team-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 40px;
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+    .team-member { text-align: center; }
+    .team-member img {
+        width: 180px; height: 180px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 5px solid white;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        margin-bottom: 25px;
+        transition: transform 0.3s;
+    }
+    .team-member:hover img { transform: scale(1.05); border-color: var(--secondary-color); }
+    .team-role { color: var(--secondary-color); font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 1px; }
+    .team-member h3 { margin: 10px 0; font-family: 'Playfair Display', serif; color: var(--primary-dark); }
+    .team-member p { color: #666; }
+
+    /* === FOOTER CSS (Déjà présent, inclus pour complétude) === */
+    #footer {
+        background: #014215;
+        color: rgba(255,255,255,0.8);
+        padding-top: 80px;
+        margin-top: 0;
+    }
+    .footer-container {
+        max-width: 1200px;
+        margin: auto;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 50px;
+        padding: 0 20px 60px;
+    }
+    .footer-logo img { height: 50px; margin-bottom: 20px; filter: brightness(0) invert(1); }
+    .footer-text { line-height: 1.8; font-size: 0.95rem; margin-bottom: 20px; }
+    .footer-col h4 { color: white; margin-bottom: 25px; font-size: 1rem; font-weight: 700; }
+    .footer-col ul { list-style: none; padding: 0; }
+    .footer-col ul li { margin-bottom: 12px; }
+    .footer-col ul li a { color: rgba(255,255,255,0.7); font-size: 0.9rem; transition: 0.3s; text-decoration: none; }
+    .footer-col ul li a:hover { color: #ff8c00; padding-left: 5px; }
+    .footer-socials { display: flex; gap: 15px; margin-top: 20px; }
+    .footer-socials a {
+        width: 40px; height: 40px; background: rgba(255,255,255,0.1);
+        display: flex; align-items: center; justify-content: center;
+        border-radius: 50%; color: white; transition: 0.3s;
+    }
+    .footer-socials a:hover { background: #ff8c00; transform: translateY(-3px); }
+    .footer-newsletter { display: flex; margin-top: 15px; }
+    .footer-newsletter input {
+        flex: 1; padding: 12px 15px; border-radius: 30px 0 0 30px;
+        border: none; outline: none; background: white;
+    }
+    .footer-newsletter button {
+        padding: 0 20px; border-radius: 0 30px 30px 0; border: none;
+        background: #ff8c00; color: white; cursor: pointer; transition: 0.3s;
+    }
+    .footer-newsletter button:hover { background: #e67600; }
+    .footer-bottom {
+        border-top: 1px solid rgba(255,255,255,0.1);
+        text-align: center; padding: 25px; font-size: 0.85rem;
+        color: rgba(255,255,255,0.6);
+    }
+
+    /* === RESPONSIVE === */
+    @media (max-width: 992px) {
+        .story-container { flex-direction: column-reverse; gap: 40px; }
+        .values-grid, .team-grid { grid-template-columns: 1fr 1fr; }
+        .footer-container { grid-template-columns: 1fr 1fr; gap: 40px; }
+        .hero-about h1 { font-size: 2.8rem; }
+    }
+    @media (max-width: 600px) {
+        .values-grid, .team-grid, .footer-container { grid-template-columns: 1fr; }
+        .process-overlay { padding: 40px 20px; }
+        .hero-about h1 { font-size: 2rem; }
+    }
 </style>
+
 <script>
 function toggleMenu() {
     document.querySelector('.nav-links').classList.toggle('active');
 }
 </script>
 
-</body>
-</html>
+{% endblock content %}

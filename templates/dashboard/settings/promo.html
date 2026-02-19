@@ -1,0 +1,95 @@
+{% extends "dashboard/base_dashboard.html" %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <h2 class="fw-bold mb-4"><i class="bi bi-fire text-warning me-2"></i>Section Promotion</h2>
+    
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <div class="row g-3">
+                    <!-- Colonne Image -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Image Promotionnelle</label>
+                        
+                        <!-- 1. Si une image existe déjà, on l'affiche avec l'option supprimer -->
+                        {% if form.instance.promo_image %}
+                            <div class="d-flex align-items-center gap-3 mb-3 p-3 bg-light rounded border">
+                                <img src="{{ form.instance.promo_image.url }}" class="rounded" style="width: 120px; height: 80px; object-fit: cover;">
+                                <div class="form-check">
+                                    <!-- CORRECTION ICI : Input HTML manuel pour la suppression -->
+                                    <input type="checkbox" name="promo_image-clear" id="promo_image-clear_id" class="form-check-input">
+                                    <label for="promo_image-clear_id" class="form-check-label text-danger fw-bold">
+                                        Supprimer cette image
+                                    </label>
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        <!-- 2. Zone d'upload (Toujours affichée pour permettre le remplacement) -->
+                        <div class="image-upload-area">
+                            <i class="bi bi-cloud-upload fs-1 text-muted"></i>
+                            <p class="mb-0 text-muted small">
+                                {% if form.instance.promo_image %}
+                                    Glisser une nouvelle image pour remplacer
+                                {% else %}
+                                    Glisser une image ou cliquer
+                                {% endif %}
+                            </p>
+                            <!-- CORRECTION ICI : Input HTML manuel pour le fichier -->
+                            <!-- On ajoute accept="image/*" pour filtrer les images -->
+                            <input type="file" name="promo_image" accept="image/*" id="id_promo_image_custom">
+                        </div>
+                        <!-- Affichage des erreurs de validation si nécessaire -->
+                        {% for error in form.promo_image.errors %}
+                            <small class="text-danger d-block mt-1">{{ error }}</small>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Colonne Texte -->
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Texte de la promo</label>
+                            {{ form.promo_text }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-end mt-4">
+                    <button type="submit" class="btn btn-warning btn-lg px-5 text-white shadow-sm">
+                        <i class="bi bi-save me-2"></i> Enregistrer
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .image-upload-area {
+        border: 2px dashed #ced4da;
+        padding: 40px 20px;
+        text-align: center;
+        border-radius: 8px;
+        background-color: #f8f9fa;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s;
+    }
+    .image-upload-area:hover {
+        border-color: #ffc107;
+        background-color: #fffbf0;
+    }
+    /* On rend l'input fichier invisible mais présent par dessus la zone */
+    .image-upload-area input[type="file"] {
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        opacity: 0;
+        cursor: pointer;
+    }
+</style>
+{% endblock %}

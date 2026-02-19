@@ -1,0 +1,83 @@
+{% extends "dashboard/base_dashboard.html" %}
+
+{% block title %}Gestion Produit{% endblock %}
+
+{% block content %}
+<h2>{{ form.instance.pk|yesno:"Modifier ce produit,Ajouter un produit" }}</h2>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    
+    <!-- Champs Produit -->
+    <div class="card mb-4">
+        <div class="card-header">Informations</div>
+        <div class="card-body">
+            {{ form.as_p }}
+        </div>
+    </div>
+
+    <!-- Formset Images -->
+    <div class="card mb-4">
+        <div class="card-header">Images du produit</div>
+        <div class="card-body">
+            {{ formset.management_form }}
+            <div id="image-form-list">
+                {% for form_image in formset %}
+                    <div class="image-form row mb-2 align-items-center">
+                        <div class="col-md-6">
+                            {{ form_image.image }}
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-check">
+                                {{ form_image.is_main }}
+                                <label class="form-check-label">Principale ?</label>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            {% if form_image.instance.id %}
+                                <button type="button" class="btn btn-danger btn-sm remove-form">Suppr.</button>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <!-- Bouton pour ajouter une image -->
+            <button type="button" id="add-image" class="btn btn-outline-secondary mt-3">
+                <i class="bi bi-plus-circle"></i> Ajouter une image
+            </button>
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-success btn-lg">Enregistrer</button>
+    <a href="{% url 'dashboard:products' %}" class="btn btn-link">Annuler</a>
+</form>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Gestion dynamique du formset
+    let imageCount = {{ formset.total_form_count }};
+    
+    document.getElementById('add-image').addEventListener('click', function() {
+        let formList = document.getElementById('image-form-list');
+        let template = formList.querySelector('.image-form');
+        let newForm = template.cloneNode(true);
+        
+        // Update input names
+        let regex = new RegExp('__prefix__', 'g');
+        newForm.innerHTML = newForm.innerHTML.replace(regex, imageCount);
+        
+        // Clear inputs
+        newForm.querySelectorAll('input').forEach(input => {
+            if (input.type !== 'hidden') input.value = '';
+        });
+        
+        formList.appendChild(newForm);
+        imageCount++;
+        
+        // Update management form total
+        document.querySelector('[name$="TOTAL_FORMS"]').value = imageCount;
+    });
+</script>
+{% endblock %}

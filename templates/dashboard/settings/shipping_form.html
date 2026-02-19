@@ -1,0 +1,39 @@
+{% extends "dashboard/base_dashboard.html" %}
+
+{% block content %}
+<h3>{% if form.instance.pk %}Modifier la zone{% else %}Ajouter une zone{% endif %}</h3>
+
+<div class="card shadow p-4 mt-3" style="max-width: 600px;">
+    <form method="post">
+        {% csrf_token %}
+        
+        <div class="mb-3">
+            <label class="form-label">Nom de la zone</label>
+            {{ form.name }}
+        </div>
+        
+        <div class="mb-3">
+            <label class="form-label">Codes Pays (séparés par des virgules)</label>
+            {{ form.countries }}
+            <small class="text-muted">
+                Ex: SN pour Sénégal, FR pour France. Utilisez ALL pour le reste du monde.
+            </small>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Frais de livraison (€)</label>
+            {{ form.price }}
+        </div>
+
+        <div class="form-check mb-3">
+            {{ form.free_shipping }}
+            <label class="form-check-label" for="id_free_shipping">
+                Livraison gratuite
+            </label>
+        </div>
+
+        <button type="submit" class="btn btn-success">Enregistrer</button>
+        <a href="{% url 'dashboard:shipping_zones' %}" class="btn btn-link">Annuler</a>
+    </form>
+</div>
+{% endblock %}

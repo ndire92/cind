@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Votre Panier</h2>
+
+    {% if items %}
+        <div class="table-responsive bg-white shadow-sm rounded">
+            <table class="table table-hover mb-0">
+                <thead class="thead-light">
+                    <tr>
+                        <th style="width: 100px;">Image</th>
+                        <th>Produit</th>
+                        <th>Prix Unitaire</th>
+                        <th style="width: 150px;">Quantité</th>
+                        <th>Total</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                    <tr>
+                        <td>
+                            {% if item.product.image %}
+                                <img src="{{ item.product.image.url }}" class="img-fluid rounded" style="max-width: 60px;">
+                            {% else %}
+                                <img src="https://via.placeholder.com/60" class="img-fluid rounded">
+                            {% endif %}
+                        </td>
+                        <td>
+                            <strong>{{ item.product.name }}</strong>
+                        </td>
+                        <td>{{ item.price }} €</td>
+                        <td>
+                            <!-- CORRECTION ICI : Utilisation de cart_update et non cart_add -->
+                            <form action="{% url 'products:cart_update' item.product.id %}" method="post" class="d-flex">
+                                {% csrf_token %}
+                                <input type="number" name="quantity" value="{{ item.quantity }}" min="1" class="form-control form-control-sm me-2">
+                                <button type="submit" class="btn btn-sm btn-outline-secondary">
+                                    <i class="bi bi-arrow-clockwise"></i>
+                                </button>
+                            </form>
+                        </td>
+                        <td><strong>{{ item.total }} €</strong></td>
+                        <td>
+                            <a href="{% url 'products:cart_remove' item.product.id %}" class="btn btn-sm btn-outline-danger">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <a href="{% url 'products:shop' %}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Continuer les achats
+                </a>
+            </div>
+            <div class="col-md-6 text-end">
+                <h4>Total du panier : <span class="text-primary">{{ total }} €</span></h4>
+                <a href="{% url 'products:checkout' %}" class="btn btn-success btn-lg mt-2">
+                    Passer la commande <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+
+    {% else %}
+        <div class="alert alert-info text-center py-5">
+            <h4>Votre panier est vide</h4>
+            <p class="mb-3">Il semble que vous n'ayez pas encore ajouté de produits.</p>
+            <a href="{% url 'products:shop' %}" class="btn btn-primary">Découvrir la boutique</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

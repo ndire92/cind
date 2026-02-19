@@ -1,0 +1,149 @@
+{% extends "dashboard/base_dashboard.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold mb-0">
+            {% if form.instance.pk %}
+                <i class="bi bi-pencil-square text-secondary me-2"></i>Modifier l'article
+            {% else %}
+                <i class="bi bi-plus-circle text-primary me-2"></i>Nouvel article
+            {% endif %}
+        </h2>
+        <a href="{% url 'dashboard:blog_posts' %}" class="btn btn-light border">
+            <i class="bi bi-arrow-left me-2"></i> Retour à la liste
+        </a>
+    </div>
+
+    <form method="post" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
+
+        <!-- Affichage des erreurs globales -->
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger border-0 shadow-sm">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i> {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+
+        <div class="row g-4">
+            
+            <!-- COLONNE PRINCIPALE (GAUCHE) -->
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm rounded-3 mb-4">
+                    <div class="card-body p-4">
+                        
+                        <!-- Titre -->
+                        <div class="mb-4">
+                            <label class="form-label text-muted text-uppercase small fw-bold mb-2">Titre de l'article</label>
+                            {{ form.title }}
+                            {% if form.title.errors %}
+                                <div class="text-danger small mt-1">{{ form.title.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Extrait -->
+                        <div class="mb-4">
+                            <label class="form-label text-muted text-uppercase small fw-bold mb-2">Extrait (Description courte)</label>
+                            {{ form.excerpt }}
+                            <small class="text-muted">Ce texte apparaîtra sur les cartes du blog.</small>
+                        </div>
+
+                        <!-- Contenu -->
+                        <div>
+                            <label class="form-label text-muted text-uppercase small fw-bold mb-2">Contenu</label>
+                            {{ form.content }}
+                            {% if form.content.errors %}
+                                <div class="text-danger small mt-1">{{ form.content.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- COLONNE LATÉRALE (DROITE) -->
+            <div class="col-lg-4">
+                
+                <!-- Card: Publication & Actions -->
+                <div class="card border-0 shadow-sm rounded-3 mb-4">
+                    <div class="card-header bg-white border-bottom py-3">
+                        <h6 class="mb-0 fw-bold"><i class="bi bi-send me-2"></i>Publication</h6>
+                    </div>
+                    <div class="card-body">
+                        <!-- Statut -->
+                        <div class="form-check form-switch mb-3">
+                            {{ form.is_active }}
+                            <label class="form-check-label fw-bold" for="id_is_active">Article actif (visible)</label>
+                        </div>
+
+                        <hr>
+
+                        <!-- Boutons d'action -->
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success btn-lg fw-bold shadow-sm">
+                                <i class="bi bi-check-lg me-2"></i> Enregistrer
+                            </button>
+                            <a href="{% url 'dashboard:blog_posts' %}" class="btn btn-outline-secondary">Annuler</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card: Image -->
+                <div class="card border-0 shadow-sm rounded-3 mb-4">
+                    <div class="card-header bg-white border-bottom py-3">
+                        <h6 class="mb-0 fw-bold"><i class="bi bi-image me-2"></i>Image mise en avant</h6>
+                    </div>
+                    <div class="card-body text-center">
+                        {% if form.instance.image %}
+                            <div class="mb-3 position-relative">
+                                <img src="{{ form.instance.image.url }}" class="img-fluid rounded shadow-sm" style="max-height: 200px;">
+                            </div>
+                        {% endif %}
+                        
+                        <!-- Custom file input pour être joli -->
+                        <label for="id_image" class="btn btn-outline-primary w-100 rounded-pill">
+                            <i class="bi bi-upload me-2"></i> Choisir une image
+                        </label>
+                        <input type="file" name="image" id="id_image" class="d-none" accept="image/*">
+                        
+                        {% if form.image.errors %}
+                            <div class="text-danger small mt-2">{{ form.image.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Card: Organisation -->
+                <div class="card border-0 shadow-sm rounded-3">
+                    <div class="card-header bg-white border-bottom py-3">
+                        <h6 class="mb-0 fw-bold"><i class="bi bi-folder me-2"></i>Organisation</h6>
+                    </div>
+                    <div class="card-body">
+                        <!-- Catégorie -->
+                        <div class="mb-3">
+                            <label class="form-label text-muted small fw-bold">Catégorie</label>
+                            {{ form.category }}
+                            {% if form.category.errors %}
+                                <div class="text-danger small mt-1">{{ form.category.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Slug -->
+                        <div>
+                            <label class="form-label text-muted small fw-bold">Slug (URL)</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0"><i class="bi bi-link-45deg"></i></span>
+                                {{ form.slug }}
+                            </div>
+                            <small class="text-muted d-block mt-1">Laissez vide pour génération auto.</small>
+                            {% if form.slug.errors %}
+                                <div class="text-danger small">{{ form.slug.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

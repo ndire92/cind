@@ -1,0 +1,45 @@
+{% extends "dashboard/base_dashboard.html" %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <h2 class="fw-bold mb-4">{{ title }}</h2>
+    
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Titre</label>
+                        {{ form.title }}
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Sous-titre</label>
+                        {{ form.subtitle }}
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Ordre d'affichage</label>
+                        {{ form.order }}
+                        <small class="text-muted">Les bannières sont triées par ce chiffre.</small>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Image</label>
+                        {% if form.instance.image %}
+                            <div class="mb-2">
+                                <img src="{{ form.instance.image.url }}" class="rounded" style="max-width: 200px;">
+                            </div>
+                        {% endif %}
+                        {{ form.image }}
+                    </div>
+                </div>
+
+                <div class="text-end mt-4">
+                    <a href="{% url 'products:banner_list' %}" class="btn btn-secondary">Annuler</a>
+                    <button type="submit" class="btn btn-primary">Enregistrer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

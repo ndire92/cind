@@ -1,0 +1,30 @@
+{% extends "dashboard/base_dashboard.html" %}
+
+{% block content %}
+<h3>{% if form.instance.pk %}Modifier{% else %}Ajouter{% endif %} un moyen de paiement</h3>
+
+<div class="card shadow p-4 mt-3" style="max-width: 600px;">
+    <form method="post">
+        {% csrf_token %}
+        
+        <div class="mb-3">
+            <label>Nom</label>
+            {{ form.name }}
+        </div>
+        <div class="mb-3">
+            <label>Description</label>
+            {{ form.description }}
+        </div>
+        <div class="mb-3 form-check">
+            {{ form.is_active }}
+            <label class="form-check-label">Actif</label>
+        </div>
+        <div class="mb-3">
+            <label>Frais supplémentaires (€)</label>
+            {{ form.extra_fee }}
+        </div>
+
+        <button type="submit" class="btn btn-success">Enregistrer</button>
+    </form>
+</div>
+{% endblock %}

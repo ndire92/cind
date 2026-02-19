@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container my-5">
+    <h2 class="mb-4">Finaliser la commande</h2>
+    
+    <div class="row">
+        <!-- Formulaire à gauche -->
+        <div class="col-lg-8">
+            <div class="card shadow-sm p-4">
+                <form method="post" id="checkout-form">
+                    {% csrf_token %}
+                    
+                    <!-- Informations personnelles -->
+                    <h5 class="mb-3 border-bottom pb-2">Informations de livraison</h5>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Prénom</label>
+                            {{ form.first_name }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Nom</label>
+                            {{ form.last_name }}
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        {{ form.email }}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Téléphone</label>
+                        {{ form.phone }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Adresse</label>
+                        {{ form.address }}
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Code Postal</label>
+                            {{ form.postal_code }}
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Ville</label>
+                            {{ form.city }}
+                        </div>
+                        <!-- CHAMP PAYS (IMPORTANT POUR LA LIVRAISON) -->
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Pays</label>
+                            {{ form.country }}
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+   <div class="mb-3">
+    <label class="form-label">Mode de paiement</label>
+    {{ form.payment_method }}
+</div>
+
+                    <button type="submit" class="btn btn-success btn-lg w-100 mt-3">
+                        <i class="bi bi-check-circle me-2"></i> Confirmer la commande
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Récapitulatif à droite -->
+        <div class="col-lg-4 mt-4 mt-lg-0">
+            <div class="card shadow-sm position-sticky" style="top: 20px;">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Récapitulatif</h5>
+                </div>
+                <div class="card-body">
+                    <p class="d-flex justify-content-between">
+                        <span>Sous-total HT</span>
+                        <span>{{ total }} €</span>
+                    </p>
+                    <p class="d-flex justify-content-between">
+                        <span>TVA (18%)</span>
+                        <span id="vat-amount">-- €</span>
+                    </p>
+                    <hr>
+                    <p class="d-flex justify-content-between">
+                        <span><strong>Livraison</strong></span>
+                        <span id="shipping-cost"><small>Sélectionnez pays</small></span>
+                    </p>
+                    <hr>
+                    <h4 class="d-flex justify-content-between text-success">
+                        <span>Total TTC</span>
+                        <span id="total-price">{{ total }} €</span>
+                    </h4>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Script pour calculer la livraison dynamiquement
+    const countrySelect = document.getElementById('id_country');
+    const shippingDisplay = document.getElementById('shipping-cost');
+    const totalDisplay = document.getElementById('total-price');
+    const vatDisplay = document.getElementById('vat-amount');
+    
+    // Prix de base (sous-total)
+    const subtotal = parseFloat("{{ total }}");
+
+    function updateTotals() {
+        const countryCode = countrySelect.value;
+        
+        if (!countryCode) return;
+
+        // Appel AJAX pour obtenir le prix de la livraison
+        fetch(`/boutique/checkout/shipping-cost/?country=${countryCode}`)
+            .then(response => response.json())
+            .then(data => {
+                const shipping = parseFloat(data.cost) || 0;
+                
+                // Calcul TVA (18%)
+                const vat = (subtotal * 0.18);
+                // Total = HT + TVA + Livraison
+                const total = subtotal + vat + shipping;
+
+                // Mise à jour affichage
+                if (shipping === 0) {
+                shippingDisplay.innerHTML = '<span class="text-success">Gratuite</span>';
+            } else {
+                shippingDisplay.innerHTML = shipping.toFixed(2) + ' €';
+            }
+                vatDisplay.innerHTML = vat.toFixed(2) + ' €';
+                totalDisplay.innerHTML = total.toFixed(2) + ' €';
+            })
+            .catch(error => console.error('Erreur:', error));
+    }
+
+    // Écouter le changement de pays
+    countrySelect.addEventListener('change', updateTotals);
+    
+    // Lancer au chargement si un pays est déjà sélectionné
+    if (countrySelect.value) {
+        updateTotals();
+    }
+</script>
+{% endblock %}

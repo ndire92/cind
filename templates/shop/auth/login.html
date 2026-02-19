@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5" style="max-width: 500px;">
+    <div class="card shadow">
+        <div class="card-body p-5">
+            <h2 class="text-center mb-4">Connexion</h2>
+            
+            {% if form.errors %}
+                <div class="alert alert-danger">
+                    Votre nom d'utilisateur ou mot de passe est incorrect.
+                </div>
+            {% endif %}
+
+            <form method="post">
+                {% csrf_token %}
+                
+                <div class="mb-3">
+                    <label for="id_username" class="form-label">Nom d'utilisateur</label>
+                    <input type="text" name="username" id="id_username" class="form-control" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="id_password" class="form-label">Mot de passe</label>
+                    <input type="password" name="password" id="id_password" class="form-control" required>
+                </div>
+                
+                <div class="mb-3 form-check">
+                    <input type="checkbox" name="remember" class="form-check-input" id="id_remember">
+                    <label class="form-check-label" for="id_remember">Se souvenir de moi</label>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 btn-lg">Se connecter</button>
+            </form>
+            
+            <hr class="my-4">
+            
+            <p class="text-center text-muted">
+                Pas encore de compte ? 
+                <a href="{% url 'products:register' %}">Créer un compte</a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

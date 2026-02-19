@@ -1,0 +1,40 @@
+{% extends "dashboard/base_dashboard.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between mb-4">
+    <h3>Zones de Livraison</h3>
+    <a href="{% url 'dashboard:add_shipping_zone' %}" class="btn btn-primary">
+        <i class="bi bi-plus"></i> Ajouter une zone
+    </a>
+</div>
+
+<div class="card shadow">
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Pays (Codes ISO)</th>
+                    <th>Prix (€)</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for zone in zones %}
+                <tr>
+                    <td>{{ zone.name }}</td>
+                    <td><code>{{ zone.countries }}</code></td>
+                    <td>{{ zone.price }} €</td>
+                    <td>
+                        <a href="{% url 'dashboard:edit_shipping_zone' zone.id %}" class="btn btn-sm btn-outline-info">Modifier</a>
+                        <a href="{% url 'dashboard:delete_shipping_zone' zone.id %}" class="btn btn-sm btn-outline-danger">Supprimer</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="4" class="text-center">Aucune zone définie.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

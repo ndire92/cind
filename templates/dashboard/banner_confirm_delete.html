@@ -1,0 +1,13 @@
+{% extends "dashboard/base.html" %}
+
+{% block content %}
+<div class="container py-5 text-center">
+    <h3>Supprimer "{{ banner.title }}" ?</h3>
+
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Oui, supprimer</button>
+        <a href="{% url 'products:banner_list' %}" class="btn btn-secondary">Annuler</a>
+    </form>
+</div>
+{% endblock %}

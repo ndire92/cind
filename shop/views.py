@@ -1,446 +1,208 @@
+import logging
 from decimal import Decimal
-from django.http import JsonResponse
-from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
+import os
+from django.shortcuts import render, redirect, get_object_or_404, reverse
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth import login, logout
+from django.contrib import messages
+from django.core.mail import EmailMessage
+from django.template.loader import render_to_string
 from django.core.paginator import Paginator,EmptyPage, PageNotAnInteger
-from .models import Order, OrderItem, Product, Category, ShippingZone,ShopInfo,BlogPost
-from .cart import Cart  # Importez la classe créée juste avant
-import csv 
-from .forms import OrderCreateForm,CustomUserCreationForm
-from django.contrib.auth.forms import UserCreationForm
+import requests
+from django.db.models import Min, Max
 from django.contrib.auth.views import LoginView
-from django.urls import reverse, reverse_lazy
-from django.contrib.auth import login
-from .dashboard import views
-from django.contrib.auth import authenticate, login, logout
+from django.http import JsonResponse, HttpResponse
+from django.db import transaction
+from django.utils import timezone
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.urls import reverse_lazy
+from django.db.models import Sum, Count
+from django.contrib.auth.decorators import login_required
+from .decorators import admin_or_manager_required
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib import colors
+from reportlab.platypus import Table
+from reportlab.lib.units import inch
+from reportlab.platypus import TableStyle
+from reportlab.platypus import ListFlowable, ListItem
+from reportlab.platypus import Image
+from reportlab.platypus import KeepTogether
+from reportlab.platypus import PageBreak
+from reportlab.platypus import Frame
+from reportlab.platypus import PageTemplate
+from reportlab.platypus import BaseDocTemplate
+from reportlab.platypus import Flowable
+from reportlab.platypus import HRFlowable
+from reportlab.platypus import Paragraph
+from reportlab.platypus import Spacer
+from reportlab.platypus import SimpleDocTemplate
+from reportlab.platypus import Table
+from reportlab.platypus import TableStyle
 
-from .models import User
+import os
+from django.conf import settings
+from config import settings
 
-# FONCTIONS D'AUTHENTIFICATION
-# ==================================================
+# Imports de vos modèles et formulaires (assurez-vous que les noms correspondent)
+from .models import (
+    Banner, Product, Category, Order, OrderItem, ProductImage, ShippingZone, 
+    PaymentMethod, Coupon, ShopInfo, BlogPost,
+    User, Transaction, Invoice
+)
+from .forms import (
+    AboutSettingsForm, BannerForm, NewsletterSettingsForm, PaymentMethodForm, ProductForm, ProductImageFormSet, OrderCreateForm, PromoSettingsForm, ShippingZoneForm, 
+    UserRegistrationForm, ShopInfoForm, BlogPostForm, CategoryForm
+)
 
-def redirect_by_role(user):
-    if user.role == "gestionnaire":
-        return redirect("dashboard:overview")
-    elif user.role == "customer":
-        return redirect("products:profile")
-    return redirect("home")
-    
+logger = logging.getLogger(__name__)
 
-def register_view(request):
-    if request.method == 'POST':
-        form = CustomUserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            login(request, user)
-            return redirect_by_role(user)
-    else:
-        form = CustomUserCreationForm()
-    return render(request, 'registration/register.html', {'form': form})
+# ============================================================================
+# HELPERS & MIXINS
+# ============================================================================
 
-from django.contrib.auth.forms import AuthenticationForm
+def is_manager(user):
+    return user.is_authenticated and (user.is_manager() or user.is_admin_role())
 
-def login_view(request):
-    if request.method == "POST":
-        form = AuthenticationForm(request, data=request.POST)
-        if form.is_valid():
-            user = form.get_user()
-            login(request, user)
-            return redirect_by_role(user)
-        else:
-            return render(request, "registration/login.html", {"form": form})
-    else:
-        form = AuthenticationForm()
-    return render(request, "registration/login.html", {"form": form})
-
-def logout_view(request):
-    logout(request)
-    return redirect(reverse("products:login"))
-
-
-
-def some_view(request):
-    if request.user.is_authenticated:
-        if request.user.role == "gestionnaire":
-            redirect_url = reverse("dashboard:overview")
-        elif request.user.role == "customer":
-            redirect_url = reverse("products:profile")
-        else:
-            redirect_url = reverse("home")
-    else:
-        redirect_url = reverse("products:login")
-
-    return render(request, "template.html", {"redirect_url": redirect_url})
-
-# --- PROFILE ---
-def profile(request):
-    if not request.user.is_authenticated:
-        return redirect("products:login")
-    return render(request, 'registration/profile.html')
-
+# ============================================================================
+# VUES PUBLIQUES (Frontend)
+# ============================================================================
 
 
 def index(request):
-    """
-    Page d'accueil : Affiche tous les produits ou les 6 derniers.
-    """
-    cart = Cart(request)
-    categories = Category.objects.all() # Récupère toutes les catégories
-    config = ShopInfo.get_instance()
-    featured_post = BlogPost.objects.filter(is_active=True).order_by('-created_at').first()
-    products = Product.objects.filter(available=True)[:4] # Les 6 derniers produits
+    """Page d'accueil"""
 
-    return render(request, 'shop/index.html', {
-        'products': products,
-        'categories':categories,
-         'config': config,
-         'cart':cart,
-         'featured_post': featured_post,
+    category_id = request.GET.get('category')
 
+    shop_info = ShopInfo.get_instance()
+    banners = Banner.objects.all()
+    categories = Category.objects.all()
 
-        })
+    # Base queryset
+    products = Product.objects.filter(available=True)
+
+    # Filtrage par catégorie
+    if category_id:
+        category = get_object_or_404(Category, id=category_id)
+        products = products.filter(category=category)
+        active_category = category
+    else:
+        active_category = None
+
+    # Produits affichés (limite 4)
+    featured_products = products[:4]
+
+    posts = BlogPost.objects.filter(is_active=True)[:3]
+    featured_post = posts.first()
+
+    context = {
+        'shop_info': shop_info,
+        'products': featured_products,
+        'posts': posts,
+        'featured_post': featured_post,
+        'banners': banners,
+        'categories': categories,
+        'current_category': active_category,
+    }
+
+    return render(request, 'shop/index.html', context)
 
 def shop(request):
-    """
-    Page Boutique : Affiche la liste avec pagination et filtrage par catégorie.
-    """
-    cart = Cart(request)
-    # Récupérer le filtre de catégorie depuis l'URL (ex: ?category=visage)
-    category_slug = request.GET.get('category')
+    """Page boutique avec filtres catégorie et prix"""
     
-    # Base de requête : produits disponibles
+    # Récupérer toutes les catégories pour la sidebar
+    categories = Category.objects.all()
+    
+    # Catégorie sélectionnée
+    category_id = request.GET.get('category')
+    current_category = None
     products = Product.objects.filter(available=True)
     
-    # Filtrer si une catégorie est demandée
-    category = None
-    if category_slug:
-        category = get_object_or_404(Category, slug=category_slug)
-        products = products.filter(category=category)
-
-    # Pagination : 12 produits par page
-    paginator = Paginator(products, 12)
-    page_number = request.GET.get('page', 1)
-    products_page = paginator.get_page(page_number)
-
-    # Envoyer aussi la liste des catégories pour le menu de filtres
-    categories = Category.objects.all()
-
+    if category_id:
+        current_category = get_object_or_404(Category, id=category_id)
+        products = products.filter(category=current_category)
+    
+    # Filtre par prix depuis GET
+    min_price = request.GET.get('min_price')
+    max_price = request.GET.get('max_price')
+    if min_price:
+        products = products.filter(price_ht__gte=min_price)
+    if max_price:
+        products = products.filter(price_ht__lte=max_price)
+    
+    # Calculer plage de prix pour slider / inputs
+    price_range = products.aggregate(
+        min_price=Min('price_ht'),
+        max_price=Max('price_ht')
+    )
+    
     context = {
-        'products_page': products_page,
-        'category': category,
         'categories': categories,
-        'cart':cart
+        'products': products,
+        'current_category': current_category,
+        'price_range': price_range,
+        'selected_min_price': min_price,
+        'selected_max_price': max_price,
     }
+    
     return render(request, 'shop/shop.html', context)
 
-def product_detail(request, id, slug):
-    """
-    Page Produit : Affiche un produit spécifique.
-    """
-    # On cherche le produit par son ID et son slug (double vérification)
-    product = get_object_or_404(Product, id=id, slug=slug, available=True)
-    
-    return render(request, 'shop/product.html', {'product': product})
+def product_list(request):
+    """Alias pour la vue shop"""
+    return shop(request)
 
-
-def category_list(request, category_slug):
-    """
-    Vue pour afficher les produits d'une catégorie spécifique.
-    (Similaire à la page boutique mais le slug est dans l'URL)
-    """
-    category = get_object_or_404(Category, slug=category_slug)
-    products = Product.objects.filter(category=category, available=True)
-    
-    # Pagination
-    paginator = Paginator(products, 12)
-    page_number = request.GET.get('page', 1)
-    products_page = paginator.get_page(page_number)
-
-    categories = Category.objects.all()
-
-    context = {
-        'products_page': products_page,
-        'category': category,
-        'categories': categories
-    }
-    return render(request, 'shop/shop.html', context)
-
-
-
-
-# ... vos fonctions existantes (index, shop, product_detail) ...
-
-def cart_detail(request):
-    """
-    Affiche la page du panier.
-    """
-    cart = Cart(request)
-    return render(request, 'shop/cart.html', {'cart': cart})
-
-def cart_add(request, product_id):
-    """
-    Vue pour ajouter un produit au panier.
-    """
-    cart = Cart(request)
-    product = get_object_or_404(Product, id=product_id)
-    
-    # Ajoute 1 produit
-    cart.add(product=product)
-    
-    # CORRECTION ICI : On utilise 'products:cart_detail'
-    return redirect('products:cart_detail')
-
-def cart_remove(request, product_id):
-    cart = Cart(request)
-    product = get_object_or_404(Product, id=product_id)
-    cart.remove(product)
-    return redirect('products:cart_detail')  # Correction ici aussi
-
-
-def order_create(request):
-    cart = Cart(request)
-
-    if len(cart) == 0:
-        return redirect('products:cart_detail')
-
-    if request.method == 'POST':
-        form = OrderCreateForm(request.POST)
-
-        if form.is_valid():
-            order = form.save(commit=False)
-
-            if request.user.is_authenticated:
-                order.user = request.user
-
-            # Livraison
-            order.shipping_cost = Order.get_shipping_cost_by_country(order.country)
-
-            # Paiement
-            order.payment_status = "PENDING"
-            order.save()
-
-            # Produits
-            for item in cart:
-                OrderItem.objects.create(
-                    order=order,
-                    product=item['product'],
-                    price=item['price_ht'],
-                    quantity=item['quantity']
-                )
-
-            cart.clear()
-
-            # 🔥 REDIRECTION PAYDUNYA
-            if order.payment_method == 'PAYDUNYA':
-                return redirect('products:paydunya_init', order_id=order.id)
-
-            # Autre paiement → confirmation
-            return redirect('products:order_confirmation', order_id=order.id)
-
-    else:
-        form = OrderCreateForm()
-
-    return render(request, 'shop/checkout.html', {
-        'cart': cart,
-        'form': form,
-    })
-
-
-def shipping_cost_ajax(request):
-    """
-    Retourne le prix de livraison pour un pays donné via AJAX.
-    """
-    country = request.GET.get('country', '').strip().upper()
-
-    if not country:
-        return JsonResponse({'price': 0})
-
-    # Recherche de la zone correspondant au pays
-    zones = ShippingZone.objects.all()
-    price = 0
-
-    for zone in zones:
-        codes = zone.get_country_codes()
-        if 'ALL' in codes or country in codes:
-            price = float(zone.price)
-            break
-
-    return JsonResponse({'price': price})
-
-
-import requests
-from django.conf import settings
-
-def paydunya_init(request, order_id):
-    order = get_object_or_404(Order, id=order_id)
-
-    url = "https://app.paydunya.com/sandbox-api/v1/checkout-invoice/create"
-
-    headers = {
-        "Content-Type": "application/json",
-        "PAYDUNYA-MASTER-KEY": settings.PAYDUNYA_MASTER_KEY,
-        "PAYDUNYA-PRIVATE-KEY": settings.PAYDUNYA_PRIVATE_KEY,
-        "PAYDUNYA-TOKEN": settings.PAYDUNYA_TOKEN,
-    }
-
-    data = {
-        "invoice": {
-            "total_amount": float(order.get_total_cost()),
-            "description": f"Commande #{order.id}"
-        },
-        "store": {
-            "name": "Terra & Pure",
-            "website_url": "http://127.0.0.1:8000",
-        },
-        "actions": {
-            "callback_url": "http://127.0.0.1:8000/paydunya/callback/",
-            "return_url": "http://127.0.0.1:8000/boutique/",
-            "cancel_url": "http://127.0.0.1:8000/boutique/checkout/",
-        }
-    }
-
-    response = requests.post(url, json=data, headers=headers)
-    result = response.json()
-
-    if result.get("response_code") == "00":
-        return redirect(result["response_text"])
-    
-    return redirect('products:checkout')
-
-
-
-def payment_success(request):
-    return render(request, 'shop/payment_success.html')
-
-
+def category_list(request, slug):
+    """Filtrer par catégorie"""
+    category = get_object_or_404(Category, slug=slug)
+    products = category.products.filter(available=True)
+    return render(request, 'shop/category.html', {'category': category, 'products': products})
 
 def product_detail(request, id, slug):
     product = get_object_or_404(Product, id=id, slug=slug, available=True)
-
-    related_products = Product.objects.filter(
-        category=product.category,
-        available=True
-    ).exclude(id=product.id)[:4]
-
-    return render(request, 'shop/produits.html', {
+    # Récupérer 4 produits de la même catégorie, exclure le produit actuel
+    related_products = Product.objects.filter(category=product.category).exclude(id=product.id)[:4]
+    
+    return render(request, 'shop/product_detail.html', {
         'product': product,
         'related_products': related_products
     })
 
+# --- Authentification ---
 
-def product_list(request):
-    products = Product.objects.filter(available=True)
-    categories = Category.objects.all()
-
-    # --- Filtres ---
-    category_id = request.GET.get("category")
-    min_price = request.GET.get("min_price")
-    max_price = request.GET.get("max_price")
-
-    if category_id:
-        products = products.filter(category_id=category_id)
-
-    if min_price:
-        products = products.filter(price_ht__gte=Decimal(min_price))
-
-    if max_price:
-        products = products.filter(price_ht__lte=Decimal(max_price))
-
-    context = {
-        "products": products,
-        "categories": categories,
-        "selected_category": category_id,
-        "min_price": min_price,
-        "max_price": max_price,
-    }
-    return render(request, "shop/shop.html", context)
-
-
-def checkout(request):
-    cart = Cart(request)
-
-    if request.method == "GET" and len(cart) == 0:
-        return redirect('products:cart_detail')
-
-    if request.method == "POST":
-        form = CheckoutForm(request.POST)  # ton formulaire
+def register_view(request):
+    if request.method == 'POST':
+        form = UserRegistrationForm(request.POST)
         if form.is_valid():
-            order = Order.objects.create(
-                user=request.user if request.user.is_authenticated else None,
-                paid=True,
-                total_price=cart.get_total_ttc(),
-                shipping_address=form.cleaned_data["address"],
-                first_name=form.cleaned_data["first_name"],
-                last_name=form.cleaned_data["last_name"],
-                email=form.cleaned_data["email"],
-                city=form.cleaned_data["city"],
-                postal_code=form.cleaned_data["postal_code"],
-                country=form.cleaned_data["country"],
-                payment_method=form.cleaned_data["payment_method"],
-            )
-
-            for item in cart:
-                OrderItem.objects.create(
-                    order=order,
-                    product=item['product'],
-                    quantity=item['quantity'],
-                    price=item['price_ttc']
-                )
-
-            cart.clear()
-            
-            return redirect('products:order_confirmation', order_id=order.id)
-        else:
-            # Réaffiche le formulaire avec erreurs
-            return render(request, 'shop/checkout.html', {
-                'cart': cart,
-                'form': form
-            })
-
+            user = form.save()
+            login(request, user)
+            messages.success(request, "Inscription réussie !")
+            return redirect('products:shop')
     else:
-        form = CheckoutForm()
-        return render(request, 'shop/checkout.html', {
-            'cart': cart,
-            'form': form
-        })
+        form = UserRegistrationForm()
+    return render(request, 'shop/auth/register.html', {'form': form})
 
-def order_confirmation(request, order_id):
-    order = get_object_or_404(Order, id=order_id)
-    return render(request, 'shop/order_confirmation.html', {
-        'order': order
-    })
+def login_view(request):
+    # Utilisez la vue login de Django ou une vue personnalisée simple
+   
+    return LoginView.as_view(template_name='shop/auth/login.html')(request)
 
+def logout_view(request):
+    logout(request)
+    return redirect('products:shop')
 
+@login_required
+def profile(request):
+    orders = request.user.orders.all()
+    return render(request, 'shop/auth/profile.html', {'orders': orders})
 
-def cart_update(request, product_id):
-    cart = Cart(request)
-    product = get_object_or_404(Product, id=product_id)
+# --- Pages Statiques ---
 
-    if request.method == "POST":
-        quantity = int(request.POST.get("quantity", 1))
+def about_page(request):
+    shop_info = ShopInfo.get_instance()
+    return render(request, 'shop/about.html', {'shop_info': shop_info})
 
-        cart.add(
-            product=product,
-            quantity=quantity,
-            update_quantity=True  # ✅ NOM CORRECT
-        )
+# --- Blog ---
 
-    return redirect('products:cart_detail')
-
-
-def invoice_download(request, order_id):
-    order = get_object_or_404(Order, id=order_id)
-    
-    # Exemple basique : créer un fichier texte avec les infos
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename="facture_{order.id}.pdf"'
-
-    # Ici tu peux générer du PDF avec reportlab / weasyprint
-    response.write(f"Facture pour la commande #{order.id}\n")
-    response.write(f"Total: {order.total_price} €\n")
-    # Ajouter produits, quantités, TTC etc. si besoin
-
-    return response
 
 def bien_etre(request):
     """
@@ -449,10 +211,10 @@ def bien_etre(request):
     config = ShopInfo.get_instance()
     
     # Récupération de tous les articles actifs
-    blog_posts_list = BlogPost.objects.filter(is_active=True).order_by('-created_at')
+    posts = BlogPost.objects.filter(is_active=True).order_by('-created_at')
     
-    # Pagination : 3 articles par page (comme dans votre version initiale)
-    paginator = Paginator(blog_posts_list, 3) 
+    # Pagination : 3 articles par page
+    paginator = Paginator(posts, 3)
     page_number = request.GET.get('page', 1)
     
     try:
@@ -464,7 +226,7 @@ def bien_etre(request):
     
     return render(request, 'shop/bien_etre.html', {
         'config': config,
-        'blog_posts': blog_posts,
+        'blog_posts': blog_posts,  # <-- c’est ça qu’il faut passer
     })
 
 def post_detail(request, slug):
@@ -481,29 +243,730 @@ def post_detail(request, slug):
         'post': post,
     })
 
-def about_page(request):
-    """
-    Page À propos indépendante
-    """
-    # Récupère les infos configurées dans l'admin (ShopInfo)
-    config = ShopInfo.get_instance()
+
+# ============================================================================
+# PANIER (Cart - Basé sur les sessions)
+# ============================================================================
+
+def get_cart(request):
+    """Récupère le panier depuis la session"""
+    cart = request.session.get('cart', {})
+    # Structure: {product_id: {'quantity': 1, 'price': '10.00'}}
+    return cart
+
+def cart_detail(request):
+    cart = get_cart(request)
+    items = []
+    total = Decimal('0.00')
     
-    return render(request, 'shop/about.html', {
-        'config': config,
+    for product_id, item_data in cart.items():
+        product = get_object_or_404(Product, id=product_id)
+        price = Decimal(item_data.get('price', product.price_ht))
+        quantity = int(item_data.get('quantity', 0))
+        item_total = price * quantity
+        items.append({
+            'product': product,
+            'quantity': quantity,
+            'price': price,
+            'total': item_total
+        })
+        total += item_total
+    
+    return render(request, 'shop/cart/detail.html', {'items': items, 'total': total})
+
+def cart_add(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    cart = get_cart(request)
+    quantity = int(request.POST.get('quantity', 1))
+    
+    if str(product_id) in cart:
+        cart[str(product_id)]['quantity'] += quantity
+    else:
+        cart[str(product_id)] = {'quantity': quantity, 'price': str(product.price_ht)}
+    
+    request.session['cart'] = cart
+    messages.success(request, "Produit ajouté au panier.")
+    return redirect('products:cart_detail')
+
+def cart_remove(request, product_id):
+    cart = get_cart(request)
+    if str(product_id) in cart:
+        del cart[str(product_id)]
+        request.session['cart'] = cart
+    return redirect('products:cart_detail')
+
+def cart_update(request, product_id):
+    cart = get_cart(request)
+    quantity = int(request.POST.get('quantity', 0))
+    
+    if quantity > 0 and str(product_id) in cart:
+        cart[str(product_id)]['quantity'] = quantity
+    elif quantity <= 0:
+        del cart[str(product_id)]
+    
+    request.session['cart'] = cart
+    return redirect('products:cart_detail')
+
+
+# ============================================================================
+# COMMANDE & PAIEMENT
+# ============================================================================
+
+def order_create(request):
+    cart = get_cart(request)
+    if not cart:
+        return redirect('products:shop')
+
+    # Calcul du total pour l'affichage dans le résumé (à passer au contexte)
+    cart_total = Decimal('0.00')
+    for item_data in cart.values():
+        cart_total += Decimal(item_data['price']) * int(item_data['quantity'])
+
+    if request.method == 'POST':
+        # On passe les données POST et l'utilisateur
+        form = OrderCreateForm(request.POST, user=request.user)
+        if form.is_valid():
+            with transaction.atomic():
+                order = form.save(commit=False)
+
+                # Assigner l'utilisateur si connecté
+                if request.user.is_authenticated:
+                    order.user = request.user
+
+                # Mode de paiement
+                payment_method = form.cleaned_data.get('payment_method')
+                if payment_method:
+                    order.payment_method = payment_method
+                    order.payment_fee = payment_method.extra_fee
+                else:
+                    order.payment_fee = Decimal('0.00')
+
+                # Calcul du sous-total et préparation des items
+                subtotal = Decimal('0.00')
+                items_to_create = []
+                for product_id, item_data in cart.items():
+                    product = get_object_or_404(Product, id=product_id)
+                    price = Decimal(item_data['price'])
+                    quantity = int(item_data['quantity'])
+                    subtotal += price * quantity
+                    items_to_create.append(OrderItem(
+                        product=product,
+                        product_name=product.name,
+                        price=price,
+                        quantity=quantity
+                    ))
+
+                order.subtotal = subtotal
+                order.vat_rate = Decimal('18.00')
+                order.vat_amount = (subtotal * order.vat_rate) / Decimal('100')
+
+                # Livraison
+                shipping_cost = Order.get_shipping_cost_by_country(form.cleaned_data.get('country'))
+                order.shipping_cost = shipping_cost
+
+                # Coupon / remise
+                coupon = form.cleaned_data.get('coupon')
+                if coupon and coupon.active:
+                    now = timezone.now()
+                    if coupon.valid_from <= now <= coupon.valid_to:
+                        order.discount_amount = (subtotal * coupon.discount_percent) / Decimal('100')
+                    else:
+                        order.discount_amount = Decimal('0.00')
+                else:
+                    order.discount_amount = Decimal('0.00')
+
+                # Total final = sous-total + TVA + livraison + frais paiement - remise
+                order.total_price = (
+                    order.subtotal
+                    + order.vat_amount
+                    + order.shipping_cost
+                    + order.payment_fee
+                    - order.discount_amount
+                )
+
+                order.payment_status = Order.PaymentStatus.PENDING
+                order.save()
+
+                # Lier les items à la commande
+                for item in items_to_create:
+                    item.order = order
+                OrderItem.objects.bulk_create(items_to_create)
+
+                # Vider le panier
+                request.session['cart'] = {}
+
+                return redirect('products:order_confirmation', order_id=order.id)
+
+    else:
+        # CORRECTION ICI : On ne passe pas request.POST pour un affichage vierge
+        form = OrderCreateForm(user=request.user)
+    
+    return render(request, 'shop/orders/create.html', {
+        'form': form,
+        'total': cart_total # Utile pour le résumé sidebar
+    })
+
+def order_confirmation(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+
+    # Si paiement à la livraison, on considère payé
+    if order.payment_method and order.payment_method.slug == "cod":  # cod = cash on delivery
+        order.payment_status = Order.PaymentStatus.PAID
+        order.save()
+
+    return render(request, 'shop/orders/confirmation.html', {
+        'order': order
     })
 
 
-def cart_add(request, product_id):
-    cart = Cart(request)
+
+def payment_success(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+    
+    # Marquer la commande comme payée si ce n'est pas déjà fait
+    if order.payment_status != Order.PaymentStatus.PAID:
+        order.payment_status = Order.PaymentStatus.PAID
+        order.save()
+    
+    return render(request, 'shop/orders/payment_success.html', {'order': order})
+
+def shipping_cost_ajax(request):
+    country_code = request.GET.get('country')
+    cost = Order.get_shipping_cost_by_country(country_code)
+    return JsonResponse({'cost': str(cost)})
+
+def invoice_download(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+    # Logique de génération PDF (comme défini dans le modèle Invoice)
+    # Pour simplifier, on retourne une réponse simple ici
+    return HttpResponse(f"Facture pour commande #{order.id} - Bientôt en PDF")
+
+
+# ============================================================================
+# DASHBOARD (Gestionnaire)
+# ============================================================================
+
+
+@login_required
+@admin_or_manager_required
+def dashboard_overview(request):
+    # Stats globales
+    total_orders = Order.objects.count()
+    total_revenue = Order.objects.filter(payment_status='paid').aggregate(Sum('total_price'))['total_price__sum'] or 0
+    total_products = Product.objects.count()
+    
+    # Dernières commandes (5 dernières)
+    recent_orders = Order.objects.all().order_by('-created_at')[:5]
+    
+    context = {
+        'orders': total_orders,
+        'revenue': total_revenue,
+        'products': total_products,
+        'recent_orders': recent_orders,
+    }
+    return render(request, 'dashboard/overview.html', context)
+
+# --- Gestion Produits ---
+
+@login_required
+@admin_or_manager_required
+def dashboard_products(request):
+    products = Product.objects.all()
+    return render(request, 'dashboard/products/list.html', {'products': products})
+
+@login_required
+@admin_or_manager_required
+def add_product(request):
+    if request.method == 'POST':
+        form = ProductForm(request.POST, request.FILES)
+        formset = ProductImageFormSet(request.POST, request.FILES, queryset=ProductImage.objects.none())
+        
+        if form.is_valid() and formset.is_valid():
+            product = form.save()
+            # Sauvegarder les images
+            for image_form in formset:
+                if image_form.cleaned_data.get('image'):
+                    image = image_form.save(commit=False)
+                    image.product = product
+                    image.save()
+            messages.success(request, "Produit ajouté.")
+            return redirect('dashboard:products')
+    else:
+        form = ProductForm()
+        formset = ProductImageFormSet(queryset=ProductImage.objects.none())
+    
+    return render(request, 'dashboard/products/form.html', {'form': form, 'formset': formset})
+
+
+@login_required
+@admin_or_manager_required
+def edit_product(request, product_id):
     product = get_object_or_404(Product, id=product_id)
+    if request.method == 'POST':
+        form = ProductForm(request.POST, request.FILES, instance=product)
+        formset = ProductImageFormSet(request.POST, request.FILES, queryset=product.images.all())
+        
+        if form.is_valid() and formset.is_valid():
+            form.save()
+            formset.save() # Gère l'ajout, modif et suppression
+            messages.success(request, "Produit mis à jour.")
+            return redirect('dashboard:products')
+    else:
+        form = ProductForm(instance=product)
+        formset = ProductImageFormSet(queryset=product.images.all())
+    
+    return render(request, 'dashboard/products/form.html', {'form': form, 'formset': formset})
 
-    quantity = int(request.POST.get('quantity', 1))
+@login_required
+@admin_or_manager_required
+def delete_product(request, pk):
+    product = get_object_or_404(Product, id=pk)
+    product.delete()
+    return redirect('dashboard:products')
 
-    cart.add(product=product, quantity=quantity)
+# --- Gestion Commandes ---
 
-    return redirect('products:cart_detail')
+@login_required
+@admin_or_manager_required
+def dashboard_orders(request):
+    orders = Order.objects.all()
+    return render(request, 'dashboard/orders/list.html', {'orders': orders})
 
-from decimal import Decimal
+@login_required
+@admin_or_manager_required
+def order_detail(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+    return render(request, 'dashboard/orders/detail.html', {'order': order})
 
-def get_total_cost(self):
-    return sum(item.get_cost() for item in self.items.all()) or Decimal("0.00")
+@login_required
+@admin_or_manager_required
+@transaction.atomic
+def update_order_status(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+
+    if request.method == "POST":
+
+        # Éviter d'envoyer plusieurs fois
+        if order.is_shipped:
+            messages.warning(request, "Commande déjà marquée comme envoyée.")
+            return redirect('dashboard:order_detail', order_id=order.id)
+
+        order.is_shipped = True
+        order.save()
+
+        # Email
+        send_invoice_email(order)
+
+        # WhatsApp (optionnel si configuré)
+        try:
+            send_invoice_whatsapp(order)
+        except Exception as e:
+            print("Erreur WhatsApp:", e)
+
+        messages.success(request, "Commande marquée comme envoyée et notification envoyée.")
+
+    return redirect('dashboard:order_detail', order_id=order.id)
+
+def send_invoice_email(order):
+    subject = f"Votre commande #{order.id} a été expédiée 🚚"
+
+    html_content = render_to_string("emails/invoice_email.html", {
+        "order": order
+    })
+
+    email = EmailMessage(
+        subject,
+        html_content,
+        settings.DEFAULT_FROM_EMAIL,
+        [order.email],
+    )
+
+    email.content_subtype = "html"
+
+    # Générer facture PDF
+    pdf_path = generate_invoice_pdf(order)
+
+    if pdf_path and os.path.exists(pdf_path):
+        email.attach_file(pdf_path)
+
+    email.send(fail_silently=False)
+
+
+
+def generate_invoice_pdf(order):
+    file_path = os.path.join(settings.MEDIA_ROOT, f"invoice_{order.id}.pdf")
+
+    doc = SimpleDocTemplate(file_path)
+    elements = []
+    styles = getSampleStyleSheet()
+
+    elements.append(Paragraph(f"Facture #{order.id}", styles["Title"]))
+    elements.append(Spacer(1, 12))
+
+    data = [["Produit", "Quantité", "Prix"]]
+
+    for item in order.items.all():
+        data.append([
+            item.product.name,
+            str(item.quantity),
+            f"{item.price} FCFA"
+        ])
+
+    table = Table(data)
+    table.setStyle(TableStyle([
+        ('BACKGROUND', (0,0), (-1,0), colors.grey),
+        ('GRID', (0,0), (-1,-1), 1, colors.black),
+    ]))
+
+    elements.append(table)
+
+    doc.build(elements)
+
+    return file_path
+
+# --- Configuration ---
+
+@login_required
+@admin_or_manager_required
+
+@login_required
+def banner_list(request):
+    banners = Banner.objects.all()
+    return render(request, "dashboard/banner_list.html", {
+        "banners": banners
+    })
+
+
+@login_required
+def banner_create(request):
+    if request.method == "POST":
+        form = BannerForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Bannière ajoutée ✅")
+            return redirect("products:banner_list")
+    else:
+        form = BannerForm()
+
+    return render(request, "dashboard/banner_form.html", {
+        "form": form
+    })
+
+
+@login_required
+def banner_update(request, pk):
+    banner = get_object_or_404(Banner, pk=pk)
+
+    if request.method == "POST":
+        form = BannerForm(request.POST, request.FILES, instance=banner)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Bannière mise à jour ✅")
+            return redirect("products:banner_list")
+    else:
+        form = BannerForm(instance=banner)
+
+    return render(request, "dashboard/banner_form.html", {
+        "form": form
+    })
+
+
+@login_required
+def banner_delete(request, pk):
+    banner = get_object_or_404(Banner, pk=pk)
+
+    if request.method == "POST":
+        banner.delete()
+        messages.success(request, "Bannière supprimée ❌")
+        return redirect("products:banner_list")
+
+    return render(request, "dashboard/banner_confirm_delete.html", {
+        "banner": banner
+    })
+
+
+
+
+
+@login_required
+@admin_or_manager_required
+def shop_promo(request):
+    instance = ShopInfo.get_instance()
+    if request.method == 'POST':
+        form = PromoSettingsForm(request.POST, request.FILES, instance=instance)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Section Promotion mise à jour !")
+            return redirect('dashboard:shop_promo')
+    else:
+        form = PromoSettingsForm(instance=instance)
+    return render(request, 'dashboard/settings/promo.html', {'form': form})
+
+@login_required
+@admin_or_manager_required
+def shop_about(request):
+    instance = ShopInfo.get_instance()
+    if request.method == 'POST':
+        form = AboutSettingsForm(request.POST, request.FILES, instance=instance)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Section À Propos mise à jour !")
+            return redirect('dashboard:shop_about')
+    else:
+        form = AboutSettingsForm(instance=instance)
+    return render(request, 'dashboard/settings/about.html', {'form': form})
+
+@login_required
+@admin_or_manager_required
+def shop_newsletter(request):
+    instance = ShopInfo.get_instance()
+    if request.method == 'POST':
+        form = NewsletterSettingsForm(request.POST, request.FILES, instance=instance)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Section Newsletter mise à jour !")
+            return redirect('dashboard:shop_newsletter')
+    else:
+        form = NewsletterSettingsForm(instance=instance)
+    return render(request, 'dashboard/settings/newsletter.html', {'form': form})
+
+# --- Blog Dashboard ---
+
+@login_required
+@admin_or_manager_required
+def blog_list_view(request):
+    posts = BlogPost.objects.all()
+    return render(request, 'dashboard/blog/list.html', {'posts': posts})
+
+@login_required
+@admin_or_manager_required
+def blog_create_view(request):
+    if request.method == 'POST':
+        form = BlogPostForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('dashboard:blog_posts')
+    else:
+        form = BlogPostForm()
+    return render(request, 'dashboard/blog/form.html', {'form': form})
+
+@login_required
+@admin_or_manager_required
+def blog_update_view(request, pk):
+    post = get_object_or_404(BlogPost, id=pk)
+    if request.method == 'POST':
+        form = BlogPostForm(request.POST, request.FILES, instance=post)
+        if form.is_valid():
+            form.save()
+            return redirect('dashboard:blog_posts')
+    else:
+        form = BlogPostForm(instance=post)
+    return render(request, 'dashboard/blog/form.html', {'form': form})
+
+@login_required
+@admin_or_manager_required
+def blog_delete_view(request, pk):
+    post = get_object_or_404(BlogPost, id=pk)
+    post.delete()
+    return redirect('dashboard:blog_posts')
+
+# --- Catégories (Class Based Views) ---
+
+class CategoryListView(ListView):
+    model = Category
+    template_name = 'dashboard/categories/list.html'
+    context_object_name = 'categories'
+
+class CategoryCreateView(CreateView):
+    model = Category
+    form_class = CategoryForm
+    template_name = 'dashboard/categories/form.html'
+    success_url = reverse_lazy('dashboard:category_list')
+
+class CategoryUpdateView(UpdateView):
+    model = Category
+    form_class = CategoryForm
+    template_name = 'dashboard/categories/form.html'
+    success_url = reverse_lazy('dashboard:category_list')
+    slug_url_kwarg = 'slug'
+    slug_field = 'slug'
+
+class CategoryDeleteView(DeleteView):
+    model = Category
+    template_name = 'dashboard/categories/confirm_delete.html'
+    success_url = reverse_lazy('dashboard:category_list')
+    slug_url_kwarg = 'slug'
+    slug_field = 'slug'
+
+# --- Vues manquantes (stubs pour compatibilité URLs) ---
+@login_required
+@admin_or_manager_required
+def dashboard_accounting(request):
+    return render(request, 'dashboard/accounting.html')
+
+@login_required
+@admin_or_manager_required
+def export_transactions_csv(request):
+    return HttpResponse("Export CSV non implémenté")
+
+@login_required
+@admin_or_manager_required
+def dashboard_settings(request):
+    return render(request, 'dashboard/settings/settings.html')
+
+
+@login_required
+@admin_or_manager_required
+def shipping_zones(request):
+    zones = ShippingZone.objects.all()
+    return render(request, 'dashboard/settings/shipping_list.html', {'zones': zones})
+
+@login_required
+@admin_or_manager_required
+def add_shipping_zone(request):
+    if request.method == 'POST':
+        form = ShippingZoneForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Zone de livraison ajoutée.")
+            return redirect('dashboard:shipping_zones')
+    else:
+        form = ShippingZoneForm()
+    return render(request, 'dashboard/settings/shipping_form.html', {'form': form})
+
+@login_required
+@admin_or_manager_required
+def edit_shipping_zone(request, zone_id):
+    zone = get_object_or_404(ShippingZone, id=zone_id)
+    if request.method == 'POST':
+        form = ShippingZoneForm(request.POST, instance=zone)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Zone mise à jour.")
+            return redirect('dashboard:shipping_zones')
+    else:
+        form = ShippingZoneForm(instance=zone)
+    return render(request, 'dashboard/settings/shipping_form.html', {'form': form})
+
+@login_required
+@admin_or_manager_required
+def delete_shipping_zone(request, pk):
+    zone = get_object_or_404(ShippingZone, id=pk)
+    zone.delete()
+    messages.success(request, "Zone supprimée.")
+    return redirect('dashboard:shipping_zones')
+
+
+
+
+
+@login_required
+@admin_or_manager_required
+def edit_shipping_zone(request, zone_id):
+    # Logique similaire à edit_product
+    return HttpResponse(f"Form edit zone {zone_id}")
+
+@login_required
+@admin_or_manager_required
+def delete_shipping_zone(request, pk):
+    return HttpResponse(f"Delete zone {pk}")
+
+@login_required
+@admin_or_manager_required
+def payment_methods(request):
+    return HttpResponse("Liste méthodes paiement")
+
+
+
+
+
+# --- GESTION DES MOYENS DE PAIEMENT ---
+
+@login_required
+@admin_or_manager_required
+def payment_methods(request):
+    methods = PaymentMethod.objects.all()
+    return render(request, 'dashboard/settings/payment_list.html', {'methods': methods})
+
+@login_required
+@admin_or_manager_required
+def add_payment_method(request):
+    if request.method == 'POST':
+        form = PaymentMethodForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Moyen de paiement ajouté.")
+            return redirect('dashboard:payment_methods')
+    else:
+        form = PaymentMethodForm()
+    return render(request, 'dashboard/settings/payment_form.html', {'form': form})
+
+@login_required
+@admin_or_manager_required
+def edit_payment_method(request, method_id):
+    method = get_object_or_404(PaymentMethod, id=method_id)
+    if request.method == 'POST':
+        form = PaymentMethodForm(request.POST, instance=method)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Moyen de paiement mis à jour.")
+            return redirect('dashboard:payment_methods')
+    else:
+        form = PaymentMethodForm(instance=method)
+    return render(request, 'dashboard/settings/payment_form.html', {'form': form})
+
+    
+@login_required
+@admin_or_manager_required
+def billing_settings(request):
+    return HttpResponse("Paramètres facturation")
+
+def some_view(request):
+    return HttpResponse("Some view placeholder")
+
+
+# Ajoutez ces imports s'ils ne sont pas déjà présents en haut du fichier
+
+
+# ... (le reste de votre fichier views.py) ...
+
+# --- PAIEMENT (À implémenter avec le SDK réel plus tard) ---
+
+
+def paydunya_init(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+
+    url = "https://app.paydunya.com/sandbox-api/v1/checkout-invoice/create"
+
+    headers = {
+        "Content-Type": "application/json",
+        "PAYDUNYA-MASTER-KEY": settings.PAYDUNYA_MASTER_KEY,
+        "PAYDUNYA-PRIVATE-KEY": settings.PAYDUNYA_PRIVATE_KEY,
+        "PAYDUNYA-TOKEN": settings.PAYDUNYA_TOKEN,
+    }
+
+    data = {
+        "invoice": {
+            "total_amount": float(order.total_price),
+            "description": f"Commande #{order.id}"
+        },
+        "store": {
+            "name": "Terra & Pure",
+            "website_url": "http://127.0.0.1:8888",
+        },
+        "actions": {
+            "callback_url": f"http://127.0.0.1:8888/shop/paydunya_callback/{order.id}/",
+            "return_url": f"http://127.0.0.1:8888/shop/payment_success/{order.id}/",
+            "cancel_url": f"http://127.0.0.1:8888/shop/order_cancelled/{order.id}/",
+        }
+    }
+
+    response = requests.post(url, json=data, headers=headers)
+    result = response.json()
+
+    if result.get("response_code") == "00":
+        # Redirection vers l’URL de paiement PayDunya
+        return redirect(result["response_text"])
+    
+    # Sinon retour au checkout
+    return redirect('products:checkout')

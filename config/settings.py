@@ -1,6 +1,10 @@
 
 from pathlib import Path
 import os
+
+from dotenv import load_dotenv
+
+load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -53,7 +57,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'shop.context_processors.categories_processor',  # Ajoutez votre context processor ici
+                'shop.context_processors.cart_item_count',
+                'shop.context_processors.categories_context', # Ajoutez votre context processor ici
             ],
         },
     },
@@ -76,11 +81,6 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
-PAYDUNYA_MASTER_KEY = "IZ1pSWiK-ccuu-AlCs-OlZq-tGbJQCUfvZ4T"
-PAYDUNYA_PUBLIC_KEY = "test_public_0nfRyIYUuyGhqp6pBpZHWV21rvd"
-PAYDUNYA_PRIVATE_KEY = "test_private_eDBH4wr1vOhAJxh2jwiCr4GPDY8"
-PAYDUNYA_TOKEN = "9CK96TxtYtKQSIf1mZoY"
 
 
 # 2. Configuration des Fichiers Statiques et Médias
@@ -114,7 +114,11 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 AUTH_USER_MODEL = "shop.User"
+# Redirection après connexion (vers la boutique)
+LOGIN_REDIRECT_URL = 'products:shop'
 
+# Redirection après déconnexion
+LOGOUT_REDIRECT_URL = 'products:shop'
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
 
@@ -131,3 +135,19 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+PAYDUNYA_MASTER_KEY = "IZ1pSWiK-ccuu-AlCs-OlZq-tGbJQCUfvZ4T"
+PAYDUNYA_PUBLIC_KEY = "test_public_0nfRyIYUuyGhqp6pBpZHWV21rvd"
+PAYDUNYA_PRIVATE_KEY = "test_private_eDBH4wr1vOhAJxh2jwiCr4GPDY8"
+PAYDUNYA_TOKEN = "9CK96TxtYtKQSIf1mZoY"
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
