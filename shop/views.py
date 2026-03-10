@@ -883,6 +883,7 @@ def update_order_status(request, order_id):
     return redirect('dashboard:order_detail', order_id=order.id)
 
 # Settings (Banner, Promo, Shipping, Payment, etc.)
+
 @login_required
 def banner_list(request): return render(request, "dashboard/banner_list.html", {"banners": Banner.objects.all()})
 @login_required
@@ -892,6 +893,8 @@ def banner_create(request):
         if form.is_valid(): form.save(); messages.success(request, "Ajouté ✅"); return redirect("dashboard:banner_list")
     else: form = BannerForm()
     return render(request, "dashboard/banner_form.html", {"form": form})
+
+
 @login_required
 def banner_update(request, pk):
     b = get_object_or_404(Banner, pk=pk)
@@ -900,6 +903,8 @@ def banner_update(request, pk):
         if form.is_valid(): form.save(); messages.success(request, "Mis à jour ✅"); return redirect("dashboard:banner_list")
     else: form = BannerForm(instance=b)
     return render(request, "dashboard/banner_form.html", {"form": form})
+
+
 @login_required
 def banner_delete(request, pk):
     get_object_or_404(Banner, pk=pk).delete()
