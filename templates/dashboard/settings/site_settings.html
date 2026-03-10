@@ -1,0 +1,13 @@
+{% extends "dashboard/base_dashboard.html" %}
+
+{% block title %}Paramètres du site{% endblock %}
+
+{% block content %}
+<h2>Paramètres du site</h2>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-success">Enregistrer</button>
+</form>
+{% endblock %}

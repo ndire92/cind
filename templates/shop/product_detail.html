@@ -19,7 +19,7 @@
 <!-- CONTENU PRINCIPAL -->
 <div class="container mb-5">
     <div class="row g-5">
-        
+
         <!-- =========================================
              COLONNE IMAGES (GAUCHE)
              ========================================= -->
@@ -32,7 +32,7 @@
         {% else %}
             <img src="https://picsum.photos/seed/{{ product.slug }}/600/600" alt="Placeholder" class="img-fluid rounded-4">
         {% endif %}
-        
+
         <!-- Badge (ex: Nouveau, Promo) -->
         {% if product.badge %}
             <span class="product-detail-badge">{{ product.get_badge_display }}</span>
@@ -49,19 +49,24 @@
     </div>
     {% endif %}
 
-    <!-- Miniatures (Galerie) -->
-    {% if product.images.all %}
-    <div class="product-thumbnails d-flex gap-2 overflow-auto pb-2">
+   <!-- Miniatures (Galerie) -->
+{% if product.gallery.all %}
+<div class="product-thumbnails d-flex gap-2 overflow-auto pb-2">
+    <!-- Image principale -->
+    {% if product.image %}
         <div class="thumb-item active" onclick="changeImage(this, '{{ product.image.url }}')">
             <img src="{{ product.image.url }}" alt="Main" class="rounded-3">
         </div>
-        {% for img in product.images.all %}
-            <div class="thumb-item" onclick="changeImage(this, '{{ img.image.url }}')">
-                <img src="{{ img.image.url }}" alt="{{ product.name }}" class="rounded-3">
-            </div>
-        {% endfor %}
-    </div>
     {% endif %}
+
+    <!-- Galerie secondaire -->
+    {% for img in product.gallery.all %}
+        <div class="thumb-item" onclick="changeImage(this, '{{ img.image.url }}')">
+            <img src="{{ img.image.url }}" alt="{{ product.name }}" class="rounded-3">
+        </div>
+    {% endfor %}
+</div>
+{% endif %}
 </div>
 
 
@@ -70,7 +75,7 @@
              ========================================= -->
         <div class="col-lg-6">
             <div class="product-info-sticky">
-                
+
                 <!-- Catégorie -->
                 <span class="product-meta-category">
                     <a href="{{ product.category.get_absolute_url }}">{{ product.category.name }}</a>
@@ -81,9 +86,9 @@
 
                 <!-- Prix -->
                 <div class="product-price-block my-3">
-                    <span class="current-price">{{ product.price_ttc|floatformat:2 }} €</span>
+                    <span class="current-price">{{ product.price_ttc|floatformat:2 }} FCFA</span>
                     {% if product.price_ht < product.price_ttc %}
-                        <span class="old-price text-muted text-decoration-line-through ms-2">{{ product.price_ht }} € HT</span>
+                        <span class="old-price text-muted text-decoration-line-through ms-2">{{ product.price_ht }} FCFA HT</span>
                     {% endif %}
                 </div>
 
@@ -109,7 +114,7 @@
       <!-- Formulaire Ajout Panier -->
 <form action="{% url 'products:cart_add' product.id %}" method="post" class="add-to-cart-form">
     {% csrf_token %}
-    
+
     <div class="d-flex align-items-center gap-3 flex-wrap">
         <!-- Sélecteur Quantité -->
         <div class="quantity-input-wrapper d-flex align-items-center border rounded-pill overflow-hidden">
@@ -119,15 +124,15 @@
             </button>
 
             <!-- INPUT (ID = qtyInput) -->
-            <input type="number" 
-                   name="quantity" 
-                   value="1" 
-                   min="1" 
-                   class="form-control border-0 text-center qty-input" 
-                   id="qtyInput" 
-                   readonly 
+            <input type="number"
+                   name="quantity"
+                   value="1"
+                   min="1"
+                   class="form-control border-0 text-center qty-input"
+                   id="qtyInput"
+                   readonly
                    style="width: 50px; background: transparent;">
-            
+
             <!-- BOUTON PLUS -->
             <button type="button" class="btn btn-link text-dark py-2 px-3" onclick="incrementValue()">
                 <i class="bi bi-plus"></i>
@@ -242,7 +247,7 @@
                     </div>
                     <div class="product-info text-center">
                         <h3 class="product-title"><a href="{{ prod.get_absolute_url }}">{{ prod.name }}</a></h3>
-                        <div class="product-price">{{ prod.price_ttc|floatformat:2 }} €</div>
+                        <div class="product-price">{{ prod.price_ttc|floatformat:2 }} FCFA</div>
                     </div>
                 </div>
             </div>
@@ -267,7 +272,7 @@
     .product-main-image-wrapper { position: relative; overflow: hidden; cursor: zoom-in; }
     .main-zoom { transition: transform 0.5s ease; }
     .product-main-image-wrapper:hover .main-zoom { transform: scale(1.05); }
-    
+
     .product-detail-badge { position: absolute; top: 20px; left: 20px; background: #fd7e14; color: white; padding: 5px 15px; border-radius: 30px; font-weight: 600; font-size: 0.8rem; z-index: 2; }
 
     .product-thumbnails { gap: 10px; }
@@ -291,22 +296,22 @@
 
     /* Sticky sur Desktop */
     @media (min-width: 992px) { .product-info-sticky { position: sticky; top: 120px; } }
-    
+
     /* Liens infos */
     .info-item h6 { color: #014215; font-weight: 700; }
 
     /* === 4. ONGLETS (TABS) === */
     .tabs-container { background-color: #f8f9fa; padding: 60px 0; margin-top: 60px; }
-    
+
     .tabs-header { display: flex; gap: 10px; border-bottom: 2px solid #e9ecef; margin-bottom: 30px; justify-content: center; }
-    
+
     .tab-btn { background: none; border: none; padding: 15px 25px; font-size: 1rem; font-weight: 600; color: #888; cursor: pointer; position: relative; transition: color 0.3s; }
     .tab-btn.active { color: #014215; }
     .tab-btn.active::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 100%; height: 3px; background-color: #fd7e14; }
 
     .tab-content { display: none; animation: fadeIn 0.5s; max-width: 800px; margin: 0 auto; font-size: 1.05rem; line-height: 1.8; color: #555; }
     .tab-content.active { display: block; }
-    
+
     /* === 5. PRODUITS SIMILAIRES === */
     .shop-card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: transform 0.3s ease; height: 100%; display: flex; flex-direction: column; }
     .shop-card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
@@ -340,7 +345,7 @@
         // Change l'image
         const mainImg = document.getElementById('mainProductImage');
         const container = document.querySelector('.product-main-image-wrapper');
-        
+
         container.classList.add('fade-effect');
         setTimeout(() => {
             mainImg.src = url;

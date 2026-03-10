@@ -1,0 +1,39 @@
+{% extends "dashboard/base_dashboard.html" %}
+{% block title %}Liste des paramètres{% endblock %}
+
+{% block content %}
+<h2>Paramètres du site</h2>
+
+<!-- Bouton ajout -->
+<div class="mb-3">
+    <a href="{% url 'dashboard:site_settings_add' %}" class="btn btn-success">
+        ➕ Ajouter un paramètre
+    </a>
+</div>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Nom du site</th>
+            <th>Email</th>
+            <th>Téléphone</th>
+            <th>Adresse</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for s in settings %}
+        <tr>
+            <td>{{ s.site_name }}</td>
+            <td>{{ s.contact_email }}</td>
+            <td>{{ s.contact_phone }}</td>
+            <td>{{ s.addresse }}</td>
+            <td>
+                <a href="{% url 'dashboard:site_settings_edit' s.pk %}" class="btn btn-sm btn-primary">Modifier</a>
+                <a href="{% url 'dashboard:site_settings_delete' s.pk %}" class="btn btn-sm btn-danger">Supprimer</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

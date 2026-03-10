@@ -1,0 +1,50 @@
+{% extends "dashboard/base_dashboard.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Pages Légales & Informations</h2>
+    <a href="{% url 'dashboard:static_page_add' %}" class="btn btn-primary">
+        <i class="bi bi-plus-circle me-2"></i> Nouvelle Page
+    </a>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead class="bg-light">
+                <tr>
+                    <th>Titre</th>
+                    <th>URL (Slug)</th>
+                    <th>Dernière modif.</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for page in pages %}
+                <tr>
+                    <td><strong>{{ page.title }}</strong></td>
+                    <td><code>/page/{{ page.slug }}</code></td>
+                    <td>{{ page.updated_at|date:"d/m/Y" }}</td>
+                    <td class="text-end">
+                        <!-- Lien pour voir sur le site -->
+                        <a href="{% url 'products:static_page' slug=page.slug %}" target="_blank" class="btn btn-sm btn-outline-success me-1">
+                            <i class="bi bi-eye"></i>
+                        </a>
+                        <a href="{% url 'dashboard:static_page_edit' page.id %}" class="btn btn-sm btn-outline-primary me-1">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        <a href="{% url 'dashboard:static_page_delete' page.id %}" class="btn btn-sm btn-outline-danger">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="text-center py-4 text-muted">Aucune page créée.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "dashboard/base_dashboard.html" %}
+
+{% block content %}
+<div class="container py-4">
+    <h2>Feature</h2>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <button type="submit" class="btn btn-success">Enregistrer</button>
+    </form>
+</div>
+{% endblock %}

@@ -10,24 +10,38 @@
                 {% csrf_token %}
                 
                 <div class="row g-3">
+                    <!-- Titre -->
                     <div class="col-md-6">
                         <label class="form-label fw-bold">Titre</label>
                         {{ form.title }}
                     </div>
+                    
+                    <!-- Sous-titre -->
                     <div class="col-md-6">
                         <label class="form-label fw-bold">Sous-titre</label>
                         {{ form.subtitle }}
                     </div>
+
+                    <!-- NOUVEAU : Produit associé -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Produit associé</label>
+                        {{ form.product }}
+                        <small class="text-muted">Lien vers le produit lors du clic sur "Découvrir".</small>
+                    </div>
+
+                    <!-- Ordre d'affichage -->
                     <div class="col-md-6">
                         <label class="form-label fw-bold">Ordre d'affichage</label>
                         {{ form.order }}
                         <small class="text-muted">Les bannières sont triées par ce chiffre.</small>
                     </div>
-                    <div class="col-md-6">
+
+                    <!-- Image (mise en page sur toute la largeur pour le preview) -->
+                    <div class="col-12">
                         <label class="form-label fw-bold">Image</label>
                         {% if form.instance.image %}
                             <div class="mb-2">
-                                <img src="{{ form.instance.image.url }}" class="rounded" style="max-width: 200px;">
+                                <img src="{{ form.instance.image.url }}" class="rounded img-thumbnail" style="max-height: 200px;">
                             </div>
                         {% endif %}
                         {{ form.image }}

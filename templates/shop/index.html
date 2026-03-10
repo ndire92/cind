@@ -6,7 +6,18 @@
 <!-- =========================================
      1. HERO SLIDER
      ========================================= -->
-<div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+<!-- =========================================
+     1. HERO SLIDER
+     ========================================= -->
+
+<!-- =========================================
+     1. HERO SLIDER (Sans fond)
+     ========================================= -->
+
+{% if banners %}
+
+<!-- Ajoutez data-bs-interval="3000" pour 3 secondes par slide -->
+<div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
 
   <!-- Indicateurs -->
   <div class="carousel-indicators">
@@ -14,7 +25,9 @@
       <button type="button"
               data-bs-target="#carouselExampleIndicators"
               data-bs-slide-to="{{ forloop.counter0 }}"
-              class="{% if forloop.first %}active{% endif %}">
+              class="{% if forloop.first %}active{% endif %}"
+              aria-current="{% if forloop.first %}true{% endif %}"
+              aria-label="Slide {{ forloop.counter }}">
       </button>
     {% endfor %}
   </div>
@@ -22,33 +35,101 @@
   <!-- Slides -->
   <div class="carousel-inner">
     {% for banner in banners %}
-    <div class="carousel-item {% if forloop.first %}active{% endif %}">
-      
-      <div class="hero-slide" style="background-image: url('{{ banner.image.url }}');">
-        <div class="overlay"></div>
-        <div class="container">
-          <div class="hero-content">
-            <h2>{{ banner.title }}</h2>
-            <h3>{{ banner.subtitle }}</h3>
-            <a href="{% url 'products:shop' %}" class="btn btn-warning mt-3">
-              Découvrir maintenant
-            </a>
+      <div class="carousel-item {% if forloop.first %}active{% endif %}">
+
+        <div class="py-5">
+          <div class="container">
+            <div class="row align-items-center">
+
+              <!-- Texte à gauche -->
+              <div class="col-md-6 text-center text-md-start mb-4 mb-md-0">
+                <div class="hero-content px-3">
+                  {% if banner.title %}
+                    <h2 class="display-5 fw-bold">{{ banner.title }}</h2>
+                  {% endif %}
+
+                  {% if banner.subtitle %}
+                    <h3 class="text-muted mt-2">{{ banner.subtitle }}</h3>
+                  {% endif %}
+
+                  <!-- BOUTON MODIFIE ICI -->
+                  <a href="{% if banner.product %}
+                              {% url 'products:product_detail' banner.product.id banner.product.slug %}
+                           {% else %}
+                              {% url 'products:shop' %}
+                           {% endif %}"
+                     class="btn btn-warning btn-lg mt-4 shadow-sm">
+                    Découvrir maintenant
+                  </a>
+
+                </div>
+              </div>
+
+              <!-- Image à droite -->
+              <div class="col-md-6 text-center">
+                {% if banner.image %}
+                  <!-- On peut aussi rendre l'image cliquable -->
+                  <a href="{% if banner.product %}
+                              {% url 'products:product_detail' banner.product.id banner.product.slug %}
+                           {% else %}
+                              {% url 'products:shop' %}
+                           {% endif %}">
+                      <img src="{{ banner.image.url }}"
+                           alt="{{ banner.title|default:'Bannière' }}"
+                           class="img-fluid"
+                           style="max-height: 450px; object-fit: contain;">
+                  </a>
+                {% endif %}
+              </div>
+
+            </div>
           </div>
         </div>
       </div>
-    </div>
     {% endfor %}
   </div>
 
-  <!-- Controls -->
-  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-    <span class="carousel-control-prev-icon"></span>
-  </button>
-  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-    <span class="carousel-control-next-icon"></span>
-  </button>
-</div>
+ <!-- Style personnalisé pour les couleurs -->
+<style>
+    /* Indicateurs (points) : Orange par défaut, Vert si actif */
+    #carouselExampleIndicators .carousel-indicators button {
+        background-color: orange;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        opacity: 1;
+    }
+    #carouselExampleIndicators .carousel-indicators button.active {
+        background-color: green;
+    }
 
+    /* Flèches : Orange */
+    #carouselExampleIndicators .carousel-control-prev-icon,
+    #carouselExampleIndicators .carousel-control-next-icon {
+        filter: invert(58%) sepia(99%) saturate(1945%) hue-rotate(359deg) brightness(101%) contrast(101%);
+    }
+</style>
+
+<!-- Votre Carousel -->
+{% if banners %}
+<div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+  <!-- ... reste du code HTML ... -->
+
+  <!-- Contrôles -->
+
+</div>
+{% endif %}
+
+</div>
+{% else %}
+<!-- Secours si aucune bannière -->
+<section class="py-5 text-center">
+    <div class="container">
+        <h2>Bienvenue</h2>
+        <a href="{% url 'products:shop' %}" class="btn btn-primary">Voir la boutique</a>
+    </div>
+</section>
+{% endif %}
 
 <!-- =========================================
      2. RAYONS / CATÉGORIES
@@ -56,7 +137,7 @@
 <section id="categories">
     <div class="container">
         <div class="section-header">
-            <span class="section-subtitle">Nos Rayons</span>
+            <span class="section-subtitle" style="color: #fd7e14;">Nos Rayons</span>
             <h2>Parcourir par univers</h2>
         </div>
 
@@ -94,27 +175,22 @@
      3. FEATURES (AVANTAGES)
      ========================================= -->
 <section id="features">
+    <div class="section-header text-center mb-5">
+    <span class="section-subtitle" style="color: #fd7e14;">Notre Engagement</span>
+    <h2>L’ADN de Cindera</h2>
+</div>
     <div class="container">
         <div class="features-grid">
-            <div class="feature-card">
-                <i class="fas fa-leaf feature-icon"></i>
-                <h3>100% Naturel</h3>
-                <p>Aucun produit chimique agressif. Seulement des extraits de plantes et des huiles essentielles pures.</p>
-            </div>
-            <div class="feature-card">
-                <i class="fas fa-hand-holding-heart feature-icon"></i>
-                <h3>Cruelty Free</h3>
-                <p>Nos produits ne sont jamais testés sur les animaux. Nous respectons toutes formes de vie.</p>
-            </div>
-            <div class="feature-card">
-                <i class="fas fa-recycle feature-icon"></i>
-                <h3>Éco-Responsable</h3>
-                <p>Des emballages recyclables et une production à faible empreinte carbone.</p>
-            </div>
+{% for feature in features %}
+    <div class="feature-card">
+        <i class="{{ feature.icon_class }} feature-icon"></i>
+        <h3>{{ feature.title }}</h3>
+        <p>{{ feature.description }}</p>
+    </div>
+{% endfor %}
         </div>
     </div>
 </section>
-
 
 <!-- =========================================
      4. PRODUITS RÉCENTS
@@ -137,14 +213,14 @@
                         {% endif %}
                         {% if product.badge %}<span class="product-badge">{{ product.get_badge_display }}</span>{% endif %}
                     </div>
-                    
+
                     <div class="product-info">
                         <div>
                             <span class="product-category">{{ product.category.name }}</span>
                             <h3 class="product-title">
                                 <a href="{% url 'products:product_detail' id=product.id slug=product.slug %}">{{ product.name }}</a>
                             </h3>
-                            <div class="product-price">{{ product.price_ttc|floatformat:2 }} €</div>
+                            <div class="product-price">{{ product.price_ttc|floatformat:2 }} fcfa</div>
                         </div>
                         <a href="{% url 'products:cart_add' product.id %}" class="add-to-cart-btn">
                             <i class="fas fa-shopping-cart"></i> Ajouter au panier
@@ -226,7 +302,7 @@
                 </div>
 
                 <div class="about-content">
-                    <span class="about-badge">Notre Histoire</span>
+                    <span class="about-badge">À la une</span>
                     <h2>{{ featured_post.title }}</h2>
                     <p>{{ featured_post.excerpt }}</p>
                     <a href="{% url 'products:post_detail' slug=featured_post.slug %}" class="btn-modern">
@@ -239,8 +315,47 @@
         </div>
     </div>
 </section>
+<!-- SECTION BLOG (À placer dans index.html) -->
+<!-- SECTION VIDEO A LA UNE -->
+<!-- SECTION VIDEO A LA UNE -->
+{% if featured_video %}
+<section class="video-section py-5 bg-light">
+    <div class="container">
+        <div class="row align-items-center g-5">
 
+            <!-- Texte à Gauche -->
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <span class="badge bg-danger-subtle text-danger mb-3 px-3 py-2 rounded-pill small">
+                    <i class="bi bi-play-circle me-1"></i> À la une
+                </span>
+                <h2 class="display-5 fw-bold mb-3" style="font-family: 'Playfair Display', serif;">
+                    {{ featured_video.title }}
+                </h2>
+                <p class="lead text-muted mb-4">
+                    {{ featured_video.description|truncatewords:30 }}
+                </p>
+            </div>
 
+            <!-- Vidéo à Droite -->
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+                    <div class="ratio ratio-16x9 bg-dark">
+                        {% if featured_video.video_url %}
+                            <iframe src="{{ featured_video.video_url }}" title="{{ featured_video.title }}" allowfullscreen></iframe>
+                        {% elif featured_video.video_file %}
+                            <!-- CORRECTION ICI : On vérifie si l'image existe avant de mettre poster -->
+                            <video controls {% if featured_video.image %}poster="{{ featured_video.image.url }}"{% endif %} class="w-100">
+                                <source src="{{ featured_video.video_file.url }}" type="video/mp4">
+                            </video>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+{% endif %}
 <!-- =========================================
      8. CONTACT STRIP
      ========================================= -->
@@ -249,21 +364,23 @@
         <div class="contact-item">
             <div class="contact-icon"><i class="fas fa-phone-alt"></i></div>
             <div>
-                <a href="tel:+1234567890">+123 456 7890</a>
-                <a href="tel:+1234567890">+123 456 7890</a>
+                {% if settings.contact_phone %}
+                    <a href="tel:{{ settings.contact_phone }}">{{ settings.contact_phone }}</a>
+                {% endif %}
             </div>
         </div>
         <div class="contact-item">
             <div class="contact-icon"><i class="far fa-envelope"></i></div>
             <div>
-                <a href="mailto:info@terrapure.com">info@terrapure.com</a>
-                <a href="mailto:support@terrapure.com">support@terrapure.com</a>
+                <a href="mailto:{{ settings.contact_email }}">{{ settings.contact_email }}</a>
             </div>
         </div>
         <div class="contact-item">
             <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
             <div>
-                <span>1569 Ave, New York,<br>NY 10028, USA</span>
+                {% if settings.addresse %}
+                    <span>{{ settings.addresse }}</span>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -272,10 +389,12 @@
 
          <!-- NEWSLETTER SECTION AVEC IMAGE DE FOND -->
     <!-- On applique l'image de fond ici -->
-   <section id="newsletter" 
+{% load static %} <!-- Assurez-vous que c'est présent en haut du fichier -->
+
+<section id="newsletter"
          style="
-            text-align: center; 
-            max-width: 100%; 
+            text-align: center;
+            max-width: 100%;
             padding: 80px 20px;
             background-image: url('{% if shop_info.newsletter_bg_image %}{{ shop_info.newsletter_bg_image.url }}{% else %}{% static 'img/default_newsletter_bg.jpg' %}{% endif %}');
             background-size: cover;
@@ -285,26 +404,28 @@
          ">
 
     <div style="
-        max-width: 600px; 
+        max-width: 600px;
         margin: 0 auto;
         background: rgba(255, 255, 255, 0.95);
-        padding: 50px 40px; 
+        padding: 50px 40px;
         border-radius: 16px;
         box-shadow: 0 15px 40px rgba(0,0,0,0.1);
         backdrop-filter: blur(10px);
     ">
         <i class="far fa-envelope" style="font-size: 2.5rem; color: var(--primary-color); margin-bottom: 20px;"></i>
-        
+
         <h2 style="margin-bottom: 10px;">{{ shop_info.newsletter_title }}</h2>
         <p style="margin-bottom: 30px; color: #666;">{{ shop_info.newsletter_text }}</p>
-        
-        <form style="display: flex; gap: 10px;">
-            <input type="email" placeholder="Votre email" style="flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 50px; outline: none;">
+
+        <!-- FORMULAIRE CORRIGÉ -->
+        <form action="{% url 'products:newsletter_subscribe' %}" method="post" style="display: flex; gap: 10px;">
+            {% csrf_token %}
+            <!-- Ajout de name="email" pour que la vue récupère la valeur -->
+            <input type="email" name="email" placeholder="Votre email" required style="flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 50px; outline: none;">
             <button type="submit" class="btn btn-primary">S'inscrire</button>
         </form>
     </div>
 </section>
- 
 <!-- =========================================
      CSS CONSOLIDÉ (UN SEUL BLOC)
      ========================================= -->
@@ -313,8 +434,8 @@
     .hero-slide { height: 85vh; background-size: cover; background-position: center; position: relative; display: flex; align-items: center; }
     .hero-slide .overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.55); }
     .hero-content { position: relative; z-index: 2; color: white; max-width: 600px; }
-    .hero-content h2 { font-size: 48px; font-weight: 700; margin-bottom: 15px; font-family: 'Playfair Display', serif; }
-    .hero-content h3 { font-size: 22px; font-weight: 400; margin-bottom: 20px; }
+    .hero-content h2 { font-size: 48px;color:#014215; font-weight: 700; margin-bottom: 15px; font-family: 'Playfair Display', serif; }
+    .hero-content h3 { font-size: 22px; #014215;font-weight: 400; margin-bottom: 20px; }
     .hero-content .btn { padding: 12px 28px; font-weight: 600; border-radius: 6px; }
 
     /* === 2. GLOBAL SECTIONS === */
@@ -385,7 +506,8 @@
     .trust-counter { font-size: 1.8rem; font-weight: 700; color: #014215; }
 
     /* === 7. PROMO === */
-    #promo { position: relative; background-color: #014215; background-size: cover; background-position: center; padding: 100px 20px; text-align: center; overflow: hidden; }
+    #promo { position: relative; background-color: #014215; background-size: cover;border-radius: 50px; background-position: center; padding: 100px 20px; text-align: center; overflow: hidden;max-width: 1200px;
+  margin: 80px auto;box-shadow: var(--shadow-soft); }
     #promo::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 1; }
     .promo-wrapper { position: relative; z-index: 2; max-width: 700px; margin: 0 auto; }
     .promo-title { font-size: 2.5rem; color: white; margin-bottom: 20px; font-family: 'Playfair Display', serif; }
@@ -412,7 +534,9 @@
     .btn-modern:hover .arrow { transform: translateX(5px); }
 
     /* === 9. CONTACT STRIP === */
-    .contact-strip { background-color: #014215; padding: 70px 0; }
+    .contact-strip { background-color: #014215; padding:80px 20px;
+  margin:0 auto 60px auto;max-width:1200px;
+  border-radius: var(--radius);}
     .contact-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; max-width: 1200px; margin: 0 auto; padding: 0 20px; }
     @media (max-width: 768px) { .contact-grid { grid-template-columns: 1fr; text-align: center; } }
     .contact-item { display: flex; align-items: center; gap: 25px; color: white; }
@@ -421,6 +545,37 @@
     .contact-item:hover .contact-icon { background-color: #fd7e14; color: white; transform: scale(1.1); }
     .contact-item div a, .contact-item div span { display: block; color: rgba(255, 255, 255, 0.9); text-decoration: none; font-size: 1rem; transition: color 0.3s ease; }
     .contact-item div a:hover { color: #fd7e14; }
+    /* Force la vidéo à respecter la taille du conteneur de l'image */
+/* Section Video */
+.video-section {
+    padding: 80px 0;
+    background-color: #f8f9fa; /* Fond léger */
+}
+
+.video-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 50px;
+}
+
+.video-content {
+    flex: 1;
+    min-width: 300px;
+    order: 1; /* Texte à gauche */
+}
+
+.video-media {
+    flex: 1;
+    min-width: 300px;
+    order: 2; /* Vidéo à droite */
+}
+
+/* Responsive : inverse l'ordre sur mobile */
+@media (max-width: 768px) {
+    .video-content { order: 2; } /* Texte dessous */
+    .video-media { order: 1; }   /* Vidéo dessus */
+}
 
 </style>
 <script>

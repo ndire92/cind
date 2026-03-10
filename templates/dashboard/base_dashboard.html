@@ -3,174 +3,151 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Dashboard</title>
+    <title>Dashboard Cindera</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <style>
-        body { background-color: #f8f9fa; }
-        .sidebar { min-height: 100vh; background-color: #343a40; position: fixed; width: 250px; color: white; overflow-y: auto; }
-        .sidebar a { color: #adb5bd; padding: 10px 20px; display: block; text-decoration: none; }
-        .sidebar a:hover, .sidebar a.active { background-color: #495057; color: white; }
-        .main-content { margin-left: 260px; padding: 20px; }
-        
-        /* Style pour les titres de section dans la sidebar */
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            height: 100vh;
+            width: 250px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #014215; /* Vert Terra & Pure */
+            color: white;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .sidebar a {
+            color: rgba(255,255,255,0.7);
+            padding: 12px 20px;
+            display: block;
+            text-decoration: none;
+            transition: 0.2s;
+            font-size: 0.95rem;
+            white-space: nowrap;
+        }
+
+        .sidebar a:hover {
+            background-color: rgba(255,255,255,0.1);
+            color: white;
+        }
+
+        .sidebar a.active {
+            background-color: #fd7e14; /* Orange */
+            color: white;
+            font-weight: 600;
+        }
+
         .sidebar-heading {
-            padding: 15px 20px 5px 20px;
+            padding: 20px 20px 5px 20px;
             font-size: 0.75rem;
             text-transform: uppercase;
-            color: #6c757d;
-            letter-spacing: 1px;
-            border-top: 1px solid #495057;
+            color: rgba(255,255,255,0.4);
+            letter-spacing: 1.5px;
             margin-top: 10px;
+            border-top: 1px solid rgba(255,255,255,0.1);
         }
-        /* Style pour le logo dans la sidebar */
-    .sidebar-brand img {
-        height: 45px;
-        width: auto;
-    
-        transition: transform 0.3s;
-    }
-    .sidebar-brand img:hover {
-        transform: scale(1.05);
-    }
-    body { 
-        background-color: #f8f9fa; 
-        font-family: 'Poppins', sans-serif;
-    }
-    
-    /* SIDEBAR FIXE AVEC SCROLL */
-    .sidebar { 
-        height: 100vh; /* Force la hauteur totale de l'écran */
-        width: 250px;
-        position: fixed; 
-        top: 0;
-        left: 0;
-        background-color: #014215; /* Vert Terra & Pure */
-        color: white; 
-        overflow-y: auto; /* Active le scroll vertical si le contenu dépasse */
-        overflow-x: hidden; /* Empêche le scroll horizontal */
-    }
-    
-    .sidebar a { 
-        color: rgba(255,255,255,0.7); 
-        padding: 12px 20px; 
-        display: block; 
-        text-decoration: none; 
-        transition: 0.2s;
-        font-size: 0.95rem;
-        white-space: nowrap; /* Empêche le texte de passer à la ligne */
-    }
-    
-    .sidebar a:hover { 
-        background-color: rgba(255,255,255,0.1); 
-        color: white; 
-    }
-    
-    .sidebar a.active { 
-        background-color: #fd7e14; /* Orange */
-        color: white; 
-        font-weight: 600;
-    }
-    
-    .sidebar-heading {
-        padding: 20px 20px 5px 20px;
-        font-size: 0.75rem;
-        text-transform: uppercase;
-        color: rgba(255,255,255,0.4);
-        letter-spacing: 1.5px;
-        margin-top: 10px;
-        border-top: 1px solid rgba(255,255,255,0.1);
-    }
-    
-    .sidebar-brand {
-        padding: 20px;
-        text-align: center;
-        border-bottom: 1px solid rgba(255,255,255,0.1);
-        margin-bottom: 10px;
-        position: sticky; /* Le titre reste en haut même en scrollant */
-        top: 0;
-        background-color: #014215;
-        z-index: 1;
-    }
-    .sidebar-brand h4 { margin: 0; color: white; font-weight: 700; }
 
-    /* MAIN CONTENT */
-    .main-content { 
-        margin-left: 250px; 
-        padding: 30px; 
-        min-height: 100vh; /* Permet au contenu de prendre toute la hauteur */
-    }
+        .sidebar-brand {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 10px;
+            position: sticky;
+            top: 0;
+            background-color: #014215;
+            z-index: 1;
+        }
 
-    /* Scrollbar personnalisée (Optionnel, pour le style) */
-    .sidebar::-webkit-scrollbar {
-        width: 6px;
-    }
-    .sidebar::-webkit-scrollbar-track {
-        background: rgba(255,255,255,0.1);
-    }
-    .sidebar::-webkit-scrollbar-thumb {
-        background: rgba(255,255,255,0.3);
-        border-radius: 3px;
-    }
-    .sidebar::-webkit-scrollbar-thumb:hover {
-        background: rgba(255,255,255,0.5);
-    }
-</style>
-   
+        .sidebar-brand img {
+            height: 45px;
+            width: auto;
+            transition: transform 0.3s;
+        }
+        .sidebar-brand img:hover {
+            transform: scale(1.05);
+        }
+
+        /* MAIN CONTENT */
+        .main-content {
+            margin-left: 250px;
+            padding: 30px;
+            min-height: 100vh;
+        }
+
+        /* Scrollbar */
+        .sidebar::-webkit-scrollbar { width: 6px; }
+        .sidebar::-webkit-scrollbar-track { background: rgba(255,255,255,0.1); }
+        .sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 3px; }
+    </style>
 </head>
 <body>
     <div class="sidebar">
-                <!-- REMPLACEZ LE H4 PAR VOTRE LOGO ICI -->
- <div class="sidebar-brand">
-    <a href="{% url 'home' %}">
-        <!-- J'ai retiré le "filter: brightness(0) invert(1)" -->
-        <img src="{% static 'img/logo.jpg' %}" alt="Terra & Pure" style="height: 45px;">
-    </a>
-</div>
+        <div class="sidebar-brand">
+            <a href="{% url 'home' %}">
+                <img src="{% static 'img/logo.jpg' %}" alt="Terra & Pure">
+            </a>
+        </div>
+
         <nav>
             <!-- Tableau de bord -->
             <a href="{% url 'dashboard:overview' %}"><i class="bi bi-speedometer2 me-2"></i> Tableau de bord</a>
-            
-            <!-- Gestion Commerce -->
+
+            <!-- COMMERCE -->
+            <div class="sidebar-heading">Commerce</div>
             <a href="{% url 'dashboard:orders' %}"><i class="bi bi-receipt me-2"></i> Commandes</a>
             <a href="{% url 'dashboard:products' %}"><i class="bi bi-box me-2"></i> Produits</a>
             <a href="{% url 'dashboard:category_list' %}"><i class="bi bi-tags me-2"></i> Catégories</a>
             <a href="{% url 'dashboard:blog_posts' %}"><i class="bi bi-newspaper me-2"></i> Blog</a>
 
-            <!-- Section Configuration -->
-      
-<div class="sidebar-heading">Configuration</div>
+            <!-- PAGE À PROPOS -->
+            <div class="sidebar-heading">À Propos</div>
+            <a href="{% url 'dashboard:ab_settings' %}"><i class="bi bi-sliders me-2"></i> Configuration</a>
+            <a href="{% url 'dashboard:team_list' %}"><i class="bi bi-people me-2"></i> Équipe</a>
 
-<!-- Remplacez l'ancien lien 'Boutique' par ces 4 liens -->
-<a href="{% url 'products:banner_list' %}">
-    <i class="bi bi-images me-2"></i> Bannières
-</a>
-<a href="{% url 'dashboard:shop_promo' %}">
-    <i class="bi bi-fire me-2"></i> Promotion
-</a>
-<a href="{% url 'dashboard:shop_about' %}">
-    <i class="bi bi-seedling me-2"></i> À Propos
-</a>
-<a href="{% url 'dashboard:shop_newsletter' %}">
-    <i class="bi bi-envelope me-2"></i> Newsletter
-</a>
-            <a href=""><i class="bi bi-shop me-2"></i> Boutique</a>
-            
-            <!-- LIENS AJOUTÉS ICI -->
-            <a href="{% url 'dashboard:shipping_zones' %}"><i class="bi bi-truck me-2"></i> Zones de livraison</a>
-            <a href="{% url 'dashboard:payment_methods' %}"><i class="bi bi-credit-card me-2"></i> Moyens de paiement</a>
+            <!-- PAGE BIEN-ÊTRE -->
+            <div class="sidebar-heading">Bien-être</div>
+            <a href="{% url 'dashboard:wellness_hub' %}"><i class="bi bi-spa me-2"></i> Hub Bien-être</a>
+            <a href="{% url 'dashboard:video_list' %}"><i class="bi bi-camera-video me-2"></i> Vidéos</a>
 
-            <!-- Liens Rapides -->
+            <!-- APPARENCE -->
+            <div class="sidebar-heading">Apparence</div>
+            <a href="{% url 'dashboard:banner_list' %}"><i class="bi bi-images me-2"></i> Bannières</a>
+            <a href="{% url 'dashboard:feature_list' %}"><i class="bi bi-star me-2"></i> Features (Accueil)</a>
+            <a href="{% url 'dashboard:featabout_list' %}"><i class="bi bi-star-fill me-2"></i> Features (À Propos)</a>
+
+            <!-- PARAMÈTRES -->
+            <div class="sidebar-heading">Paramètres</div>
+            <a href="{% url 'dashboard:shop_promo' %}"><i class="bi bi-fire me-2"></i> Promotion</a>
+            <a href="{% url 'dashboard:shop_newsletter' %}"><i class="bi bi-envelope me-2"></i> Newsletter</a>
+            <a href="{% url 'dashboard:site_settings_list' %}"><i class="bi bi-geo-alt me-2"></i> Contact</a>
+            <a href="{% url 'dashboard:shipping_zones' %}"><i class="bi bi-truck me-2"></i> Livraison</a>
+            <a href="{% url 'dashboard:payment_methods' %}"><i class="bi bi-credit-card me-2"></i> Paiement</a>
+<!-- Dans la sidebar -->
+<div class="sidebar-heading">Paramètres</div>
+<!-- ... autres liens ... -->
+<a href="{% url 'dashboard:static_page_list' %}">
+    <i class="bi bi-file-earmark-text me-2"></i> Pages Légales
+</a>
+            <!-- LIENS -->
             <div class="sidebar-heading">Liens</div>
             <a href="{% url 'products:shop' %}" target="_blank"><i class="bi bi-eye me-2"></i> Voir le site</a>
             <a href="{% url 'products:logout' %}"><i class="bi bi-box-arrow-left me-2"></i> Déconnexion</a>
         </nav>
     </div>
-    
+
     <div class="main-content">
         {% block content %}{% endblock %}
     </div>
-    
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

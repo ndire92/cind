@@ -1,5 +1,6 @@
-{% extends "dashboard/base_dashboard.html" %}
 
+{% extends "dashboard/base_dashboard.html" %}
+{% load static %}
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2>Produits</h2>
@@ -16,15 +17,23 @@
             <th>Prix HT</th>
             <th>Stock</th>
             <th>Dispo</th>
+            <th>Date insertion</th>
+
             <th>Actions</th>
         </tr>
     </thead>
     <tbody>
         {% for product in products %}
         <tr>
-            <td><img src="{{ product.image.url }}" width="50" height="50" style="object-fit:cover; border-radius:5px;"></td>
+            <td>
+    {% if product.image %}
+        <img src="{{ product.image.url }}" width="50" height="50" style="object-fit:cover; border-radius:5px;">
+    {% else %}
+        <img src="{% static 'img/default.png' %}" width="50" height="50" style="object-fit:cover; border-radius:5px;">
+    {% endif %}
+</td>
             <td>{{ product.name }}</td>
-            <td>{{ product.price_ht }} €</td>
+            <td>{{ product.price_ht }} FCFA</td>
             <td>
                 {% if product.stock < 5 %}
                     <span class="badge bg-warning">{{ product.stock }}</span>
@@ -39,6 +48,9 @@
                     <span class="badge bg-danger">Non</span>
                 {% endif %}
             </td>
+            <td>{{ product.created_at|date:"d/m/Y H:i" }}</td>
+
+
             <td>
                 <a href="{% url 'dashboard:edit_product' product.id %}" class="btn btn-sm btn-outline-info"><i class="bi bi-pencil"></i></a>
                 <a href="{% url 'dashboard:product_delete' product.id %}" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></a>

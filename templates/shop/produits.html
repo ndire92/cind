@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
-    
+
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -35,11 +35,11 @@
         /* --- RESET --- */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
-        body { 
-            font-family: 'Montserrat', sans-serif; 
-            background-color: var(--bg-color); 
-            color: var(--text-color); 
-            line-height: 1.6; 
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
             padding-top: 80px; /* Espace pour le header fixe */
             overflow-x: hidden;
         }
@@ -47,23 +47,23 @@
         a { text-decoration: none; color: inherit; transition: var(--transition); }
         ul { list-style: none; }
         img { max-width: 100%; display: block; }
-        
+
         /* --- BOUTONS --- */
         .btn {
-            display: inline-block; padding: 14px 35px; border-radius: 50px; 
+            display: inline-block; padding: 14px 35px; border-radius: 50px;
             font-weight: 600; cursor: pointer; border: 2px solid transparent;
             transition: var(--transition); font-size: 0.95rem; text-align: center;
         }
-        .btn-primary { 
-            background-color: var(--primary-color); color: var(--white); 
+        .btn-primary {
+            background-color: var(--primary-color); color: var(--white);
             box-shadow: 0 4px 15px rgba(85, 124, 85, 0.3);
         }
-        .btn-primary:hover { 
-            background-color: var(--primary-dark); transform: translateY(-2px); 
+        .btn-primary:hover {
+            background-color: var(--primary-dark); transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(85, 124, 85, 0.4);
         }
-        .btn-outline { 
-            border-color: var(--primary-color); color: var(--primary-color); background: transparent; 
+        .btn-outline {
+            border-color: var(--primary-color); color: var(--primary-color); background: transparent;
         }
         .btn-outline:hover { background-color: var(--primary-color); color: var(--white); }
 
@@ -159,13 +159,13 @@
     position: relative;
     display: inline-block;
     margin-right: 20px;
-    
+
     /* LA SOLUTION : On ajoute un padding en haut du parent */
     /* Cela crée une zone "invisible" sous le bouton où la souris peut passer */
-    padding-top: 20px; 
-    
+    padding-top: 20px;
+
     /* On remonte le bouton pour compenser ce padding (optionnel) */
-    margin-top: -20px; 
+    margin-top: -20px;
 }
 
 .dropdown-toggle {
@@ -178,10 +178,10 @@
 .dropdown-menu {
     display: none;
     position: absolute;
-    
+
     /* On colle le menu tout en haut de la zone tampon (donc juste sous le bouton) */
-    top: 20px; 
-    
+    top: 20px;
+
     right: 0;
     background-color: #ffffff;
     min-width: 200px;
@@ -210,8 +210,8 @@
 
         /* --- NAVIGATION --- */
         .nav-links { display: flex; gap: 30px; }
-        .nav-links a { 
-            font-size: 0.9rem; font-weight: 500; 
+        .nav-links a {
+            font-size: 0.9rem; font-weight: 500;
             color: rgba(255,255,255,0.8); /* Texte blanc un peu transparent par défaut */
             transition: 0.3s;
             position: relative;
@@ -221,7 +221,7 @@
         .nav-links a:hover, .nav-links a.active {
             color: #ff8c00; /* Orange demandé */
         }
-        
+
         /* Petite ligne sous le lien actif */
         .nav-links a.active::after {
             content: ''; position: absolute; bottom: -5px; left: 0; width: 100%; height: 2px; background: #ff8c00;
@@ -229,7 +229,7 @@
 
                 .hero-wellness {
             /* ... vos autres styles ... */
-            
+
             /* AJOUTEZ CECI pour l'effet fixe sur l'image */
             background-attachment: fixed;
             background-position: center;
@@ -249,14 +249,14 @@
         .create-account-link:hover { color: #ff8c00; transform: translateY(-2px); } /* Devient orange au survol */
 
         /* Icône Panier */
-        .cart-icon-wrapper { 
+        .cart-icon-wrapper {
             position: relative; cursor: pointer; transition: 0.2s; color: white; font-size: 1.2rem;
         }
         .cart-icon-wrapper:hover { color: #ff8c00; transform: scale(1.1); }
-        
-        .cart-count { 
+
+        .cart-count {
             position: absolute; top: -5px; right: -8px; background-color: #ff8c00; /* Badge orange aussi */
-            color: white; font-size: 0.7rem; width: 16px; height: 16px; 
+            color: white; font-size: 0.7rem; width: 16px; height: 16px;
             border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: bold;
         }
 
@@ -281,14 +281,14 @@
 
         /* Header Icons */
         .header-icons { display: flex; gap: 25px; align-items: center; }
-        .create-account-link { 
+        .create-account-link {
             display: flex; align-items: center; gap: 8px; font-size: 0.9rem; font-weight: 500; cursor: pointer;
         }
         .create-account-link:hover { color: var(--accent-orange); }
-        
+
         .cart-icon-wrapper { position: relative; cursor: pointer; font-size: 1.2rem; transition: 0.3s; }
         .cart-icon-wrapper:hover { color: var(--primary-color); transform: scale(1.1); }
-        .cart-count { 
+        .cart-count {
             position: absolute; top: -8px; right: -8px;
             background-color: var(--accent-orange); color: white;
             font-size: 0.7rem; width: 18px; height: 18px;
@@ -315,17 +315,17 @@
         /* --- GALERIE IMAGES --- */
         .gallery-container { display: flex; flex-direction: column; gap: 20px; }
         .main-image-wrapper {
-            background: white; border-radius: var(--radius); overflow: hidden; 
+            background: white; border-radius: var(--radius); overflow: hidden;
             box-shadow: var(--shadow-soft); aspect-ratio: 1/1; position: relative;
         }
-        .main-image-wrapper img { 
+        .main-image-wrapper img {
             width: 100%; height: 100%; object-fit: cover; transition: opacity 0.3s ease;
         }
         .fade-effect img { opacity: 0.5; transform: scale(1.02); }
 
         .thumbnails { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
         .thumb {
-         
+
 	width: 80px;
 	height: 80px;
 	border-radius: 8px;
@@ -340,16 +340,16 @@
 
         /* --- INFO PRODUIT --- */
         .product-details { display: flex; flex-direction: column; position: sticky; top: 100px; }
-        
+
         .product-category {
-            font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1.5px; 
+            font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1.5px;
             color: var(--text-light); margin-bottom: 10px; font-weight: 600;
         }
         h1.product-title { font-size: 2.8rem; margin-bottom: 10px; line-height: 1.1; color: var(--primary-dark); }
-        
+
         .rating { color: #FFC107; font-size: 0.95rem; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
         .rating span { color: var(--text-light); font-size: 0.85rem; cursor: pointer; text-decoration: underline; }
-        
+
         .product-price { font-size: 2rem; color: var(--primary-color); font-weight: 700; margin-bottom: 25px; font-family: 'Playfair Display', serif; }
         .old-price { text-decoration: line-through; color: #ccc; font-size: 1.2rem; margin-left: 10px; font-weight: 400; }
         .description { color: #555; margin-bottom: 30px; line-height: 1.8; }
@@ -364,7 +364,7 @@
         }
         .size-option:hover { border-color: var(--primary-color); }
         .size-option.active {
-            border-color: var(--primary-color); background-color: var(--primary-color); 
+            border-color: var(--primary-color); background-color: var(--primary-color);
             color: white; font-weight: 600;
         }
 
@@ -413,9 +413,9 @@
         .badge i { color: var(--primary-color); }
 
         /* --- ONGLETS (TABS) --- */
-        .tabs-container { 
+        .tabs-container {
             max-width: 1300px; margin: 0 auto 80px; padding: 0 20px;
-            background: white; padding: 40px; border-radius: var(--radius); box-shadow: var(--shadow-soft); 
+            background: white; padding: 40px; border-radius: var(--radius); box-shadow: var(--shadow-soft);
         }
         .tabs-header { display: flex; border-bottom: 2px solid #f0f0f0; margin-bottom: 30px; }
         .tab-btn {
@@ -432,7 +432,7 @@
 
         .tab-content { display: none; animation: fadeIn 0.5s ease; }
         .tab-content.active { display: block; }
-        
+
         .ingredients-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; margin-top: 20px; }
         .ingredient-item { display: flex; align-items: center; gap: 10px; font-size: 0.95rem; color: #555; }
         .ingredient-dot { width: 10px; height: 10px; background: var(--secondary-color); border-radius: 50%; }
@@ -441,16 +441,16 @@
 
         /* --- CART SIDEBAR --- */
         #overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(0,0,0,0.5); z-index: 1500; 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); z-index: 1500;
             opacity: 0; visibility: hidden; transition: var(--transition); backdrop-filter: blur(3px);
         }
         #overlay.active { opacity: 1; visibility: visible; }
 
-        .cart-sidebar { 
-            position: fixed; top: 0; right: -450px; width: 400px; max-width: 90%; height: 100vh; 
-            background: white; box-shadow: -10px 0 40px rgba(0,0,0,0.1); z-index: 2000; 
-            transition: right 0.5s cubic-bezier(0.77, 0, 0.175, 1); display: flex; flex-direction: column; 
+        .cart-sidebar {
+            position: fixed; top: 0; right: -450px; width: 400px; max-width: 90%; height: 100vh;
+            background: white; box-shadow: -10px 0 40px rgba(0,0,0,0.1); z-index: 2000;
+            transition: right 0.5s cubic-bezier(0.77, 0, 0.175, 1); display: flex; flex-direction: column;
         }
         .cart-sidebar.open { right: 0; }
         .cart-header { padding: 25px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; background: #f9f9f9; }
@@ -545,7 +545,7 @@
                     <img src="{% if item.product.image %}{{ item.product.image.url }}{% else %}{% static 'img/placeholder.jpg' %}{% endif %}" class="cart-item-img" alt="{{ item.product.name }}">
                     <div class="cart-item-details">
                         <div class="cart-item-title">{{ item.product.name }}</div>
-                        <div class="cart-item-price">{{ item.total_ttc|floatformat:2 }} €</div>
+                        <div class="cart-item-price">{{ item.total_ttc|floatformat:2 }} FCFA</div>
                     </div>
                     <!-- Bouton supprimer visuel -->
                     <div class="cart-remove" style="color:#ddd; cursor:pointer;"><i class="fas fa-trash-alt"></i></div>
@@ -561,7 +561,7 @@
         <div class="cart-footer">
             <div class="cart-total-row">
                 <span>Total</span>
-                <span id="cart-total-price">{{ cart.get_total_ttc|floatformat:2|default:"0,00" }} €</span>
+                <span id="cart-total-price">{{ cart.get_total_ttc|floatformat:2|default:"0,00" }} FCFA</span>
             </div>
             <a href="{% url 'products:cart_detail' %}" class="btn btn-primary" style="width: 100%;">
                 Commander <i class="fas fa-arrow-right" style="margin-left: 8px;"></i>
@@ -572,7 +572,7 @@
     <!-- HEADER -->
 <header>
     <div class="nav-container">
-        
+
         <!-- LOGO IMAGE -->
         <a href="{% url 'home' %}" class="logo-img-wrapper">
             <!-- Remplacez 'logo.png' par le nom de votre fichier -->
@@ -583,13 +583,13 @@
         <nav>
             <ul class="nav-links">
                 <li><a href="{% url 'home' %}" class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">Accueil</a></li>
-                
+
                 <!-- À propos -->
                 <li><a href="{% url 'products:about' %}" class="{% if request.resolver_match.url_name == 'about' %}active{% endif %}">À propos</a></li>
-                
+
                 <!-- Boutique -->
                 <li><a href="{% url 'products:shop' %}" class="{% if request.resolver_match.url_name == 'shop' %}active{% endif %}">Boutique</a></li>
-                
+
                 <!-- Bien-être (Active sur cette page) -->
                 <li><a href="{% url 'products:bien_etre' %}" class="{% if request.resolver_match.url_name == 'bien_etre' %}active{% endif %}">Bien-être</a></li>
             </ul>
@@ -724,7 +724,7 @@
         object-fit: cover;
         transition: transform 0.5s ease;
     }
-    
+
     /* Effet Zoom léger au survol */
     .main-image-wrapper:hover #main-img {
         transform: scale(1.05);
@@ -827,9 +827,9 @@
     /* Variantes (Tailles/Formats) */
     .selector-group { margin: 25px 0; }
     .selector-label { font-weight: 600; display: block; margin-bottom: 10px; color: #333; }
-    
+
     .size-options { display: flex; gap: 10px; flex-wrap: wrap; }
-    
+
     .size-option {
         padding: 10px 20px;
         border: 1px solid #ddd;
@@ -873,7 +873,7 @@
         transition: 0.2s;
     }
     .qty-btn:hover { background: #f1f1f1; }
-    
+
     #qty-input {
         width: 50px;
         text-align: center;
@@ -948,7 +948,7 @@
     }
 
     .tab-btn.active { color: var(--primary-color); }
-    
+
     /* Ligne orange sous l'onglet actif */
     .tab-btn.active::after {
         content: '';

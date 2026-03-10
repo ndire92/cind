@@ -1,0 +1,5367 @@
+[
+{
+  "model": "shop.user",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$G8m0uzzm41PvlO3ck6cZWE$hwRlWvDynbOegMlzpa82eqQhwNOC53yo5v7yFwWHIyc=",
+    "last_login": "2026-03-04T22:33:07.918Z",
+    "is_superuser": true,
+    "username": "admin",
+    "first_name": "",
+    "last_name": "",
+    "email": "admin@gmail.com",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-02-17T16:34:48.550Z",
+    "role": "admin",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "shop.user",
+  "pk": 4,
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$3lqLJQ7ELc2idpJGbQaAOM$FHB0qja5Z4sa/MMmq5RCzwjv5MsrLOdQp8bVJff5/Co=",
+    "last_login": "2026-02-21T18:41:10.445Z",
+    "is_superuser": false,
+    "username": "cinedera",
+    "first_name": "",
+    "last_name": "",
+    "email": "cinddera1@gmail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-02-19T17:44:28.733Z",
+    "role": "gestionnaire",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "shop.user",
+  "pk": 5,
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$fLMuoVMdi8Gw4XO8bJERXo$zyH4SNNwnXCrA/yOHtCxVrtq1fp4np/umqTKrnmRbpQ=",
+    "last_login": "2026-02-27T00:27:08.946Z",
+    "is_superuser": false,
+    "username": "imoplus",
+    "first_name": "",
+    "last_name": "",
+    "email": "imoplus36@gmail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-02-27T00:27:07.698Z",
+    "role": "customer",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "shop.category",
+  "pk": 2,
+  "fields": {
+    "name": "FORMULES BIEN-ÊTRE",
+    "slug": "categorie1",
+    "description": "Découvrez nos mélanges uniques, nés de savoirs ancestraux. Chaque formule combine des ingrédients naturels soigneusement sélectionnés pour offrir un bien-être complet, adapté aux adultes comme aux enfants. Alliant tradition, pureté et efficacité, ces mélanges sont de véritables trésors de santé et de vitalité au quotidien.",
+    "image": "categories/2.png"
+  }
+},
+{
+  "model": "shop.category",
+  "pk": 3,
+  "fields": {
+    "name": "HERITAGE NATUREL",
+    "slug": "categorie2",
+    "description": "Huile de Touloucouna & Beurre de Karité\r\nPlongez dans le meilleur de la nature avec notre duo précieux : huile de Touloucouna et beurre de karité, récoltés artisanalement en Casamance et à Kédougou. L’huile de Touloucouna nourrit et régénère la peau en profondeur grâce à ses propriétés hydratantes et apaisantes, tandis que le beurre de karité apporte douceur et élasticité, idéal pour protéger et réparer tous types de peaux. Ensemble, ils offrent un soin naturel complet pour une peau saine, éclatante et délicatement parfumée.",
+    "image": "categories/3.png"
+  }
+},
+{
+  "model": "shop.category",
+  "pk": 4,
+  "fields": {
+    "name": "SAVEURS DES TERROIRS",
+    "slug": "categorie3",
+    "description": "Miel Pur & Poudre de Baobab\r\nDécouvrez la richesse de nos terres africaines avec notre miel pur de Casamance et la poudre de baobab de Kédougou. Le miel, récolté avec soin, est un concentré de douceur naturelle, énergisant et plein de bienfaits pour la santé. La poudre de baobab, riche en vitamines et minéraux, est un allié pour renforcer l’immunité, revitaliser le corps et apporter énergie et vitalité au quotidien. Ensemble, ces trésors naturels sont parfaits pour nourrir votre corps et votre esprit.",
+    "image": "categories/1.png"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 6,
+  "fields": {
+    "category": 4,
+    "name": "Miel pur de fromager - 230 ml",
+    "slug": "miel-pur-de-fromager",
+    "image": "products/miel_pur.png",
+    "short_description": "Miel pur de fromager, 100 % naturel et artisanal, récolté en Casamance. Renforce le système immunitaire et apporte une énergie naturelle. Idéal en boissons chaudes, en cuisine ou comme soin naturel.",
+    "description": "Récolté artisanalement en Casamance, le miel pur de fromager est un miel naturel d’exception. Sa texture onctueuse et son goût intense légèrement boisé révèlent toute la richesse de la flore locale. 100 % pur, sans additif ni transformation, il conserve tous ses bienfaits naturels pour le plaisir et le bien-être au quotidien.\r\n\r\nBIENFAITS\r\n\r\nBIEN-ÊTRE & ENERGIE\r\nRenforce le système immunitaire\r\nSource naturelle d’énergie\r\nFavorise la digestion et la vitalité\r\n\r\nALIMENTATION & CUISINE\r\nIdéal pour sucrer naturellement boissons et plats\r\nParfait dans le thé, le café ou les infusions\r\nExcellent en cuisine pour les recettes sucrées ou salées\r\n\r\nPEAU & CORPS\r\nHydrate et adoucit la peau\r\nApaise irritations, brûlures légères et gerçures\r\nAnti bactérien naturel, protège la peau",
+    "price_ht": "3000.00",
+    "tax_rate": "0.00",
+    "video": "products/videos/5.mp4",
+    "stock": 0,
+    "ingredients": "100 % pur, naturel et artisanal\r\nSans additif ni conservateur\r\nRespectueux de l’environnement et du savoir-faire local\r\nConvient à tous les usages alimentaires et cosmétiques",
+    "available": true,
+    "created_at": "2026-02-19T18:25:57.101Z",
+    "updated_at": "2026-02-23T00:09:38.124Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 7,
+  "fields": {
+    "category": 3,
+    "name": "Pur beurre de karité - 400 gr",
+    "slug": "pur-beurre-de-karite",
+    "image": "products/BEURRE_DE_KARITE_-_400_GR_MU2h87s.png",
+    "short_description": "Beurre de karité pur, 100 % naturel, extrait artisanalement des noix de karité. Riche en vitamines A, E et F, il nourrit, hydrate et protège la peau et les cheveux. Idéal pour massages, soins quotidiens ou cheveux secs. usage familial, soins réguliers.",
+    "description": "Le beurre de karité est un soin naturel obtenu par extraction artisanale des noix de karité, selon les méthodes traditionnelles africaines. Pur et naturel, il est riche en vitamines A, E et F, en acides gras essentiels et en antioxydants. Ce beurre polyvalent nourrit, protège et régénère la peau, les cheveux et le corps, pour un soin complet au quotidien.\r\n\r\nBIENFAITS\r\n\r\nPEAU\r\n\r\nHydrate et nourrit en profondeur\r\nProtège contre le dessèchement et les agressions extérieures\r\nApaise irritations, gerçures et brûlures\r\nRend la peau lisse, douce et régénérée\r\n\r\nCHEVEUX\r\n\r\nRépare et nourrit les cheveux secs ou abîmés\r\nFacilite le coiffage et réduit les pointes fourchues\r\nApporte brillance et souplesse\r\n\r\nCORPS & BIEN-ÊTRE\r\n\r\nIdéal pour massages relaxants et nourrissants\r\nAdoucit les mains, les pieds et le visage\r\nMasque pour adoucir la plante des pieds\r\nMasque capillaire pour cheveux secs ou abîmés\r\n\r\nMODE D’UTILISATION\r\n\r\nSur la peau en massage : \r\nSi appliqué la nuit, rincer le matin à l’eau tiède pour découvrir une peau douce et régénérée.\r\nSi appliqué le matin, laisser agir 1 à 2 heures avant de rincer à l’eau tiède.\r\n\r\nMasque pour les pieds ou les cheveux : \r\nAppliquer généreusement et rincer après 1 h à 2h ou selon besoin. Très efficace pour adoucir et nourrir.\r\nUsage quotidien : en petite quantité comme pommade pour les mains, le visage ou les pieds afin de nourrir, protéger et apporter de l’éclat.\r\nPeut être utilisé pur ou mélangé à d’autres huiles naturelles pour augmenter ses bienfaits.",
+    "price_ht": "3000.00",
+    "tax_rate": "0.00",
+    "video": "products/videos/6.mp4",
+    "stock": 0,
+    "ingredients": "100 % naturel, pur et artisanal\r\nSans additif ni conservateur\r\nRespectueux de l’environnement et du savoir-faire local",
+    "available": true,
+    "created_at": "2026-02-19T18:41:26.080Z",
+    "updated_at": "2026-02-23T00:42:25.272Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 11,
+  "fields": {
+    "category": 4,
+    "name": "Poudre de baobab ( Bouye ) - 500 gr",
+    "slug": "poudre-de-baobab-1",
+    "image": "products/3.png",
+    "short_description": "La poudre naturelle de bouye (fruit du baobab) est 10 fois plus riche en vitamine C que l’orange. Idéale pour renforcer l’énergie et le système immunitaire. Se consomme en jus, en thé le matin avec ou sans miel, ou saupoudrée dans votre bouillie. Un superaliment traditionnel aux multiples bienfaits.",
+    "description": "La poudre de bouye est obtenue à partir du fruit du baobab, récolté à maturité dans le respect de la tradition. Ce superaliment naturel est riche en vitamine C (10 fois plus que l’orange), en fibres, minéraux et antioxydants, offrant un soutien naturel à la vitalité, à l’énergie et au système immunitaire.\r\n\r\nBIENFAITS\r\n\r\nRenforce le système immunitaire grâce à sa haute teneur en vitamine C\r\nFavorise la digestion et le transit grâce aux fibres naturelles\r\nRiche en minéraux et antioxydants : calcium, potassium, magnésium\r\nÉnergie et vitalité : aide à combattre la fatigue et à rester actif\r\n\r\nMODE D’UTILISATION\r\n\r\nJus : mélanger 1–2 cuillères à café dans de l’eau, à boire frais\r\nThé du matin : infuser avec de l’eau chaude, ajouter du miel selon le goût\r\nAlimentation : saupoudrer dans la bouillie, yaourt, smoothies ou céréales\r\n\r\n+++ Astuce : consommation régulière pour profiter pleinement des bienfaits",
+    "price_ht": "3500.00",
+    "tax_rate": "0.00",
+    "video": "products/videos/2.mp4",
+    "stock": 50,
+    "ingredients": "100 % naturelle, sans additif ni conservateur\r\nRespecte le savoir-faire local et la récolte durable\r\nConvient aux régimes naturels, bio et superalimentaires",
+    "available": true,
+    "created_at": "2026-02-19T18:55:56.589Z",
+    "updated_at": "2026-02-23T00:59:00.804Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 13,
+  "fields": {
+    "category": 3,
+    "name": "Huile de touloucouna - 100 ml",
+    "slug": "kkkk",
+    "image": "products/touloucouna_100_ml_ZhY3ae3.png",
+    "short_description": "Huile de Touloucouna – 100 % Naturelle\r\nHuile de Carapa procera (Casamance), pure et sans additif.\r\nBienfaits : peau, cheveux, corps et vitalité masculine.\r\nUsage : externe ou une petite cuillère matin et soir (avec miel ou dans le café). Régulier pour de meilleurs résultats.",
+    "description": "Huile végétale traditionnelle extraite des graines de Carapa procera, originaire de la Casamance. Pure, non raffinée, sans additif ni conservateur, reconnue pour ses vertus sur la peau, les cheveux, le corps et la vitalité masculine.\r\n\r\nBIENFAITS\r\nPeau: \r\nApaise eczéma, mycoses et irritations, antibactérienne, cicatrisante, répulsif naturel\r\nCheveux: \r\nAssainit le cuir chevelu, lutte contre les pellicules, favorise la pousse\r\nCorps: \r\nSoulage douleurs musculaires et tensions, effet relaxant\r\nVitalité masculine: \r\nFavorise la circulation et accompagne la vigueur\r\n\r\nMODE D’UTILISATION\r\nExterne : appliquer sur la peau ou le cuir chevelu\r\nInterne : une petite cuillère matin et soir, avec miel ou dans le café\r\nAstuce : pour de meilleurs résultats, utiliser régulièrement \r\n\r\nUsage traditionnel – ne remplace pas un avis médical.",
+    "price_ht": "3500.00",
+    "tax_rate": "0.00",
+    "video": "products/videos/Huile_de_touloucouna-.mp4",
+    "stock": 100,
+    "ingredients": "100 % naturelle, pure et non raffinée\r\nSans additif, sans conservateur, sans parfum\r\nProduction respectueuse de l’environnement\r\nAdaptée aux boutiques bio, à l’export et aux soins naturels",
+    "available": true,
+    "created_at": "2026-02-20T04:27:51.347Z",
+    "updated_at": "2026-02-23T00:08:18.480Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 14,
+  "fields": {
+    "category": 3,
+    "name": "Huile de touloucouna - 50 ml",
+    "slug": "huile-de-touloucouna-50-ml",
+    "image": "products/ChatGPT_Image_22_févr._2026_à_13_52_49.png",
+    "short_description": "Huile de Touloucouna – 100 % Naturelle Huile de Carapa procera (Casamance), pure et sans additif. Bienfaits : peau, cheveux, corps et vitalité masculine. Usage : externe ou une petite cuillère matin et soir (avec miel ou dans le café). Régulier pour de meilleurs résultats.",
+    "description": "Huile végétale traditionnelle extraite des graines de Carapa procera, originaire de la Casamance. Pure, non raffinée, sans additif ni conservateur, reconnue pour ses vertus sur la peau, les cheveux, le corps et la vitalité masculine.\r\n\r\nBIENFAITS\r\nPeau:\r\nApaise eczéma, mycoses et irritations, antibactérienne, cicatrisante, répulsif naturel\r\nCheveux:\r\nAssainit le cuir chevelu, lutte contre les pellicules, favorise la pousse\r\nCorps:\r\nSoulage douleurs musculaires et tensions, effet relaxant\r\nVitalité masculine:\r\nFavorise la circulation et accompagne la vigueur\r\n\r\nMODE D’UTILISATION\r\nExterne : appliquer sur la peau ou le cuir chevelu\r\nInterne : une petite cuillère matin et soir, avec miel ou dans le café\r\nAstuce : pour de meilleurs résultats, utiliser régulièrement\r\n\r\nUsage traditionnel – ne remplace pas un avis médical.",
+    "price_ht": "2000.00",
+    "tax_rate": "0.00",
+    "video": "products/videos/4.mp4",
+    "stock": 0,
+    "ingredients": "",
+    "available": true,
+    "created_at": "2026-02-22T01:52:15.976Z",
+    "updated_at": "2026-02-23T00:07:58.509Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 15,
+  "fields": {
+    "category": 3,
+    "name": "Pur beurre de karité - 100 ml",
+    "slug": "beurre-de-karite-100-ml",
+    "image": "products/beurre_de_karité_100_ml.png",
+    "short_description": "Beurre de karité pur, 100 % naturel, extrait artisanalement des noix de karité. Riche en vitamines A, E et F, il nourrit, hydrate et protège la peau et les cheveux. Soin régulier de la peau et des cheveux, massages ponctuels ou utilisation familiale légère.",
+    "description": "Le beurre de karité est un soin naturel obtenu par extraction artisanale des noix de karité, selon les méthodes traditionnelles africaines. Pur et naturel, il est riche en vitamines A, E et F, en acides gras essentiels et en antioxydants. Ce beurre polyvalent nourrit, protège et régénère la peau, les cheveux et le corps, pour un soin complet au quotidien.\r\n\r\nBIENFAITS\r\n\r\nPEAU\r\n\r\nHydrate et nourrit en profondeur\r\nProtège contre le dessèchement et les agressions extérieures\r\nApaise irritations, gerçures et brûlures\r\nRend la peau lisse, douce et régénérée\r\n\r\nCHEVEUX\r\n\r\nRépare et nourrit les cheveux secs ou abîmés\r\nFacilite le coiffage et réduit les pointes fourchues\r\nApporte brillance et souplesse\r\n\r\nCORPS & BIEN-ÊTRE\r\n\r\nIdéal pour massages relaxants et nourrissants\r\nAdoucit les mains, les pieds et le visage\r\nMasque pour adoucir la plante des pieds\r\nMasque capillaire pour cheveux secs ou abîmés\r\n\r\nMODE D’UTILISATION\r\n\r\nSur la peau en massage :\r\nSi appliqué la nuit, rincer le matin à l’eau tiède pour découvrir une peau douce et régénérée.\r\nSi appliqué le matin, laisser agir 1 à 2 heures avant de rincer à l’eau tiède.\r\n\r\nMasque pour les pieds ou les cheveux :\r\nAppliquer généreusement et rincer après 1 h à 2h ou selon besoin. Très efficace pour adoucir et nourrir.\r\nUsage quotidien : en petite quantité comme pommade pour les mains, le visage ou les pieds afin de nourrir, protéger et apporter de l’éclat.\r\nPeut être utilisé pur ou mélangé à d’autres huiles naturelles pour augmenter ses bienfaits.",
+    "price_ht": "1500.00",
+    "tax_rate": "0.00",
+    "video": "products/videos/6_4wP42AY.mp4",
+    "stock": 0,
+    "ingredients": "",
+    "available": true,
+    "created_at": "2026-02-22T01:59:55.372Z",
+    "updated_at": "2026-02-23T00:06:54.895Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 16,
+  "fields": {
+    "category": 3,
+    "name": "Pur beurre de karité - 50 ml",
+    "slug": "beurre-de-karite-50-ml",
+    "image": "products/ChatGPT_Image_22_févr_10O54KV._2026_à_13_45_24.png",
+    "short_description": "Beurre de karité pur, 100 % naturel, extrait artisanalement, Riche en vitamines A, E et F.\r\nIdéal pour : transport, voyage, sac à main, utilisation ciblée sur visage, mains, pieds ou pointes de cheveux.\r\nPour personnes actives, citadins, jeunes adultes, pour soin ponctuel ou pour tester le produit.",
+    "description": "Le beurre de karité est un soin naturel obtenu par extraction artisanale des noix de karité, selon les méthodes traditionnelles africaines. Pur et naturel, il est riche en vitamines A, E et F, en acides gras essentiels et en antioxydants. Ce beurre polyvalent nourrit, protège et régénère la peau, les cheveux et le corps, pour un soin complet au quotidien.\r\n\r\nBIENFAITS\r\n\r\nPEAU\r\n\r\nHydrate et nourrit en profondeur\r\nProtège contre le dessèchement et les agressions extérieures\r\nApaise irritations, gerçures et brûlures\r\nRend la peau lisse, douce et régénérée\r\n\r\nCHEVEUX\r\n\r\nRépare et nourrit les cheveux secs ou abîmés\r\nFacilite le coiffage et réduit les pointes fourchues\r\nApporte brillance et souplesse\r\n\r\nCORPS & BIEN-ÊTRE\r\n\r\nIdéal pour massages relaxants et nourrissants\r\nAdoucit les mains, les pieds et le visage\r\nMasque pour adoucir la plante des pieds\r\nMasque capillaire pour cheveux secs ou abîmés\r\n\r\nMODE D’UTILISATION\r\n\r\nSur la peau en massage :\r\nSi appliqué la nuit, rincer le matin à l’eau tiède pour découvrir une peau douce et régénérée.\r\nSi appliqué le matin, laisser agir 1 à 2 heures avant de rincer à l’eau tiède.\r\n\r\nMasque pour les pieds ou les cheveux :\r\nAppliquer généreusement et rincer après 1 h à 2h ou selon besoin. Très efficace pour adoucir et nourrir.\r\nUsage quotidien : en petite quantité comme pommade pour les mains, le visage ou les pieds afin de nourrir, protéger et apporter de l’éclat.\r\nPeut être utilisé pur ou mélangé à d’autres huiles naturelles pour augmenter ses bienfaits.",
+    "price_ht": "1000.00",
+    "tax_rate": "0.00",
+    "video": "products/videos/6_bZYWFnB.mp4",
+    "stock": 0,
+    "ingredients": "",
+    "available": true,
+    "created_at": "2026-02-22T02:21:05.194Z",
+    "updated_at": "2026-02-23T00:06:34.127Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 17,
+  "fields": {
+    "category": 4,
+    "name": "Poudre de baobab ( bouye ) - 250 gr",
+    "slug": "poudre-de-baobab-250-gr",
+    "image": "products/27.jpg",
+    "short_description": "",
+    "description": "",
+    "price_ht": "2000.00",
+    "tax_rate": "0.00",
+    "video": "products/videos/2_hpKUKhJ.mp4",
+    "stock": 0,
+    "ingredients": "",
+    "available": true,
+    "created_at": "2026-02-22T02:45:54.347Z",
+    "updated_at": "2026-02-23T00:56:21.842Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 18,
+  "fields": {
+    "category": 4,
+    "name": "Lot de 10 pots 50 ml - Miel pur de fromager",
+    "slug": "lot-de-10-pots-50-ml-pur-miel-de-fromager",
+    "image": "products/MIEL_PUR_DE_FROMAGER_-_LOT_DE_10_POTS.png",
+    "short_description": "",
+    "description": "",
+    "price_ht": "5000.00",
+    "tax_rate": "0.00",
+    "video": "",
+    "stock": 0,
+    "ingredients": "",
+    "available": true,
+    "created_at": "2026-02-22T02:49:01.080Z",
+    "updated_at": "2026-02-23T00:05:47.516Z"
+  }
+},
+{
+  "model": "shop.product",
+  "pk": 19,
+  "fields": {
+    "category": 4,
+    "name": "Miel pur de fromager - 100 ml",
+    "slug": "miel-pur-de-fromager-100-ml",
+    "image": "products/miel_pur_4EvGGPM.png",
+    "short_description": "",
+    "description": "",
+    "price_ht": "1500.00",
+    "tax_rate": "0.00",
+    "video": "",
+    "stock": 0,
+    "ingredients": "",
+    "available": true,
+    "created_at": "2026-02-22T03:04:09.425Z",
+    "updated_at": "2026-02-23T00:02:09.617Z"
+  }
+},
+{
+  "model": "shop.productimage",
+  "pk": 39,
+  "fields": {
+    "product": 13,
+    "image": "products/gallery/32.jpg"
+  }
+},
+{
+  "model": "shop.productimage",
+  "pk": 40,
+  "fields": {
+    "product": 13,
+    "image": "products/gallery/WhatsApp_Image_2024-07-25_at_22.11.37.jpeg"
+  }
+},
+{
+  "model": "shop.productimage",
+  "pk": 41,
+  "fields": {
+    "product": 11,
+    "image": "products/gallery/WhatsApp_Image_2024-07-25_at_22.10.54.jpeg"
+  }
+},
+{
+  "model": "shop.productimage",
+  "pk": 42,
+  "fields": {
+    "product": 11,
+    "image": "products/gallery/BOUYYY_3VxLZtw.jpeg"
+  }
+},
+{
+  "model": "shop.productimage",
+  "pk": 44,
+  "fields": {
+    "product": 18,
+    "image": "products/gallery/MIEL_PUR_50_ML_TGX2aNU.png"
+  }
+},
+{
+  "model": "shop.productimage",
+  "pk": 46,
+  "fields": {
+    "product": 15,
+    "image": "products/gallery/ChatGPT_Image_22_févr._2026_à_13_48_55.png"
+  }
+},
+{
+  "model": "shop.productimage",
+  "pk": 47,
+  "fields": {
+    "product": 16,
+    "image": "products/gallery/BEURRE_DE_KARITE_-_POT_DE_50_ML.png"
+  }
+},
+{
+  "model": "shop.productimage",
+  "pk": 48,
+  "fields": {
+    "product": 7,
+    "image": "products/gallery/Design_sans_titre-10.png"
+  }
+},
+{
+  "model": "shop.productimage",
+  "pk": 49,
+  "fields": {
+    "product": 17,
+    "image": "products/gallery/BOUYYY.jpeg"
+  }
+},
+{
+  "model": "shop.paymentmethod",
+  "pk": 1,
+  "fields": {
+    "name": "PayDunya",
+    "description": "Paiement en ligne via PayDunya",
+    "is_active": true,
+    "extra_fee": "0.00",
+    "slug": "paydunya"
+  }
+},
+{
+  "model": "shop.paymentmethod",
+  "pk": 4,
+  "fields": {
+    "name": "Paiement à la livraison",
+    "description": "Payez quand vous recevez la commande",
+    "is_active": true,
+    "extra_fee": "0.00",
+    "slug": "paiement-a-la-livraison"
+  }
+},
+{
+  "model": "shop.paymentmethod",
+  "pk": 5,
+  "fields": {
+    "name": "Dexpay",
+    "description": "dexpays",
+    "is_active": true,
+    "extra_fee": "0.00",
+    "slug": "dexpay"
+  }
+},
+{
+  "model": "shop.shippingzone",
+  "pk": 8,
+  "fields": {
+    "name": "Dakar",
+    "zones": "HLM",
+    "price": "1000",
+    "free_shipping": false,
+    "created_at": "2026-03-04T10:44:19.844Z"
+  }
+},
+{
+  "model": "shop.shippingzone",
+  "pk": 9,
+  "fields": {
+    "name": "Dakar",
+    "zones": "DAKAR_PLATEAU",
+    "price": "1000",
+    "free_shipping": false,
+    "created_at": "2026-03-04T12:44:00.413Z"
+  }
+},
+{
+  "model": "shop.shippingzone",
+  "pk": 10,
+  "fields": {
+    "name": "Dakar",
+    "zones": "MEDINA,FANN_POINT_E_AMITIE,FASS_COLOBANE,GRAND_DAKAR",
+    "price": "1499",
+    "free_shipping": false,
+    "created_at": "2026-03-04T13:50:00.011Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 1,
+  "fields": {
+    "user": 1,
+    "first_name": "Imo",
+    "last_name": "plus",
+    "email": "admin@gmail.com",
+    "address": "de",
+    "postal_code": "rte",
+    "phone": "",
+    "city": "bg",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": null,
+    "coupon": null,
+    "subtotal": "30000.00",
+    "vat_rate": "18.00",
+    "vat_amount": "5400.00",
+    "shipping_cost": "0.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "35400.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-02-17T17:59:20.131Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 2,
+  "fields": {
+    "user": 1,
+    "first_name": "Imo",
+    "last_name": "plus",
+    "email": "admin@gmail.com",
+    "address": "de",
+    "postal_code": "rte",
+    "phone": "",
+    "city": "bg",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": null,
+    "coupon": null,
+    "subtotal": "10000.00",
+    "vat_rate": "18.00",
+    "vat_amount": "1800.00",
+    "shipping_cost": "0.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "11800.00",
+    "payment_status": "paid",
+    "is_shipped": false,
+    "created_at": "2026-02-17T18:02:35.740Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 3,
+  "fields": {
+    "user": 1,
+    "first_name": "Imo",
+    "last_name": "plus",
+    "email": "admin@gmail.com",
+    "address": "de",
+    "postal_code": "rte",
+    "phone": "",
+    "city": "bg",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": null,
+    "coupon": null,
+    "subtotal": "30000.00",
+    "vat_rate": "18.00",
+    "vat_amount": "5400.00",
+    "shipping_cost": "0.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "35400.00",
+    "payment_status": "paid",
+    "is_shipped": false,
+    "created_at": "2026-02-17T18:23:31.825Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 4,
+  "fields": {
+    "user": 1,
+    "first_name": "Imo",
+    "last_name": "plus",
+    "email": "admin@gmail.com",
+    "address": "de",
+    "postal_code": "rte",
+    "phone": "",
+    "city": "bg",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": null,
+    "coupon": null,
+    "subtotal": "10000.00",
+    "vat_rate": "18.00",
+    "vat_amount": "1800.00",
+    "shipping_cost": "0.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "11800.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-02-17T18:41:06.861Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 5,
+  "fields": {
+    "user": 1,
+    "first_name": "Imo",
+    "last_name": "plus",
+    "email": "admin@gmail.com",
+    "address": "de",
+    "postal_code": "rte",
+    "phone": "",
+    "city": "bg",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": null,
+    "coupon": null,
+    "subtotal": "10000.00",
+    "vat_rate": "18.00",
+    "vat_amount": "1800.00",
+    "shipping_cost": "0.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "11800.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-02-17T18:43:55.108Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 6,
+  "fields": {
+    "user": 1,
+    "first_name": "Imo",
+    "last_name": "plus",
+    "email": "admin@gmail.com",
+    "address": "de",
+    "postal_code": "rte",
+    "phone": "",
+    "city": "bg",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": null,
+    "coupon": null,
+    "subtotal": "70000.00",
+    "vat_rate": "18.00",
+    "vat_amount": "12600.00",
+    "shipping_cost": "0.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "82600.00",
+    "payment_status": "paid",
+    "is_shipped": false,
+    "created_at": "2026-02-17T18:45:42.787Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 7,
+  "fields": {
+    "user": 1,
+    "first_name": "Imo",
+    "last_name": "plus",
+    "email": "admin@gmail.com",
+    "address": "de",
+    "postal_code": "rte",
+    "phone": "",
+    "city": "bg",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": null,
+    "coupon": null,
+    "subtotal": "10000.00",
+    "vat_rate": "18.00",
+    "vat_amount": "1800.00",
+    "shipping_cost": "0.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "11800.00",
+    "payment_status": "paid",
+    "is_shipped": false,
+    "created_at": "2026-02-17T19:01:29.385Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 8,
+  "fields": {
+    "user": 1,
+    "first_name": "Imo",
+    "last_name": "plus",
+    "email": "admin@gmail.com",
+    "address": "de",
+    "postal_code": "rte",
+    "phone": "",
+    "city": "bg",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": null,
+    "coupon": null,
+    "subtotal": "50000.00",
+    "vat_rate": "18.00",
+    "vat_amount": "9000.00",
+    "shipping_cost": "0.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "59000.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-02-17T23:40:02.060Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 9,
+  "fields": {
+    "user": 1,
+    "first_name": "Imo",
+    "last_name": "plus",
+    "email": "admin@gmail.com",
+    "address": "de",
+    "postal_code": "rte",
+    "phone": "",
+    "city": "parie",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": null,
+    "coupon": null,
+    "subtotal": "10000.00",
+    "vat_rate": "18.00",
+    "vat_amount": "1800.00",
+    "shipping_cost": "0.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "11800.00",
+    "payment_status": "paid",
+    "is_shipped": false,
+    "created_at": "2026-02-17T23:46:51.570Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 10,
+  "fields": {
+    "user": 1,
+    "first_name": "Imo",
+    "last_name": "plus",
+    "email": "admin@gmail.com",
+    "address": "de",
+    "postal_code": "rte",
+    "phone": "",
+    "city": "parie",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": null,
+    "coupon": null,
+    "subtotal": "10000.00",
+    "vat_rate": "18.00",
+    "vat_amount": "1800.00",
+    "shipping_cost": "0.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "11800.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-02-18T00:04:11.661Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 11,
+  "fields": {
+    "user": 1,
+    "first_name": "Imo",
+    "last_name": "plus",
+    "email": "admin@gmail.com",
+    "address": "de",
+    "postal_code": "rte",
+    "phone": "",
+    "city": "parie",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "25000.00",
+    "vat_rate": "18.00",
+    "vat_amount": "4500.00",
+    "shipping_cost": "2500.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "32000.00",
+    "payment_status": "paid",
+    "is_shipped": false,
+    "created_at": "2026-02-18T02:06:30.560Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 12,
+  "fields": {
+    "user": 1,
+    "first_name": "Imo",
+    "last_name": "plus",
+    "email": "admin@gmail.com",
+    "address": "de",
+    "postal_code": "rte",
+    "phone": "",
+    "city": "parie",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "10000.00",
+    "vat_rate": "18.00",
+    "vat_amount": "1800.00",
+    "shipping_cost": "1000.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "12800.00",
+    "payment_status": "paid",
+    "is_shipped": false,
+    "created_at": "2026-02-18T10:17:40.794Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 13,
+  "fields": {
+    "user": 1,
+    "first_name": "Imo",
+    "last_name": "plus",
+    "email": "admin@gmail.com",
+    "address": "de",
+    "postal_code": "rte",
+    "phone": "",
+    "city": "parie",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "10000.00",
+    "vat_rate": "18.00",
+    "vat_amount": "1800.00",
+    "shipping_cost": "1000.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "12800.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-02-18T10:35:21.861Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 14,
+  "fields": {
+    "user": 1,
+    "first_name": "Imo",
+    "last_name": "plus",
+    "email": "admin@gmail.com",
+    "address": "de",
+    "postal_code": "rte",
+    "phone": "",
+    "city": "parie",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "50000.00",
+    "vat_rate": "18.00",
+    "vat_amount": "9000.00",
+    "shipping_cost": "500.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "59500.00",
+    "payment_status": "paid",
+    "is_shipped": false,
+    "created_at": "2026-02-18T10:36:09.170Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 15,
+  "fields": {
+    "user": 1,
+    "first_name": "Imo",
+    "last_name": "plus",
+    "email": "admin@gmail.com",
+    "address": "de",
+    "postal_code": "rte",
+    "phone": "",
+    "city": "parie",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 4,
+    "coupon": null,
+    "subtotal": "20000.00",
+    "vat_rate": "18.00",
+    "vat_amount": "3600.00",
+    "shipping_cost": "0.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "23600.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-02-18T11:02:17.899Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 16,
+  "fields": {
+    "user": 1,
+    "first_name": "Imo",
+    "last_name": "plus",
+    "email": "admin@gmail.com",
+    "address": "de",
+    "postal_code": "rte",
+    "phone": "",
+    "city": "parie",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 4,
+    "coupon": null,
+    "subtotal": "10000.00",
+    "vat_rate": "18.00",
+    "vat_amount": "1800.00",
+    "shipping_cost": "500.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "12300.00",
+    "payment_status": "paid",
+    "is_shipped": false,
+    "created_at": "2026-02-18T11:25:33.149Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 17,
+  "fields": {
+    "user": 1,
+    "first_name": "Imo",
+    "last_name": "plus",
+    "email": "admin@gmail.com",
+    "address": "de",
+    "postal_code": "rte",
+    "phone": "",
+    "city": "parie",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 4,
+    "coupon": null,
+    "subtotal": "10000.00",
+    "vat_rate": "18.00",
+    "vat_amount": "1800.00",
+    "shipping_cost": "0.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "11800.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-02-18T11:37:29.118Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 18,
+  "fields": {
+    "user": 1,
+    "first_name": "Imo",
+    "last_name": "plus",
+    "email": "admin@gmail.com",
+    "address": "de",
+    "postal_code": "rte",
+    "phone": "5555555555",
+    "city": "parie",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "10000.00",
+    "vat_rate": "18.00",
+    "vat_amount": "1800.00",
+    "shipping_cost": "1000.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "12800.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-02-18T11:58:46.029Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 19,
+  "fields": {
+    "user": 1,
+    "first_name": "Imo",
+    "last_name": "plus",
+    "email": "admin@gmail.com",
+    "address": "de",
+    "postal_code": "rte",
+    "phone": "55555552",
+    "city": "parie",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 4,
+    "coupon": null,
+    "subtotal": "10000.00",
+    "vat_rate": "18.00",
+    "vat_amount": "1800.00",
+    "shipping_cost": "0.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "11800.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-02-18T12:01:54.689Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 20,
+  "fields": {
+    "user": 1,
+    "first_name": "Imo",
+    "last_name": "plus",
+    "email": "admin@gmail.com",
+    "address": "de",
+    "postal_code": "rte",
+    "phone": "55555552",
+    "city": "parie",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "25000.00",
+    "vat_rate": "18.00",
+    "vat_amount": "4500.00",
+    "shipping_cost": "5000.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "34500.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-02-18T12:02:33.292Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 21,
+  "fields": {
+    "user": 1,
+    "first_name": "Imo",
+    "last_name": "plus",
+    "email": "admin@gmail.com",
+    "address": "de",
+    "postal_code": "rte",
+    "phone": "55555552",
+    "city": "parie",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "10000.00",
+    "vat_rate": "18.00",
+    "vat_amount": "1800.00",
+    "shipping_cost": "0.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "11800.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-02-18T12:06:30.647Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 22,
+  "fields": {
+    "user": 1,
+    "first_name": "Imo",
+    "last_name": "plus",
+    "email": "admin@gmail.com",
+    "address": "de",
+    "postal_code": "rte",
+    "phone": "55555552",
+    "city": "parie",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 4,
+    "coupon": null,
+    "subtotal": "10000.00",
+    "vat_rate": "18.00",
+    "vat_amount": "1800.00",
+    "shipping_cost": "0.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "11800.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-02-18T12:08:45.311Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 23,
+  "fields": {
+    "user": 1,
+    "first_name": "Imo",
+    "last_name": "plus",
+    "email": "admin@gmail.com",
+    "address": "de",
+    "postal_code": "rte",
+    "phone": "55555552",
+    "city": "parie",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "10000.00",
+    "vat_rate": "18.00",
+    "vat_amount": "1800.00",
+    "shipping_cost": "500.00",
+    "discount_amount": "0.00",
+    "payment_fee": "10000.00",
+    "total_price": "22300.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-02-18T12:29:23.340Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 24,
+  "fields": {
+    "user": 1,
+    "first_name": "Imo",
+    "last_name": "plus",
+    "email": "admin@gmail.com",
+    "address": "de",
+    "postal_code": "rte",
+    "phone": "55555552",
+    "city": "parie",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 4,
+    "coupon": null,
+    "subtotal": "10000.00",
+    "vat_rate": "18.00",
+    "vat_amount": "1800.00",
+    "shipping_cost": "500.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "12300.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-02-18T12:30:16.705Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 25,
+  "fields": {
+    "user": 1,
+    "first_name": "Imo",
+    "last_name": "plus",
+    "email": "admin@gmail.com",
+    "address": "de",
+    "postal_code": "rte",
+    "phone": "55555552",
+    "city": "parie",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "10000.00",
+    "vat_rate": "18.00",
+    "vat_amount": "1800.00",
+    "shipping_cost": "500.00",
+    "discount_amount": "0.00",
+    "payment_fee": "10000.00",
+    "total_price": "22300.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-02-18T12:34:35.365Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 26,
+  "fields": {
+    "user": 1,
+    "first_name": "Imo",
+    "last_name": "plus",
+    "email": "admin@gmail.com",
+    "address": "de",
+    "postal_code": "rte",
+    "phone": "55555552",
+    "city": "parie",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 4,
+    "coupon": null,
+    "subtotal": "10000.00",
+    "vat_rate": "18.00",
+    "vat_amount": "1800.00",
+    "shipping_cost": "500.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "12300.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-02-18T12:35:07.225Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 27,
+  "fields": {
+    "user": 1,
+    "first_name": "Imo",
+    "last_name": "plus",
+    "email": "admin@gmail.com",
+    "address": "de",
+    "postal_code": "rte",
+    "phone": "55555552",
+    "city": "parie",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "10000.00",
+    "vat_rate": "18.00",
+    "vat_amount": "1800.00",
+    "shipping_cost": "500.00",
+    "discount_amount": "0.00",
+    "payment_fee": "10000.00",
+    "total_price": "22300.00",
+    "payment_status": "paid",
+    "is_shipped": false,
+    "created_at": "2026-02-18T12:39:24.777Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 28,
+  "fields": {
+    "user": 1,
+    "first_name": "Imo",
+    "last_name": "plus",
+    "email": "admin@gmail.com",
+    "address": "de",
+    "postal_code": "rte",
+    "phone": "55555552",
+    "city": "parie",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "10000.00",
+    "vat_rate": "18.00",
+    "vat_amount": "1800.00",
+    "shipping_cost": "500.00",
+    "discount_amount": "0.00",
+    "payment_fee": "10000.00",
+    "total_price": "22300.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-02-18T12:44:29.974Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 29,
+  "fields": {
+    "user": 1,
+    "first_name": "Imo",
+    "last_name": "plus",
+    "email": "admin@gmail.com",
+    "address": "de",
+    "postal_code": "rte",
+    "phone": "55555552",
+    "city": "parie",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "35000.00",
+    "vat_rate": "18.00",
+    "vat_amount": "6300.00",
+    "shipping_cost": "500.00",
+    "discount_amount": "0.00",
+    "payment_fee": "10000.00",
+    "total_price": "51800.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-02-18T12:46:15.702Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 30,
+  "fields": {
+    "user": 1,
+    "first_name": "Imo",
+    "last_name": "plus",
+    "email": "admin@gmail.com",
+    "address": "de",
+    "postal_code": "rte",
+    "phone": "55555552",
+    "city": "parie",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 4,
+    "coupon": null,
+    "subtotal": "10000.00",
+    "vat_rate": "18.00",
+    "vat_amount": "1800.00",
+    "shipping_cost": "500.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "12300.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-02-18T12:46:39.875Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 31,
+  "fields": {
+    "user": 1,
+    "first_name": "Imo",
+    "last_name": "plus",
+    "email": "admin@gmail.com",
+    "address": "de",
+    "postal_code": "rte",
+    "phone": "55555552",
+    "city": "parie",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "10000.00",
+    "vat_rate": "18.00",
+    "vat_amount": "1800.00",
+    "shipping_cost": "500.00",
+    "discount_amount": "0.00",
+    "payment_fee": "10000.00",
+    "total_price": "22300.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-02-18T12:50:05.835Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 32,
+  "fields": {
+    "user": 1,
+    "first_name": "Imo",
+    "last_name": "plus",
+    "email": "admin@gmail.com",
+    "address": "de",
+    "postal_code": "rte",
+    "phone": "55555552",
+    "city": "parie",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "10000.00",
+    "vat_rate": "18.00",
+    "vat_amount": "1800.00",
+    "shipping_cost": "500.00",
+    "discount_amount": "0.00",
+    "payment_fee": "10000.00",
+    "total_price": "22300.00",
+    "payment_status": "paid",
+    "is_shipped": false,
+    "created_at": "2026-02-18T13:00:57.646Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 33,
+  "fields": {
+    "user": 1,
+    "first_name": "Imo",
+    "last_name": "plus",
+    "email": "admin@gmail.com",
+    "address": "de",
+    "postal_code": "rte",
+    "phone": "55555552",
+    "city": "parie",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 4,
+    "coupon": null,
+    "subtotal": "25000.00",
+    "vat_rate": "18.00",
+    "vat_amount": "4500.00",
+    "shipping_cost": "500.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "30000.00",
+    "payment_status": "pending",
+    "is_shipped": true,
+    "created_at": "2026-02-18T13:08:58.564Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 34,
+  "fields": {
+    "user": 1,
+    "first_name": "Imo",
+    "last_name": "plus",
+    "email": "admin@gmail.com",
+    "address": "de",
+    "postal_code": "rte",
+    "phone": "55555552",
+    "city": "parie",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "10000.00",
+    "vat_rate": "18.00",
+    "vat_amount": "1800.00",
+    "shipping_cost": "0.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "11800.00",
+    "payment_status": "paid",
+    "is_shipped": true,
+    "created_at": "2026-02-18T13:11:20.298Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 35,
+  "fields": {
+    "user": 1,
+    "first_name": "Imo",
+    "last_name": "plus",
+    "email": "admi22n@gmail.com",
+    "address": "de",
+    "postal_code": "rte",
+    "phone": "55555552",
+    "city": "parie",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 4,
+    "coupon": null,
+    "subtotal": "10000.00",
+    "vat_rate": "18.00",
+    "vat_amount": "1800.00",
+    "shipping_cost": "0.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "11800.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-02-18T13:17:16.141Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 36,
+  "fields": {
+    "user": 1,
+    "first_name": "Imo",
+    "last_name": "plus",
+    "email": "admi55n@gmail.com",
+    "address": "de",
+    "postal_code": "rte",
+    "phone": "55555552",
+    "city": "parie",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "10000.00",
+    "vat_rate": "18.00",
+    "vat_amount": "1800.00",
+    "shipping_cost": "0.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "11800.00",
+    "payment_status": "paid",
+    "is_shipped": false,
+    "created_at": "2026-02-18T13:17:51.063Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 37,
+  "fields": {
+    "user": 1,
+    "first_name": "Imo",
+    "last_name": "plus",
+    "email": "admin@gmail.com",
+    "address": "de",
+    "postal_code": "rte",
+    "phone": "55555552",
+    "city": "parie",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "10000.00",
+    "vat_rate": "18.00",
+    "vat_amount": "1800.00",
+    "shipping_cost": "0.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "11800.00",
+    "payment_status": "paid",
+    "is_shipped": false,
+    "created_at": "2026-02-18T13:24:55.497Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 38,
+  "fields": {
+    "user": 1,
+    "first_name": "Imo",
+    "last_name": "plus",
+    "email": "admin@gmail.com",
+    "address": "de",
+    "postal_code": "rte",
+    "phone": "55555552",
+    "city": "parie",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 4,
+    "coupon": null,
+    "subtotal": "25000.00",
+    "vat_rate": "18.00",
+    "vat_amount": "4500.00",
+    "shipping_cost": "0.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "29500.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-02-18T13:25:13.318Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 39,
+  "fields": {
+    "user": 1,
+    "first_name": "Imo",
+    "last_name": "plus",
+    "email": "admin@gmail.com",
+    "address": "de",
+    "postal_code": "rte",
+    "phone": "55555552",
+    "city": "parie",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "25000.00",
+    "vat_rate": "18.00",
+    "vat_amount": "4500.00",
+    "shipping_cost": "0.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "29500.00",
+    "payment_status": "paid",
+    "is_shipped": false,
+    "created_at": "2026-02-18T13:26:52.598Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 40,
+  "fields": {
+    "user": 1,
+    "first_name": "Imo",
+    "last_name": "plus",
+    "email": "admin@gmail.com",
+    "address": "de",
+    "postal_code": "rte",
+    "phone": "55555552",
+    "city": "parie",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 4,
+    "coupon": null,
+    "subtotal": "25000.00",
+    "vat_rate": "18.00",
+    "vat_amount": "4500.00",
+    "shipping_cost": "0.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "29500.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-02-18T13:27:46.329Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 41,
+  "fields": {
+    "user": 1,
+    "first_name": "Imo",
+    "last_name": "plus",
+    "email": "admin@gmail.com",
+    "address": "de",
+    "postal_code": "rte",
+    "phone": "55555552",
+    "city": "parie",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "25000.00",
+    "vat_rate": "18.00",
+    "vat_amount": "4500.00",
+    "shipping_cost": "0.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "29500.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-02-18T13:36:26.969Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 42,
+  "fields": {
+    "user": 1,
+    "first_name": "Imo",
+    "last_name": "plus",
+    "email": "admin@gmail.com",
+    "address": "de",
+    "postal_code": "rte",
+    "phone": "55555552",
+    "city": "parie",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 4,
+    "coupon": null,
+    "subtotal": "10000.00",
+    "vat_rate": "18.00",
+    "vat_amount": "1800.00",
+    "shipping_cost": "0.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "11800.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-02-18T13:36:51.757Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 43,
+  "fields": {
+    "user": 1,
+    "first_name": "Imo",
+    "last_name": "plus",
+    "email": "admin@gmail.com",
+    "address": "de",
+    "postal_code": "rte",
+    "phone": "55555552",
+    "city": "parie",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "25000.00",
+    "vat_rate": "18.00",
+    "vat_amount": "4500.00",
+    "shipping_cost": "0.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "29500.00",
+    "payment_status": "paid",
+    "is_shipped": false,
+    "created_at": "2026-02-18T13:46:23.600Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 44,
+  "fields": {
+    "user": 1,
+    "first_name": "Imo",
+    "last_name": "plus",
+    "email": "admin@gmail.com",
+    "address": "de",
+    "postal_code": "rte",
+    "phone": "55555552",
+    "city": "parie",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "10000.00",
+    "vat_rate": "18.00",
+    "vat_amount": "1800.00",
+    "shipping_cost": "0.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "11800.00",
+    "payment_status": "paid",
+    "is_shipped": false,
+    "created_at": "2026-02-18T14:17:34.553Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 45,
+  "fields": {
+    "user": 1,
+    "first_name": "Imo",
+    "last_name": "plus",
+    "email": "admin@gmail.com",
+    "address": "de",
+    "postal_code": "rte",
+    "phone": "55555552",
+    "city": "parie",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "10000.00",
+    "vat_rate": "18.00",
+    "vat_amount": "1800.00",
+    "shipping_cost": "0.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "11800.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-02-18T14:26:38.733Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 46,
+  "fields": {
+    "user": 1,
+    "first_name": "Imo",
+    "last_name": "plus",
+    "email": "admin@gmail.com",
+    "address": "de",
+    "postal_code": "rte",
+    "phone": "55555552",
+    "city": "parie",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "10000.00",
+    "vat_rate": "18.00",
+    "vat_amount": "1800.00",
+    "shipping_cost": "0.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "11800.00",
+    "payment_status": "paid",
+    "is_shipped": false,
+    "created_at": "2026-02-18T14:29:53.109Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 47,
+  "fields": {
+    "user": 1,
+    "first_name": "Imo",
+    "last_name": "plus",
+    "email": "admin@gmail.com",
+    "address": "de",
+    "postal_code": "rte",
+    "phone": "55555552",
+    "city": "parie",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "10000.00",
+    "vat_rate": "18.00",
+    "vat_amount": "1800.00",
+    "shipping_cost": "0.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "11800.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-02-18T14:36:44.834Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 48,
+  "fields": {
+    "user": 1,
+    "first_name": "Imo",
+    "last_name": "plus",
+    "email": "admin@gmail.com",
+    "address": "de",
+    "postal_code": "rte",
+    "phone": "55555552",
+    "city": "parie",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 4,
+    "coupon": null,
+    "subtotal": "25000.00",
+    "vat_rate": "18.00",
+    "vat_amount": "4500.00",
+    "shipping_cost": "0.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "29500.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-02-18T14:37:51.727Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 49,
+  "fields": {
+    "user": 1,
+    "first_name": "Imo",
+    "last_name": "plus",
+    "email": "admin@gmail.com",
+    "address": "de",
+    "postal_code": "rte",
+    "phone": "55555552",
+    "city": "parie",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "10000.00",
+    "vat_rate": "18.00",
+    "vat_amount": "1800.00",
+    "shipping_cost": "0.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "11800.00",
+    "payment_status": "pending",
+    "is_shipped": true,
+    "created_at": "2026-02-18T14:40:14.440Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 50,
+  "fields": {
+    "user": 1,
+    "first_name": "Imo",
+    "last_name": "plus",
+    "email": "admin@gmail.com",
+    "address": "de",
+    "postal_code": "rte",
+    "phone": "55555552",
+    "city": "parie",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "10000.00",
+    "vat_rate": "18.00",
+    "vat_amount": "1800.00",
+    "shipping_cost": "500.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "12300.00",
+    "payment_status": "pending",
+    "is_shipped": true,
+    "created_at": "2026-02-18T16:12:30.549Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 51,
+  "fields": {
+    "user": 1,
+    "first_name": "Imo",
+    "last_name": "plus",
+    "email": "admin@gmail.com",
+    "address": "de",
+    "postal_code": "rte",
+    "phone": "55555552",
+    "city": "parie",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 4,
+    "coupon": null,
+    "subtotal": "10000.00",
+    "vat_rate": "18.00",
+    "vat_amount": "1800.00",
+    "shipping_cost": "500.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "12300.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-02-18T22:47:15.372Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 52,
+  "fields": {
+    "user": 1,
+    "first_name": "de ddd",
+    "last_name": "nnn",
+    "email": "admin@gmail.com",
+    "address": "dcv@gmail0.com",
+    "postal_code": "dcv",
+    "phone": "77548968",
+    "city": "df",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 4,
+    "coupon": null,
+    "subtotal": "1000.00",
+    "vat_rate": "18.00",
+    "vat_amount": "180.00",
+    "shipping_cost": "5000.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "6180.00",
+    "payment_status": "pending",
+    "is_shipped": true,
+    "created_at": "2026-02-19T03:54:18.353Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 53,
+  "fields": {
+    "user": null,
+    "first_name": "cin",
+    "last_name": "dera",
+    "email": "cinddera1@gmail.com",
+    "address": "dcv",
+    "postal_code": "dcv",
+    "phone": "0000000",
+    "city": "df",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 4,
+    "coupon": null,
+    "subtotal": "10000.00",
+    "vat_rate": "18.00",
+    "vat_amount": "1800.00",
+    "shipping_cost": "2500.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "14300.00",
+    "payment_status": "pending",
+    "is_shipped": true,
+    "created_at": "2026-02-19T16:35:58.890Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 54,
+  "fields": {
+    "user": 4,
+    "first_name": "mamadou",
+    "last_name": "ndir",
+    "email": "cinddera1@gmail.com",
+    "address": "15000",
+    "postal_code": "1500",
+    "phone": "",
+    "city": "Guédiawaye",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 4,
+    "coupon": null,
+    "subtotal": "100000.00",
+    "vat_rate": "18.00",
+    "vat_amount": "18000.00",
+    "shipping_cost": "1000.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "119000.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-02-20T10:06:10.482Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 55,
+  "fields": {
+    "user": 4,
+    "first_name": "mamadou",
+    "last_name": "ndir",
+    "email": "cinddera1@gmail.com",
+    "address": "15000",
+    "postal_code": "1500",
+    "phone": "",
+    "city": "Guédiawaye",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "3500.00",
+    "vat_rate": "18.00",
+    "vat_amount": "630.00",
+    "shipping_cost": "1000.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "5130.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-02-20T10:06:51.848Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 56,
+  "fields": {
+    "user": 4,
+    "first_name": "de ddd",
+    "last_name": "bbbbbbbb",
+    "email": "cinddera1@gmail.com",
+    "address": "dcv",
+    "postal_code": "dcv",
+    "phone": "120000",
+    "city": "df",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "16000.00",
+    "vat_rate": "18.00",
+    "vat_amount": "2880.00",
+    "shipping_cost": "2500.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "21380.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-02-27T00:10:46.925Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 57,
+  "fields": {
+    "user": 4,
+    "first_name": "de ddd",
+    "last_name": "bbbbbbbb",
+    "email": "cinddera1@gmail.com",
+    "address": "dcv",
+    "postal_code": "15000",
+    "phone": "77548968",
+    "city": "dakar",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "3500.00",
+    "vat_rate": "18.00",
+    "vat_amount": "630.00",
+    "shipping_cost": "500.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "4630.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-02-27T00:24:45.079Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 58,
+  "fields": {
+    "user": 5,
+    "first_name": "Imo",
+    "last_name": "plus",
+    "email": "imoplus36@gmail.com",
+    "address": "de",
+    "postal_code": "rte",
+    "phone": "55555552",
+    "city": "parie",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "3500.00",
+    "vat_rate": "18.00",
+    "vat_amount": "630.00",
+    "shipping_cost": "500.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "4630.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-02-27T00:27:35.897Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 59,
+  "fields": {
+    "user": 5,
+    "first_name": "Imo",
+    "last_name": "plus",
+    "email": "imoplus36@gmail.com",
+    "address": "de",
+    "postal_code": "rte",
+    "phone": "55555552",
+    "city": "parie",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "3500.00",
+    "vat_rate": "18.00",
+    "vat_amount": "630.00",
+    "shipping_cost": "500.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "4630.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-02-27T00:38:32.954Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 60,
+  "fields": {
+    "user": 4,
+    "first_name": "de ddd",
+    "last_name": "dera",
+    "email": "cinddera1@gmail.com",
+    "address": "dcv",
+    "postal_code": "15000",
+    "phone": "0000000",
+    "city": "dk",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "3500.00",
+    "vat_rate": "18.00",
+    "vat_amount": "630.00",
+    "shipping_cost": "500.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "4630.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-02-27T00:41:48.730Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 61,
+  "fields": {
+    "user": 4,
+    "first_name": "cine",
+    "last_name": "dera",
+    "email": "cinddera1@gmail.com",
+    "address": "kkk",
+    "postal_code": "15000",
+    "phone": "7754263214",
+    "city": "dk",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "3500.00",
+    "vat_rate": "18.00",
+    "vat_amount": "630.00",
+    "shipping_cost": "0.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "4130.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-02-27T00:53:37.991Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 62,
+  "fields": {
+    "user": 4,
+    "first_name": "cin",
+    "last_name": "dera",
+    "email": "cinddera1@gmail.com",
+    "address": "dcv",
+    "postal_code": "15000",
+    "phone": "77548968",
+    "city": "dakar",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "3500.00",
+    "vat_rate": "18.00",
+    "vat_amount": "630.00",
+    "shipping_cost": "0.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "4130.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-02-27T01:11:35.036Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 63,
+  "fields": {
+    "user": 4,
+    "first_name": "cin",
+    "last_name": "dera",
+    "email": "cinddera1@gmail.com",
+    "address": "dcv",
+    "postal_code": "dcv",
+    "phone": "77548968",
+    "city": "df",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "3500.00",
+    "vat_rate": "18.00",
+    "vat_amount": "630.00",
+    "shipping_cost": "500.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "4630.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-02-27T01:19:59.528Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 64,
+  "fields": {
+    "user": 4,
+    "first_name": "cin",
+    "last_name": "dera",
+    "email": "cinddera1@gmail.com",
+    "address": "dcv",
+    "postal_code": "dcv",
+    "phone": "77548968",
+    "city": "dakar",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "3500.00",
+    "vat_rate": "18.00",
+    "vat_amount": "630.00",
+    "shipping_cost": "2500.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "6630.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-02-27T01:24:16.366Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 65,
+  "fields": {
+    "user": 4,
+    "first_name": "cin",
+    "last_name": "dera",
+    "email": "cinddera1@gmail.com",
+    "address": "dcv",
+    "postal_code": "dcv",
+    "phone": "77548968",
+    "city": "dakar",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "3500.00",
+    "vat_rate": "18.00",
+    "vat_amount": "630.00",
+    "shipping_cost": "2500.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "6630.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-02-27T01:29:44.754Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 66,
+  "fields": {
+    "user": 4,
+    "first_name": "cin",
+    "last_name": "bbbbbbbb",
+    "email": "cinddera1@gmail.com",
+    "address": "dcv",
+    "postal_code": "dcv",
+    "phone": "0000000",
+    "city": "df",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "3500.00",
+    "vat_rate": "18.00",
+    "vat_amount": "630.00",
+    "shipping_cost": "500.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "4630.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-02-27T01:31:24.624Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 67,
+  "fields": {
+    "user": 5,
+    "first_name": "Imo",
+    "last_name": "plus",
+    "email": "imoplus36@gmail.com",
+    "address": "de",
+    "postal_code": "rte",
+    "phone": "55555552",
+    "city": "parie",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "3500.00",
+    "vat_rate": "18.00",
+    "vat_amount": "630.00",
+    "shipping_cost": "500.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "4630.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-02-27T01:33:56.042Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 68,
+  "fields": {
+    "user": 5,
+    "first_name": "Imo",
+    "last_name": "plus",
+    "email": "imoplus36@gmail.com",
+    "address": "de",
+    "postal_code": "rte",
+    "phone": "55555552",
+    "city": "parie",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "3500.00",
+    "vat_rate": "18.00",
+    "vat_amount": "630.00",
+    "shipping_cost": "500.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "4630.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-02-27T01:35:47.964Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 69,
+  "fields": {
+    "user": 5,
+    "first_name": "Imo",
+    "last_name": "plus",
+    "email": "imoplus36@gmail.com",
+    "address": "de",
+    "postal_code": "rte",
+    "phone": "55555552",
+    "city": "parie",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "3500.00",
+    "vat_rate": "18.00",
+    "vat_amount": "630.00",
+    "shipping_cost": "500.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "4630.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-02-27T01:38:58.314Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 70,
+  "fields": {
+    "user": 5,
+    "first_name": "Imo",
+    "last_name": "plus",
+    "email": "imoplus36@gmail.com",
+    "address": "de",
+    "postal_code": "rte",
+    "phone": "55555552",
+    "city": "parie",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "7000.00",
+    "vat_rate": "18.00",
+    "vat_amount": "1260.00",
+    "shipping_cost": "500.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "8760.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-02-27T01:44:13.458Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 71,
+  "fields": {
+    "user": 5,
+    "first_name": "Imo",
+    "last_name": "plus",
+    "email": "imoplus36@gmail.com",
+    "address": "de",
+    "postal_code": "rte",
+    "phone": "55555552",
+    "city": "parie",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "3500.00",
+    "vat_rate": "18.00",
+    "vat_amount": "630.00",
+    "shipping_cost": "500.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "4630.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-02-27T01:46:03.149Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 72,
+  "fields": {
+    "user": 5,
+    "first_name": "Imo",
+    "last_name": "plus",
+    "email": "imoplus36@gmail.com",
+    "address": "de",
+    "postal_code": "rte",
+    "phone": "55555552",
+    "city": "parie",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "3500.00",
+    "vat_rate": "18.00",
+    "vat_amount": "630.00",
+    "shipping_cost": "500.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "4630.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-02-27T01:48:58.156Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 73,
+  "fields": {
+    "user": 5,
+    "first_name": "Imo",
+    "last_name": "plus",
+    "email": "imoplus36@gmail.com",
+    "address": "de",
+    "postal_code": "rte",
+    "phone": "55555552",
+    "city": "parie",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "3500.00",
+    "vat_rate": "18.00",
+    "vat_amount": "630.00",
+    "shipping_cost": "500.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "4630.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-02-27T01:59:54.002Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 74,
+  "fields": {
+    "user": 5,
+    "first_name": "Imo",
+    "last_name": "plus",
+    "email": "imoplus36@gmail.com",
+    "address": "de",
+    "postal_code": "rte",
+    "phone": "55555552",
+    "city": "parie",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "3500.00",
+    "vat_rate": "18.00",
+    "vat_amount": "630.00",
+    "shipping_cost": "500.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "4630.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-02-27T02:01:22.875Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 75,
+  "fields": {
+    "user": 5,
+    "first_name": "Imo",
+    "last_name": "plus",
+    "email": "imoplus36@gmail.com",
+    "address": "de",
+    "postal_code": "rte",
+    "phone": "55555552",
+    "city": "parie",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "3500.00",
+    "vat_rate": "18.00",
+    "vat_amount": "630.00",
+    "shipping_cost": "500.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "4630.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-02-27T02:02:34.250Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 76,
+  "fields": {
+    "user": 5,
+    "first_name": "Imo",
+    "last_name": "plus",
+    "email": "imoplus36@gmail.com",
+    "address": "de",
+    "postal_code": "rte",
+    "phone": "55555552",
+    "city": "parie",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "3500.00",
+    "vat_rate": "18.00",
+    "vat_amount": "630.00",
+    "shipping_cost": "500.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "4630.00",
+    "payment_status": "pending",
+    "is_shipped": true,
+    "created_at": "2026-02-27T02:09:14.408Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 77,
+  "fields": {
+    "user": 4,
+    "first_name": "de ddd",
+    "last_name": "bbbbbbbb",
+    "email": "cinddera1@gmail.com",
+    "address": "dcv",
+    "postal_code": "dcv",
+    "phone": "77548968",
+    "city": "df",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "3500.00",
+    "vat_rate": "18.00",
+    "vat_amount": "630.00",
+    "shipping_cost": "2500.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "6630.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-02-27T09:57:45.246Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 78,
+  "fields": {
+    "user": 4,
+    "first_name": "de ddd",
+    "last_name": "bbbbbbbb",
+    "email": "cinddera1@gmail.com",
+    "address": "dcv",
+    "postal_code": "15000",
+    "phone": "77548968",
+    "city": "dakar",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "3500.00",
+    "vat_rate": "18.00",
+    "vat_amount": "630.00",
+    "shipping_cost": "500.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "4630.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-02-27T10:46:35.560Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 79,
+  "fields": {
+    "user": 4,
+    "first_name": "de ddd",
+    "last_name": "bbbbbbbb",
+    "email": "cinddera1@gmail.com",
+    "address": "dcv",
+    "postal_code": "15000",
+    "phone": "77548968",
+    "city": "dakar",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "3500.00",
+    "vat_rate": "18.00",
+    "vat_amount": "630.00",
+    "shipping_cost": "1000.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "5130.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-02-27T10:59:45.176Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 80,
+  "fields": {
+    "user": 4,
+    "first_name": "de ddd",
+    "last_name": "bbbbbbbb",
+    "email": "cinddera1@gmail.com",
+    "address": "dcv",
+    "postal_code": "15000",
+    "phone": "77548968",
+    "city": "dakar",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "3500.00",
+    "vat_rate": "18.00",
+    "vat_amount": "630.00",
+    "shipping_cost": "1000.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "5130.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-02-27T11:13:11.279Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 81,
+  "fields": {
+    "user": 4,
+    "first_name": "cin",
+    "last_name": "dera",
+    "email": "cinddera1@gmail.com",
+    "address": "dcv",
+    "postal_code": "dcv",
+    "phone": "77548968",
+    "city": "dakar",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "3500.00",
+    "vat_rate": "18.00",
+    "vat_amount": "630.00",
+    "shipping_cost": "0.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "4130.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-02-27T11:17:05.971Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 82,
+  "fields": {
+    "user": 4,
+    "first_name": "cin",
+    "last_name": "dera",
+    "email": "cinddera1@gmail.com",
+    "address": "dcv",
+    "postal_code": "dcv",
+    "phone": "77548968",
+    "city": "dakar",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 5,
+    "coupon": null,
+    "subtotal": "3500.00",
+    "vat_rate": "18.00",
+    "vat_amount": "630.00",
+    "shipping_cost": "1000.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "5130.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-02-27T16:19:48.977Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 83,
+  "fields": {
+    "user": 4,
+    "first_name": "de ddd",
+    "last_name": "bbbbbbbb",
+    "email": "cinddera1@gmail.com",
+    "address": "dcv@gmail0.com",
+    "postal_code": "15000",
+    "phone": "77548968",
+    "city": "df",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 5,
+    "coupon": null,
+    "subtotal": "3500.00",
+    "vat_rate": "18.00",
+    "vat_amount": "630.00",
+    "shipping_cost": "500.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "4630.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-02-27T16:41:48.753Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 84,
+  "fields": {
+    "user": 4,
+    "first_name": "cin",
+    "last_name": "bbbbbbbb",
+    "email": "cinddera1@gmail.com",
+    "address": "dcv@gmail0.com",
+    "postal_code": "dcv",
+    "phone": "77548968",
+    "city": "df",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "3500.00",
+    "vat_rate": "18.00",
+    "vat_amount": "630.00",
+    "shipping_cost": "1000.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "5130.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-02-27T17:23:35.201Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 85,
+  "fields": {
+    "user": 4,
+    "first_name": "de ddd",
+    "last_name": "dera",
+    "email": "cinddera1@gmail.com",
+    "address": "dcv",
+    "postal_code": "dcv",
+    "phone": "77548968",
+    "city": "dakar",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "3500.00",
+    "vat_rate": "18.00",
+    "vat_amount": "630.00",
+    "shipping_cost": "500.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "4630.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-02-27T17:26:03.838Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 86,
+  "fields": {
+    "user": null,
+    "first_name": "Coumba",
+    "last_name": "SAKHO",
+    "email": "coumbabilaly@yahoo.fr",
+    "address": "6 rue des Érables",
+    "postal_code": "68510",
+    "phone": "0605721659",
+    "city": "Sierentz",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "20000.00",
+    "vat_rate": "18.00",
+    "vat_amount": "3600.00",
+    "shipping_cost": "1000.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "24600.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-03-02T18:36:16.745Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 87,
+  "fields": {
+    "user": 4,
+    "first_name": "cira",
+    "last_name": "ndao",
+    "email": "cinderaaffairs@gmail.com",
+    "address": "sacre coeur 3",
+    "postal_code": "12000",
+    "phone": "777431698",
+    "city": "dakar",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "10500.00",
+    "vat_rate": "18.00",
+    "vat_amount": "1890.00",
+    "shipping_cost": "500.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "12890.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-03-02T20:29:37.841Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 88,
+  "fields": {
+    "user": 4,
+    "first_name": "ndeye cira",
+    "last_name": "ndao",
+    "email": "cinderakane@gmail.com",
+    "address": "SacrP Coeur 3 villa 9678",
+    "postal_code": "12000",
+    "phone": "777431698",
+    "city": "dakar",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 4,
+    "coupon": null,
+    "subtotal": "10500.00",
+    "vat_rate": "18.00",
+    "vat_amount": "1890.00",
+    "shipping_cost": "0.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "12390.00",
+    "payment_status": "pending",
+    "is_shipped": true,
+    "created_at": "2026-03-03T11:57:45.181Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 89,
+  "fields": {
+    "user": null,
+    "first_name": "mamadou",
+    "last_name": "ndir",
+    "email": "mamadoundir2@gmail.com",
+    "address": "15000",
+    "postal_code": "1500",
+    "phone": "775448536",
+    "city": "Guédiawaye",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "3500.00",
+    "vat_rate": "18.00",
+    "vat_amount": "630.00",
+    "shipping_cost": "2500.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "6630.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-03-03T13:39:42.799Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 90,
+  "fields": {
+    "user": 1,
+    "first_name": "mamadou",
+    "last_name": "ndir",
+    "email": "admin@gmail.com",
+    "address": "15000",
+    "postal_code": "1500",
+    "phone": "775448536",
+    "city": "Guédiawaye",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "3500.00",
+    "vat_rate": "18.00",
+    "vat_amount": "630.00",
+    "shipping_cost": "0.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "4130.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-03-04T10:34:42.539Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 91,
+  "fields": {
+    "user": 1,
+    "first_name": "mamadou",
+    "last_name": "ndir",
+    "email": "admin@gmail.com",
+    "address": "15000",
+    "postal_code": "1500",
+    "phone": "775448536",
+    "city": "Guédiawaye",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "14000.00",
+    "vat_rate": "18.00",
+    "vat_amount": "2520.00",
+    "shipping_cost": "0.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "16520.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-03-04T10:45:16.257Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 92,
+  "fields": {
+    "user": 1,
+    "first_name": "mamadou",
+    "last_name": "ndir",
+    "email": "admin@gmail.com",
+    "address": "15000",
+    "postal_code": "1500",
+    "phone": "775448536",
+    "city": "Guédiawaye",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 5,
+    "coupon": null,
+    "subtotal": "7000.00",
+    "vat_rate": "18.00",
+    "vat_amount": "1260.00",
+    "shipping_cost": "0.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "8260.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-03-04T10:47:09.906Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 93,
+  "fields": {
+    "user": 1,
+    "first_name": "mamadou",
+    "last_name": "ndir",
+    "email": "admin@gmail.com",
+    "address": "15000",
+    "postal_code": "1500",
+    "phone": "775448536",
+    "city": "Guédiawaye",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "3500.00",
+    "vat_rate": "18.00",
+    "vat_amount": "630.00",
+    "shipping_cost": "0.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "4130.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-03-04T10:57:22.117Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 94,
+  "fields": {
+    "user": 1,
+    "first_name": "mamadou",
+    "last_name": "ndir",
+    "email": "admin@gmail.com",
+    "address": "15000",
+    "postal_code": "1500",
+    "phone": "775448536",
+    "city": "Guédiawaye",
+    "zone": "1",
+    "shipping_zone": null,
+    "payment_method": 5,
+    "coupon": null,
+    "subtotal": "3500.00",
+    "vat_rate": "18.00",
+    "vat_amount": "630.00",
+    "shipping_cost": "0.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "4130.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-03-04T11:01:37.873Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 95,
+  "fields": {
+    "user": 1,
+    "first_name": "mamadou",
+    "last_name": "ndir",
+    "email": "admin@gmail.com",
+    "address": "15000",
+    "postal_code": "1500",
+    "phone": "775448536",
+    "city": "Guédiawaye",
+    "zone": "DAKAR_PLATEAU",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "3500.00",
+    "vat_rate": "18.00",
+    "vat_amount": "630.00",
+    "shipping_cost": "1000.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "5130.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-03-04T13:23:57.112Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 96,
+  "fields": {
+    "user": 1,
+    "first_name": "mamadou",
+    "last_name": "ndir",
+    "email": "admin@gmail.com",
+    "address": "15000",
+    "postal_code": "1500",
+    "phone": "775448536",
+    "city": "Guédiawaye",
+    "zone": "DAKAR_PLATEAU",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "3500.00",
+    "vat_rate": "18.00",
+    "vat_amount": "630.00",
+    "shipping_cost": "1000.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "5130.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-03-04T13:24:44.844Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 97,
+  "fields": {
+    "user": 1,
+    "first_name": "mamadou",
+    "last_name": "ndir",
+    "email": "admin@gmail.com",
+    "address": "15000",
+    "postal_code": "1500",
+    "phone": "775448536",
+    "city": "Guédiawaye",
+    "zone": "HLM",
+    "shipping_zone": null,
+    "payment_method": 4,
+    "coupon": null,
+    "subtotal": "3500.00",
+    "vat_rate": "18.00",
+    "vat_amount": "630.00",
+    "shipping_cost": "1000.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "5130.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-03-04T13:35:53.232Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 98,
+  "fields": {
+    "user": 1,
+    "first_name": "mamadou",
+    "last_name": "ndir",
+    "email": "admin@gmail.com",
+    "address": "15000",
+    "postal_code": "1500",
+    "phone": "775448536",
+    "city": "Guédiawaye",
+    "zone": "DAKAR_PLATEAU",
+    "shipping_zone": null,
+    "payment_method": 4,
+    "coupon": null,
+    "subtotal": "10500.00",
+    "vat_rate": "18.00",
+    "vat_amount": "1890.00",
+    "shipping_cost": "1000.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "13390.00",
+    "payment_status": "pending",
+    "is_shipped": true,
+    "created_at": "2026-03-04T13:44:58.190Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 99,
+  "fields": {
+    "user": 1,
+    "first_name": "mamadou",
+    "last_name": "ndir",
+    "email": "admin@gmail.com",
+    "address": "15000",
+    "postal_code": "1500",
+    "phone": "775448536",
+    "city": "Guédiawaye",
+    "zone": "FANN_POINT_E_AMITIE",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "3500.00",
+    "vat_rate": "18.00",
+    "vat_amount": "630.00",
+    "shipping_cost": "1499.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "5629.00",
+    "payment_status": "pending",
+    "is_shipped": true,
+    "created_at": "2026-03-04T13:50:42.915Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 100,
+  "fields": {
+    "user": 1,
+    "first_name": "mamadou",
+    "last_name": "ndir",
+    "email": "mamadoundir2@gmail.com",
+    "address": "15000",
+    "postal_code": "1500",
+    "phone": "775448536",
+    "city": "Guédiawaye",
+    "zone": "INTERNATIONAL",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "7000.00",
+    "vat_rate": "18.00",
+    "vat_amount": "1260.00",
+    "shipping_cost": "0.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "8260.00",
+    "payment_status": "pending",
+    "is_shipped": true,
+    "created_at": "2026-03-04T22:56:02.575Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 101,
+  "fields": {
+    "user": 1,
+    "first_name": "de ddd",
+    "last_name": "dera",
+    "email": "souscrativ16@gmail.com",
+    "address": "dcv",
+    "postal_code": "15000",
+    "phone": "77548968",
+    "city": "dakar",
+    "zone": "INTERNATIONAL",
+    "shipping_zone": null,
+    "payment_method": 4,
+    "coupon": null,
+    "subtotal": "10500.00",
+    "vat_rate": "18.00",
+    "vat_amount": "1890.00",
+    "shipping_cost": "0.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "12390.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-03-05T10:32:13.184Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 102,
+  "fields": {
+    "user": 1,
+    "first_name": "cin",
+    "last_name": "bbbbbbbb",
+    "email": "souscrativ16@gmail.com",
+    "address": "dcv@gmail0.com",
+    "postal_code": "15000",
+    "phone": "77548968",
+    "city": "dakar",
+    "zone": "TAMBACOUNDA",
+    "shipping_zone": null,
+    "payment_method": 4,
+    "coupon": null,
+    "subtotal": "3500.00",
+    "vat_rate": "18.00",
+    "vat_amount": "630.00",
+    "shipping_cost": "0.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "4130.00",
+    "payment_status": "pending",
+    "is_shipped": true,
+    "created_at": "2026-03-05T10:34:46.876Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 103,
+  "fields": {
+    "user": 1,
+    "first_name": "de ddd",
+    "last_name": "dera",
+    "email": "souscrativ16@gmail.com",
+    "address": "dcv",
+    "postal_code": "15000",
+    "phone": "77548968",
+    "city": "dakar",
+    "zone": "FANN_POINT_E_AMITIE",
+    "shipping_zone": 10,
+    "payment_method": 4,
+    "coupon": null,
+    "subtotal": "3500.00",
+    "vat_rate": "18.00",
+    "vat_amount": "630.00",
+    "shipping_cost": "1499.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "5629.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-03-05T10:40:16.324Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 104,
+  "fields": {
+    "user": 1,
+    "first_name": "abdou",
+    "last_name": "diop",
+    "email": "souscrativ16@gmail.com",
+    "address": "pikine",
+    "postal_code": "15000",
+    "phone": "7777777",
+    "city": "dakar",
+    "zone": "INTERNATIONAL",
+    "shipping_zone": null,
+    "payment_method": 4,
+    "coupon": null,
+    "subtotal": "3500.00",
+    "vat_rate": "18.00",
+    "vat_amount": "630.00",
+    "shipping_cost": "0.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "4130.00",
+    "payment_status": "pending",
+    "is_shipped": true,
+    "created_at": "2026-03-05T11:07:36.472Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 105,
+  "fields": {
+    "user": 1,
+    "first_name": "abdou",
+    "last_name": "dera",
+    "email": "souscrativ16@gmail.com",
+    "address": "pikine",
+    "postal_code": "dcv",
+    "phone": "0000000",
+    "city": "dakar",
+    "zone": "GRAND_DAKAR",
+    "shipping_zone": 10,
+    "payment_method": 4,
+    "coupon": null,
+    "subtotal": "3500.00",
+    "vat_rate": "18.00",
+    "vat_amount": "630.00",
+    "shipping_cost": "1499.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "5629.00",
+    "payment_status": "pending",
+    "is_shipped": true,
+    "created_at": "2026-03-05T11:17:59.609Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 106,
+  "fields": {
+    "user": 1,
+    "first_name": "imo",
+    "last_name": "plus",
+    "email": "imoplus36@gmail.com",
+    "address": "immmo",
+    "postal_code": "15000",
+    "phone": "120000",
+    "city": "dakar",
+    "zone": "GRAND_DAKAR",
+    "shipping_zone": 10,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "3500.00",
+    "vat_rate": "18.00",
+    "vat_amount": "630.00",
+    "shipping_cost": "1499.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "5629.00",
+    "payment_status": "pending",
+    "is_shipped": true,
+    "created_at": "2026-03-05T11:27:43.058Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 107,
+  "fields": {
+    "user": 1,
+    "first_name": "imo",
+    "last_name": "dera",
+    "email": "imoplus36@gmail.com",
+    "address": "dcv",
+    "postal_code": "15000",
+    "phone": "0000000",
+    "city": "dakar",
+    "zone": "FASS_COLOBANE",
+    "shipping_zone": 10,
+    "payment_method": 5,
+    "coupon": null,
+    "subtotal": "3500.00",
+    "vat_rate": "18.00",
+    "vat_amount": "630.00",
+    "shipping_cost": "1499.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "5629.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-03-05T11:29:27.667Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 108,
+  "fields": {
+    "user": 1,
+    "first_name": "de ddd",
+    "last_name": "plus",
+    "email": "imoplus36@gmail.com",
+    "address": "dcv@gmail0.com",
+    "postal_code": "15000",
+    "phone": "0000000",
+    "city": "dakar",
+    "zone": "CAMBERENE",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "3500.00",
+    "vat_rate": "18.00",
+    "vat_amount": "630.00",
+    "shipping_cost": "0.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "4130.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-03-05T11:30:04.714Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 109,
+  "fields": {
+    "user": 1,
+    "first_name": "abdou",
+    "last_name": "bbbbbbbb",
+    "email": "imoplus36@gmail.com",
+    "address": "dcv",
+    "postal_code": "15000",
+    "phone": "77548968",
+    "city": "dakar",
+    "zone": "YOFF",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "3500.00",
+    "vat_rate": "18.00",
+    "vat_amount": "630.00",
+    "shipping_cost": "0.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "4130.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-03-05T12:07:10.348Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 110,
+  "fields": {
+    "user": 1,
+    "first_name": "abdou",
+    "last_name": "dera",
+    "email": "imoplus36@gmail.com",
+    "address": "dcv",
+    "postal_code": "15000",
+    "phone": "0000000",
+    "city": "dakar",
+    "zone": "OUAKAM",
+    "shipping_zone": null,
+    "payment_method": 5,
+    "coupon": null,
+    "subtotal": "3500.00",
+    "vat_rate": "18.00",
+    "vat_amount": "630.00",
+    "shipping_cost": "0.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "4130.00",
+    "payment_status": "pending",
+    "is_shipped": true,
+    "created_at": "2026-03-05T12:08:08.852Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 111,
+  "fields": {
+    "user": 1,
+    "first_name": "hhh",
+    "last_name": "dera",
+    "email": "imoplus36@gmail.com",
+    "address": "dcv",
+    "postal_code": "15000",
+    "phone": "0000000",
+    "city": "dakar",
+    "zone": "PARCELLES_ASSAINIES",
+    "shipping_zone": null,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "3500.00",
+    "vat_rate": "18.00",
+    "vat_amount": "630.00",
+    "shipping_cost": "0.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "4130.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-03-05T12:13:49.256Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 112,
+  "fields": {
+    "user": 1,
+    "first_name": "cin",
+    "last_name": "bbbbbbbb",
+    "email": "imoplus36@gmail.com",
+    "address": "dcv",
+    "postal_code": "15000",
+    "phone": "77548968",
+    "city": "dakar",
+    "zone": "DIEUPPEUL_DERKLE",
+    "shipping_zone": null,
+    "payment_method": 4,
+    "coupon": null,
+    "subtotal": "10500.00",
+    "vat_rate": "18.00",
+    "vat_amount": "1890.00",
+    "shipping_cost": "0.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "12390.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-03-05T12:14:45.088Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 113,
+  "fields": {
+    "user": 1,
+    "first_name": "de ddd",
+    "last_name": "sous cra",
+    "email": "souscrativ16@gmail.com",
+    "address": "dcv",
+    "postal_code": "15000",
+    "phone": "7777777",
+    "city": "dakar",
+    "zone": "MEDINA",
+    "shipping_zone": 10,
+    "payment_method": 4,
+    "coupon": null,
+    "subtotal": "3500.00",
+    "vat_rate": "18.00",
+    "vat_amount": "630.00",
+    "shipping_cost": "1499.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "5629.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-03-05T12:54:52.605Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 114,
+  "fields": {
+    "user": 1,
+    "first_name": "cin",
+    "last_name": "dera",
+    "email": "souscrativ16@gmail.com",
+    "address": "dcv@gmail0.com",
+    "postal_code": "dcv",
+    "phone": "0000000",
+    "city": "dakar",
+    "zone": "DAKAR_PLATEAU",
+    "shipping_zone": 9,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "3500.00",
+    "vat_rate": "18.00",
+    "vat_amount": "630.00",
+    "shipping_cost": "1000.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "5130.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-03-05T12:57:17.512Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 115,
+  "fields": {
+    "user": 1,
+    "first_name": "de ddd",
+    "last_name": "bbbbbbbb",
+    "email": "souscrativ16@gmail.com",
+    "address": "dcv",
+    "postal_code": "15000",
+    "phone": "7777777",
+    "city": "dakar",
+    "zone": "DIEUPPEUL_DERKLE",
+    "shipping_zone": null,
+    "payment_method": 4,
+    "coupon": null,
+    "subtotal": "3500.00",
+    "vat_rate": "18.00",
+    "vat_amount": "630.00",
+    "shipping_cost": "0.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "4130.00",
+    "payment_status": "pending",
+    "is_shipped": true,
+    "created_at": "2026-03-05T13:03:25.569Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 116,
+  "fields": {
+    "user": 1,
+    "first_name": "cin",
+    "last_name": "dera",
+    "email": "imoplus36@gmail.com",
+    "address": "dcv@gmail0.com",
+    "postal_code": "15000",
+    "phone": "77548968",
+    "city": "dakar",
+    "zone": "INTERNATIONAL",
+    "shipping_zone": null,
+    "payment_method": 4,
+    "coupon": null,
+    "subtotal": "3500.00",
+    "vat_rate": "18.00",
+    "vat_amount": "630.00",
+    "shipping_cost": "0.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "4130.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-03-05T13:08:34.678Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 117,
+  "fields": {
+    "user": 1,
+    "first_name": "abdou",
+    "last_name": "diop",
+    "email": "imoplus36@gmail.com",
+    "address": "dcv",
+    "postal_code": "15000",
+    "phone": "77548968",
+    "city": "dakar",
+    "zone": "LIBERTE",
+    "shipping_zone": null,
+    "payment_method": 4,
+    "coupon": null,
+    "subtotal": "3500.00",
+    "vat_rate": "18.00",
+    "vat_amount": "630.00",
+    "shipping_cost": "0.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "4130.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-03-05T13:20:59.022Z"
+  }
+},
+{
+  "model": "shop.order",
+  "pk": 118,
+  "fields": {
+    "user": null,
+    "first_name": "Imo",
+    "last_name": "plus",
+    "email": "imoplus36@gmail.com",
+    "address": "de",
+    "postal_code": "rte",
+    "phone": "55555552",
+    "city": "parie",
+    "zone": "MEDINA",
+    "shipping_zone": 10,
+    "payment_method": 1,
+    "coupon": null,
+    "subtotal": "3500.00",
+    "vat_rate": "18.00",
+    "vat_amount": "630.00",
+    "shipping_cost": "1499.00",
+    "discount_amount": "0.00",
+    "payment_fee": "0.00",
+    "total_price": "5629.00",
+    "payment_status": "pending",
+    "is_shipped": false,
+    "created_at": "2026-03-05T13:22:21.003Z"
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 1,
+  "fields": {
+    "order": 1,
+    "product": null,
+    "product_name": "Produit1",
+    "price": "10000.00",
+    "quantity": 3
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 2,
+  "fields": {
+    "order": 2,
+    "product": null,
+    "product_name": "Produit1",
+    "price": "10000.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 3,
+  "fields": {
+    "order": 3,
+    "product": null,
+    "product_name": "Produit1",
+    "price": "10000.00",
+    "quantity": 3
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 4,
+  "fields": {
+    "order": 4,
+    "product": null,
+    "product_name": "Produit1",
+    "price": "10000.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 5,
+  "fields": {
+    "order": 5,
+    "product": null,
+    "product_name": "Produit1",
+    "price": "10000.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 6,
+  "fields": {
+    "order": 6,
+    "product": null,
+    "product_name": "Produit1",
+    "price": "10000.00",
+    "quantity": 7
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 7,
+  "fields": {
+    "order": 7,
+    "product": null,
+    "product_name": "Produit1",
+    "price": "10000.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 8,
+  "fields": {
+    "order": 8,
+    "product": null,
+    "product_name": "Produit2",
+    "price": "25000.00",
+    "quantity": 2
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 9,
+  "fields": {
+    "order": 9,
+    "product": null,
+    "product_name": "Produit1",
+    "price": "10000.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 10,
+  "fields": {
+    "order": 10,
+    "product": null,
+    "product_name": "Produit1",
+    "price": "10000.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 11,
+  "fields": {
+    "order": 11,
+    "product": null,
+    "product_name": "Produit2",
+    "price": "25000.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 12,
+  "fields": {
+    "order": 12,
+    "product": null,
+    "product_name": "Produit1",
+    "price": "10000.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 13,
+  "fields": {
+    "order": 13,
+    "product": null,
+    "product_name": "Produit1",
+    "price": "10000.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 14,
+  "fields": {
+    "order": 14,
+    "product": null,
+    "product_name": "Produit2",
+    "price": "25000.00",
+    "quantity": 2
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 15,
+  "fields": {
+    "order": 15,
+    "product": null,
+    "product_name": "Produit1",
+    "price": "10000.00",
+    "quantity": 2
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 16,
+  "fields": {
+    "order": 16,
+    "product": null,
+    "product_name": "Produit1",
+    "price": "10000.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 17,
+  "fields": {
+    "order": 17,
+    "product": null,
+    "product_name": "Produit1",
+    "price": "10000.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 18,
+  "fields": {
+    "order": 18,
+    "product": null,
+    "product_name": "Produit1",
+    "price": "10000.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 19,
+  "fields": {
+    "order": 19,
+    "product": null,
+    "product_name": "Produit1",
+    "price": "10000.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 20,
+  "fields": {
+    "order": 20,
+    "product": null,
+    "product_name": "Produit2",
+    "price": "25000.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 21,
+  "fields": {
+    "order": 21,
+    "product": null,
+    "product_name": "Produit1",
+    "price": "10000.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 22,
+  "fields": {
+    "order": 22,
+    "product": null,
+    "product_name": "Produit1",
+    "price": "10000.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 23,
+  "fields": {
+    "order": 23,
+    "product": null,
+    "product_name": "Produit1",
+    "price": "10000.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 24,
+  "fields": {
+    "order": 24,
+    "product": null,
+    "product_name": "Produit1",
+    "price": "10000.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 25,
+  "fields": {
+    "order": 25,
+    "product": null,
+    "product_name": "Produit1",
+    "price": "10000.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 26,
+  "fields": {
+    "order": 26,
+    "product": null,
+    "product_name": "Produit1",
+    "price": "10000.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 27,
+  "fields": {
+    "order": 27,
+    "product": null,
+    "product_name": "Produit1",
+    "price": "10000.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 28,
+  "fields": {
+    "order": 28,
+    "product": null,
+    "product_name": "Produit1",
+    "price": "10000.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 29,
+  "fields": {
+    "order": 29,
+    "product": null,
+    "product_name": "Produit2",
+    "price": "25000.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 30,
+  "fields": {
+    "order": 29,
+    "product": null,
+    "product_name": "Produit1",
+    "price": "10000.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 31,
+  "fields": {
+    "order": 30,
+    "product": null,
+    "product_name": "Produit1",
+    "price": "10000.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 32,
+  "fields": {
+    "order": 31,
+    "product": null,
+    "product_name": "Produit1",
+    "price": "10000.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 33,
+  "fields": {
+    "order": 32,
+    "product": null,
+    "product_name": "Produit1",
+    "price": "10000.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 34,
+  "fields": {
+    "order": 33,
+    "product": null,
+    "product_name": "Produit2",
+    "price": "25000.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 35,
+  "fields": {
+    "order": 34,
+    "product": null,
+    "product_name": "Produit1",
+    "price": "10000.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 36,
+  "fields": {
+    "order": 35,
+    "product": null,
+    "product_name": "Produit1",
+    "price": "10000.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 37,
+  "fields": {
+    "order": 36,
+    "product": null,
+    "product_name": "Produit1",
+    "price": "10000.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 38,
+  "fields": {
+    "order": 37,
+    "product": null,
+    "product_name": "Produit1",
+    "price": "10000.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 39,
+  "fields": {
+    "order": 38,
+    "product": null,
+    "product_name": "Produit2",
+    "price": "25000.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 40,
+  "fields": {
+    "order": 39,
+    "product": null,
+    "product_name": "Produit2",
+    "price": "25000.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 41,
+  "fields": {
+    "order": 40,
+    "product": null,
+    "product_name": "Produit2",
+    "price": "25000.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 42,
+  "fields": {
+    "order": 41,
+    "product": null,
+    "product_name": "Produit2",
+    "price": "25000.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 43,
+  "fields": {
+    "order": 42,
+    "product": null,
+    "product_name": "Produit1",
+    "price": "10000.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 44,
+  "fields": {
+    "order": 43,
+    "product": null,
+    "product_name": "Produit2",
+    "price": "25000.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 45,
+  "fields": {
+    "order": 44,
+    "product": null,
+    "product_name": "Produit1",
+    "price": "10000.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 46,
+  "fields": {
+    "order": 45,
+    "product": null,
+    "product_name": "Produit1",
+    "price": "10000.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 47,
+  "fields": {
+    "order": 46,
+    "product": null,
+    "product_name": "Produit1",
+    "price": "10000.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 48,
+  "fields": {
+    "order": 47,
+    "product": null,
+    "product_name": "Produit1",
+    "price": "10000.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 49,
+  "fields": {
+    "order": 48,
+    "product": null,
+    "product_name": "Produit2",
+    "price": "25000.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 50,
+  "fields": {
+    "order": 49,
+    "product": null,
+    "product_name": "Produit1",
+    "price": "10000.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 51,
+  "fields": {
+    "order": 50,
+    "product": null,
+    "product_name": "Produit1",
+    "price": "10000.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 52,
+  "fields": {
+    "order": 51,
+    "product": null,
+    "product_name": "Produit1",
+    "price": "10000.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 53,
+  "fields": {
+    "order": 52,
+    "product": null,
+    "product_name": "Produit4",
+    "price": "1000.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 54,
+  "fields": {
+    "order": 53,
+    "product": null,
+    "product_name": "Produit1",
+    "price": "10000.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 55,
+  "fields": {
+    "order": 54,
+    "product": 13,
+    "product_name": "kkkk",
+    "price": "100000.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 56,
+  "fields": {
+    "order": 55,
+    "product": 11,
+    "product_name": "POUDRE DE BAOBAB",
+    "price": "3500.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 57,
+  "fields": {
+    "order": 56,
+    "product": 17,
+    "product_name": "Poudre de baobab ( bouye ) - 250 gr",
+    "price": "2000.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 58,
+  "fields": {
+    "order": 56,
+    "product": 11,
+    "product_name": "Poudre de baobab ( Bouye ) - 500 gr",
+    "price": "3500.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 59,
+  "fields": {
+    "order": 56,
+    "product": 13,
+    "product_name": "Huile de touloucouna - 100 ml",
+    "price": "3500.00",
+    "quantity": 3
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 60,
+  "fields": {
+    "order": 57,
+    "product": 13,
+    "product_name": "Huile de touloucouna - 100 ml",
+    "price": "3500.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 61,
+  "fields": {
+    "order": 58,
+    "product": 13,
+    "product_name": "Huile de touloucouna - 100 ml",
+    "price": "3500.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 62,
+  "fields": {
+    "order": 59,
+    "product": 13,
+    "product_name": "Huile de touloucouna - 100 ml",
+    "price": "3500.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 63,
+  "fields": {
+    "order": 60,
+    "product": 13,
+    "product_name": "Huile de touloucouna - 100 ml",
+    "price": "3500.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 64,
+  "fields": {
+    "order": 61,
+    "product": 13,
+    "product_name": "Huile de touloucouna - 100 ml",
+    "price": "3500.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 65,
+  "fields": {
+    "order": 62,
+    "product": 13,
+    "product_name": "Huile de touloucouna - 100 ml",
+    "price": "3500.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 66,
+  "fields": {
+    "order": 63,
+    "product": 13,
+    "product_name": "Huile de touloucouna - 100 ml",
+    "price": "3500.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 67,
+  "fields": {
+    "order": 64,
+    "product": 13,
+    "product_name": "Huile de touloucouna - 100 ml",
+    "price": "3500.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 68,
+  "fields": {
+    "order": 65,
+    "product": 13,
+    "product_name": "Huile de touloucouna - 100 ml",
+    "price": "3500.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 69,
+  "fields": {
+    "order": 66,
+    "product": 13,
+    "product_name": "Huile de touloucouna - 100 ml",
+    "price": "3500.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 70,
+  "fields": {
+    "order": 67,
+    "product": 13,
+    "product_name": "Huile de touloucouna - 100 ml",
+    "price": "3500.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 71,
+  "fields": {
+    "order": 68,
+    "product": 13,
+    "product_name": "Huile de touloucouna - 100 ml",
+    "price": "3500.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 72,
+  "fields": {
+    "order": 69,
+    "product": 13,
+    "product_name": "Huile de touloucouna - 100 ml",
+    "price": "3500.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 73,
+  "fields": {
+    "order": 70,
+    "product": 13,
+    "product_name": "Huile de touloucouna - 100 ml",
+    "price": "3500.00",
+    "quantity": 2
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 74,
+  "fields": {
+    "order": 71,
+    "product": 13,
+    "product_name": "Huile de touloucouna - 100 ml",
+    "price": "3500.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 75,
+  "fields": {
+    "order": 72,
+    "product": 13,
+    "product_name": "Huile de touloucouna - 100 ml",
+    "price": "3500.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 76,
+  "fields": {
+    "order": 73,
+    "product": 13,
+    "product_name": "Huile de touloucouna - 100 ml",
+    "price": "3500.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 77,
+  "fields": {
+    "order": 74,
+    "product": 13,
+    "product_name": "Huile de touloucouna - 100 ml",
+    "price": "3500.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 78,
+  "fields": {
+    "order": 75,
+    "product": 13,
+    "product_name": "Huile de touloucouna - 100 ml",
+    "price": "3500.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 79,
+  "fields": {
+    "order": 76,
+    "product": 13,
+    "product_name": "Huile de touloucouna - 100 ml",
+    "price": "3500.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 80,
+  "fields": {
+    "order": 77,
+    "product": 13,
+    "product_name": "Huile de touloucouna - 100 ml",
+    "price": "3500.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 81,
+  "fields": {
+    "order": 78,
+    "product": 13,
+    "product_name": "Huile de touloucouna - 100 ml",
+    "price": "3500.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 82,
+  "fields": {
+    "order": 79,
+    "product": 13,
+    "product_name": "Huile de touloucouna - 100 ml",
+    "price": "3500.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 83,
+  "fields": {
+    "order": 80,
+    "product": 13,
+    "product_name": "Huile de touloucouna - 100 ml",
+    "price": "3500.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 84,
+  "fields": {
+    "order": 81,
+    "product": 13,
+    "product_name": "Huile de touloucouna - 100 ml",
+    "price": "3500.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 85,
+  "fields": {
+    "order": 82,
+    "product": 13,
+    "product_name": "Huile de touloucouna - 100 ml",
+    "price": "3500.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 86,
+  "fields": {
+    "order": 83,
+    "product": 13,
+    "product_name": "Huile de touloucouna - 100 ml",
+    "price": "3500.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 87,
+  "fields": {
+    "order": 84,
+    "product": 13,
+    "product_name": "Huile de touloucouna - 100 ml",
+    "price": "3500.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 88,
+  "fields": {
+    "order": 85,
+    "product": 13,
+    "product_name": "Huile de touloucouna - 100 ml",
+    "price": "3500.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 89,
+  "fields": {
+    "order": 86,
+    "product": 16,
+    "product_name": "Pur beurre de karité - 50 ml",
+    "price": "1000.00",
+    "quantity": 20
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 90,
+  "fields": {
+    "order": 87,
+    "product": 13,
+    "product_name": "Huile de touloucouna - 100 ml",
+    "price": "3500.00",
+    "quantity": 3
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 91,
+  "fields": {
+    "order": 88,
+    "product": 13,
+    "product_name": "Huile de touloucouna - 100 ml",
+    "price": "3500.00",
+    "quantity": 3
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 92,
+  "fields": {
+    "order": 89,
+    "product": 13,
+    "product_name": "Huile de touloucouna - 100 ml",
+    "price": "3500.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 93,
+  "fields": {
+    "order": 90,
+    "product": 13,
+    "product_name": "Huile de touloucouna - 100 ml",
+    "price": "3500.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 94,
+  "fields": {
+    "order": 91,
+    "product": 13,
+    "product_name": "Huile de touloucouna - 100 ml",
+    "price": "3500.00",
+    "quantity": 4
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 95,
+  "fields": {
+    "order": 92,
+    "product": 13,
+    "product_name": "Huile de touloucouna - 100 ml",
+    "price": "3500.00",
+    "quantity": 2
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 96,
+  "fields": {
+    "order": 93,
+    "product": 13,
+    "product_name": "Huile de touloucouna - 100 ml",
+    "price": "3500.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 97,
+  "fields": {
+    "order": 94,
+    "product": 13,
+    "product_name": "Huile de touloucouna - 100 ml",
+    "price": "3500.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 98,
+  "fields": {
+    "order": 95,
+    "product": 13,
+    "product_name": "Huile de touloucouna - 100 ml",
+    "price": "3500.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 99,
+  "fields": {
+    "order": 96,
+    "product": 13,
+    "product_name": "Huile de touloucouna - 100 ml",
+    "price": "3500.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 100,
+  "fields": {
+    "order": 97,
+    "product": 13,
+    "product_name": "Huile de touloucouna - 100 ml",
+    "price": "3500.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 101,
+  "fields": {
+    "order": 98,
+    "product": 13,
+    "product_name": "Huile de touloucouna - 100 ml",
+    "price": "3500.00",
+    "quantity": 3
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 102,
+  "fields": {
+    "order": 99,
+    "product": 13,
+    "product_name": "Huile de touloucouna - 100 ml",
+    "price": "3500.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 103,
+  "fields": {
+    "order": 100,
+    "product": 13,
+    "product_name": "Huile de touloucouna - 100 ml",
+    "price": "3500.00",
+    "quantity": 2
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 104,
+  "fields": {
+    "order": 101,
+    "product": 13,
+    "product_name": "Huile de touloucouna - 100 ml",
+    "price": "3500.00",
+    "quantity": 3
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 105,
+  "fields": {
+    "order": 102,
+    "product": 13,
+    "product_name": "Huile de touloucouna - 100 ml",
+    "price": "3500.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 106,
+  "fields": {
+    "order": 103,
+    "product": 13,
+    "product_name": "Huile de touloucouna - 100 ml",
+    "price": "3500.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 107,
+  "fields": {
+    "order": 104,
+    "product": 13,
+    "product_name": "Huile de touloucouna - 100 ml",
+    "price": "3500.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 108,
+  "fields": {
+    "order": 105,
+    "product": 13,
+    "product_name": "Huile de touloucouna - 100 ml",
+    "price": "3500.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 109,
+  "fields": {
+    "order": 106,
+    "product": 13,
+    "product_name": "Huile de touloucouna - 100 ml",
+    "price": "3500.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 110,
+  "fields": {
+    "order": 107,
+    "product": 13,
+    "product_name": "Huile de touloucouna - 100 ml",
+    "price": "3500.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 111,
+  "fields": {
+    "order": 108,
+    "product": 13,
+    "product_name": "Huile de touloucouna - 100 ml",
+    "price": "3500.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 112,
+  "fields": {
+    "order": 109,
+    "product": 13,
+    "product_name": "Huile de touloucouna - 100 ml",
+    "price": "3500.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 113,
+  "fields": {
+    "order": 110,
+    "product": 13,
+    "product_name": "Huile de touloucouna - 100 ml",
+    "price": "3500.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 114,
+  "fields": {
+    "order": 111,
+    "product": 13,
+    "product_name": "Huile de touloucouna - 100 ml",
+    "price": "3500.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 115,
+  "fields": {
+    "order": 112,
+    "product": 13,
+    "product_name": "Huile de touloucouna - 100 ml",
+    "price": "3500.00",
+    "quantity": 3
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 116,
+  "fields": {
+    "order": 113,
+    "product": 13,
+    "product_name": "Huile de touloucouna - 100 ml",
+    "price": "3500.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 117,
+  "fields": {
+    "order": 114,
+    "product": 13,
+    "product_name": "Huile de touloucouna - 100 ml",
+    "price": "3500.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 118,
+  "fields": {
+    "order": 115,
+    "product": 13,
+    "product_name": "Huile de touloucouna - 100 ml",
+    "price": "3500.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 119,
+  "fields": {
+    "order": 116,
+    "product": 13,
+    "product_name": "Huile de touloucouna - 100 ml",
+    "price": "3500.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 120,
+  "fields": {
+    "order": 117,
+    "product": 13,
+    "product_name": "Huile de touloucouna - 100 ml",
+    "price": "3500.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.orderitem",
+  "pk": 121,
+  "fields": {
+    "order": 118,
+    "product": 13,
+    "product_name": "Huile de touloucouna - 100 ml",
+    "price": "3500.00",
+    "quantity": 1
+  }
+},
+{
+  "model": "shop.blogpost",
+  "pk": 1,
+  "fields": {
+    "category": 4,
+    "title": "Les bienfaits du miel",
+    "slug": "les-bienfaits-du-miel",
+    "excerpt": "100 % naturel, riche en antioxydants et nutriments essentiels, le miel pur de Casamance renforce le système immunitaire, apaise la gorge et apporte énergie et vitalité à toute la famille.",
+    "content": "Le miel pur de Casamance est un trésor de la nature, récolté avec soin pour conserver toutes ses vertus. Véritable concentré d’antioxydants, de vitamines et de minéraux, il est un allié incontournable pour la santé et le bien-être.\r\nChez les adultes, il aide à stimuler l’énergie, renforce le système immunitaire et apaise la gorge.\r\nChez les enfants, il soutient les défenses naturelles et apporte une douceur naturelle dans l’alimentation, tout en favorisant la vitalité.\r\nFacile à intégrer dans les boissons, les desserts ou à consommer à la cuillère, le miel pur de Casamance est un indispensable pour une alimentation saine et naturelle.\r\nBienfaits principaux :\r\nRenforce le système immunitaire\r\nSource naturelle d’énergie\r\nApaise la gorge et soutient le confort digestif\r\nRiche en antioxydants et nutriments essentiels\r\nAdopter le miel pur de Casamance, c’est choisir la douceur et la puissance nutritive de la nature, pour toute la famille.",
+    "image": "blog/miel_pur.png",
+    "meta_title": "",
+    "meta_description": "",
+    "created_at": "2026-02-18T17:12:32.565Z",
+    "is_active": true
+  }
+},
+{
+  "model": "shop.blogpost",
+  "pk": 3,
+  "fields": {
+    "category": 3,
+    "title": "Les bienfaits du beurre de karité",
+    "slug": "les-bienfaits-du-beurre-de-karite",
+    "excerpt": "Beurre de Karité – Soin naturel et nourrissant\r\n100 % naturel et riche en vitamines A, E et F, le beurre de karité hydrate, protège et régénère la peau et les cheveux, pour toute la famille.",
+    "content": "Le beurre de karité, extrait des noix du karité, est un trésor naturel aux multiples vertus. Utilisé depuis des siècles en Afrique pour ses propriétés nourrissantes et protectrices, il est idéal pour prendre soin de la peau et des cheveux de manière naturelle.\r\nPour la peau, il hydrate en profondeur, apaise les irritations, protège contre le dessèchement et favorise la régénération des cellules.\r\nPour les cheveux, il nourrit, renforce, lutte contre les pointes sèches et apporte brillance et souplesse.\r\nConvient à toutes les peaux, même les plus sensibles, et à toute la famille, le beurre de karité est un incontournable des soins naturels.\r\nBienfaits principaux :\r\nHydrate et nourrit intensément la peau et les cheveux\r\nApaise les irritations et protège contre le dessèchement\r\nFavorise la régénération cutanée\r\nRiche en vitamines A, E et F pour un effet antioxydant naturel\r\nAdopter le beurre de karité, c’est choisir un soin 100 % naturel et respectueux de votre corps, pour une peau douce et des cheveux éclatants.",
+    "image": "blog/BEURRE_DE_KARITE_-_400_GR_MU2h87s.png",
+    "meta_title": "",
+    "meta_description": "",
+    "created_at": "2026-02-20T02:09:36.953Z",
+    "is_active": true
+  }
+},
+{
+  "model": "shop.blogpost",
+  "pk": 4,
+  "fields": {
+    "category": 4,
+    "title": "Les bienfaits de la poudre de baobab",
+    "slug": "les-bienfaits-de-la-poudre-de-baobab",
+    "excerpt": "Poudre de Bouye – Super aliment naturel\r\nRiche en vitamine C (10x plus que l’orange) et en fibres, la poudre de bouye renforce le système immunitaire, soutient l’énergie et la vitalité, et convient à toute la famille.",
+    "content": "La poudre de bouye, issue du fruit du baobab, est un véritable concentré de bienfaits naturels. Ce super aliment est apprécié pour sa richesse exceptionnelle en vitamine C, en fibres, en minéraux et en antioxydants.\r\nChez les adultes, elle aide à renforcer les défenses naturelles, à améliorer l’énergie quotidienne et à soutenir la digestion.\r\nChez les enfants, elle favorise la croissance, la vitalité et un système immunitaire solide.\r\nFacile à intégrer dans les smoothies, les jus, les yaourts ou les recettes maison, la poudre de bouye est idéale pour adopter une alimentation saine et naturelle.\r\nBienfaits principaux :\r\nStimule le système immunitaire\r\nAméliore l’énergie et réduit la fatigue\r\nFavorise une digestion saine\r\nProtège les cellules grâce aux antioxydants naturels\r\nAdopter la poudre de bouye, c’est offrir à votre corps la puissance nutritive du baobab au quotidien.",
+    "image": "blog/WhatsApp_Image_2024-07-25_at_22.11.08.jpeg",
+    "meta_title": "",
+    "meta_description": "",
+    "created_at": "2026-02-20T02:10:53.594Z",
+    "is_active": true
+  }
+},
+{
+  "model": "shop.video",
+  "pk": 3,
+  "fields": {
+    "category": null,
+    "title": "Huile traditionnelle de Touloucouna – Protection et héritage ancestral",
+    "slug": "huile-traditionnelle-de-touloucouna-protection-et-heritage-ancestral",
+    "description": "Issue d’une sagesse ancienne, cette huile traditionnelle est utilisée depuis des générations pour ses vertus protectrices et son lien profond avec les rituels ancestraux.",
+    "video_file": "videos/TOULOUCOUNA_.mp4",
+    "video_url": null,
+    "image": "videos/thumbnails/touloucouna_50_ml.png",
+    "is_active": true,
+    "created_at": "2026-03-03T11:16:47.645Z"
+  }
+},
+{
+  "model": "shop.banner",
+  "pk": 1,
+  "fields": {
+    "image": "shop_banners/3_xdz6VcC.png",
+    "title": "POUDRE DE BAOBAB",
+    "subtitle": "100 % NATURELLE",
+    "product": 11,
+    "order": 1
+  }
+},
+{
+  "model": "shop.banner",
+  "pk": 2,
+  "fields": {
+    "image": "shop_banners/Design_sans_titre-9.png",
+    "title": "MIEL PUR DE FROMAGER",
+    "subtitle": "100 % NATUREL",
+    "product": 6,
+    "order": 2
+  }
+},
+{
+  "model": "shop.banner",
+  "pk": 3,
+  "fields": {
+    "image": "shop_banners/BEURRE_DE_KARITE_-_400_ba.png",
+    "title": "PUR BEURRE DE KARITÉ",
+    "subtitle": "100 % NATUREL",
+    "product": 7,
+    "order": 3
+  }
+},
+{
+  "model": "shop.banner",
+  "pk": 4,
+  "fields": {
+    "image": "shop_banners/Design_sans_titre-9_PPVjYo2.png",
+    "title": "HUILE DE TOULOUCOUNA",
+    "subtitle": "100 % NATURELLE",
+    "product": 13,
+    "order": 4
+  }
+},
+{
+  "model": "shop.shopinfo",
+  "pk": 1,
+  "fields": {
+    "categories_title": "",
+    "categories_subtitle": "",
+    "features_title": "",
+    "features_subtitle": "",
+    "products_title": "",
+    "products_subtitle": "",
+    "promo_title": "",
+    "promo_subtitle": "",
+    "promo_image": "shop_info/WhatsApp_Image_2024-07-25_at_22.09.39.jpeg",
+    "promo_text": "Obtenez 15 % de remise sur votre premier achat",
+    "trust_title": "",
+    "trust_subtitle": "",
+    "about_image": "shop_info/LOGO_VERT.jpg",
+    "about_title": "A propos",
+    "about_description": "CINDERA PRODUITS NATURELS est une entreprise engagée dans la valorisation et la commercialisation de produits 100 % locaux et naturels, sans additifs ni conservateurs. \r\n\r\nFondée par une auto-entrepreneuse passionnée et dédiée, l’entreprise se distingue par sa volonté de proposer des produits issus de terres riches et préservées du Sénégal. \r\n\r\nChaque produit est soigneusement sélectionné pour ses vertus exceptionnelles, sa provenance authentique, et son caractère naturel.",
+    "signature": "Cindera",
+    "newsletter_bg_image": "newsletter/Prenons_soin_de_nous_.png",
+    "newsletter_title": "Recevez nos conseils et nouveautés naturelles",
+    "newsletter_text": "Recevez nos actualités, conseils bien-être et nouveautés autour de nos produits naturels, directement dans votre boîte mail.",
+    "wellness_hero_title": "Les trésors naturels du Sénégal : des bienfaits insoupçonnés",
+    "wellness_hero_subtitle": "Des richesses 100 % locaux aux vertus exceptionnelles",
+    "wellness_hero_bg": "shop_info/ange-2.png",
+    "wellness_philosophy_title": "La philosophie Cindera",
+    "wellness_philosophy_text": "Chez Cindera, nous croyons que la nature offre tout ce dont le corps a besoin, à condition de la respecter.\r\nNotre philosophie repose sur la simplicité, l’authenticité et le respect du vivant.\r\nNous valorisons des produits 100 % naturels, bruts et sans transformation excessive, issus de terres riches et préservées du Sénégal. Chaque ingrédient est sélectionné avec soin, travaillé à la main selon des méthodes artisanales, afin de conserver l’intégralité de ses nutriments et bienfaits.\r\nCindera s’engage à proposer des produits sans additifs, sans conservateurs et sans artifices, en honorant les savoir-faire locaux et les ressources naturelles, pour le bien-être de toute la famille.\r\nChoisir Cindera, c’est faire le choix d’une consommation consciente, responsable et respectueuse, où la nature est la véritable source d’inspiration.",
+    "wellness_image_break": "shop_info/BEURRE_DE_KARITE_-_400_GR_ctZNqtw.png",
+    "wellness_cta_title": "Embarquez pour un voyage au cœur de la nature sénégalaise",
+    "wellness_cta_text": "Explorer la boutique",
+    "about_hero_title": "CINDERA PRODUITS NATURELS",
+    "about_hero_subtitle": "Valoriser les trésors naturels du Sénégal",
+    "process_title": "De la nature à votre essentiel",
+    "process_subtitle": "Un savoir-faire artisanal, lent et respectueux pour préserver tous les nutriments et bienfaits.",
+    "step1_text": "Récolte manuelle, respectueuse des plantes et de leur environnement naturel.",
+    "step2_text": "Travail à la main, sans procédés industriels, afin de conserver toutes les propriétés naturelles.",
+    "step3_text": "Chaque produit est conditionné à la main, sans additifs ni conservateurs.",
+    "updated_at": "2026-02-27T11:17:28.810Z"
+  }
+},
+{
+  "model": "shop.sitesettings",
+  "pk": 1,
+  "fields": {
+    "site_name": "Ma Boutique",
+    "contact_email": "cinderaaffairs@gmail.com",
+    "contact_phone": "+ 221 77 743 16 98",
+    "addresse": "Sacrée Coeur 3 Montagne, derrière la boulangerie jaune",
+    "updated_at": "2026-02-27T11:32:39.630Z"
+  }
+},
+{
+  "model": "shop.feature",
+  "pk": 1,
+  "fields": {
+    "title": "100 % Naturel",
+    "description": "Nos produits sont purs, sans additifs ni conservateurs pour un bien-être authentique.",
+    "icon_class": "fas fa-hand-holding-heart feature-icon",
+    "is_active": true,
+    "order": 1
+  }
+},
+{
+  "model": "shop.feature",
+  "pk": 2,
+  "fields": {
+    "title": "Soutien Local",
+    "description": "Valorisation du savoir-faire des producteurs et développement équitable des communautés.",
+    "icon_class": "fas fa-leaf feature-icon",
+    "is_active": true,
+    "order": 2
+  }
+},
+{
+  "model": "shop.feature",
+  "pk": 3,
+  "fields": {
+    "title": "Éco-Responsable",
+    "description": "Artisanat durable et respect de la nature pour protéger notre environnement.",
+    "icon_class": "fas fa-recycle feature-icon",
+    "is_active": true,
+    "order": 3
+  }
+},
+{
+  "model": "shop.feature1",
+  "pk": 1,
+  "fields": {
+    "title": "Le naturel à l’état pur",
+    "description": "Des produits naturels, bruts, sans additifs ni conservateurs, sans transformation excessive, pour préserver tous les nutriments et bienfaits.",
+    "icon_class": "fas fa-spa",
+    "is_active": true,
+    "order": 1
+  }
+},
+{
+  "model": "shop.feature1",
+  "pk": 2,
+  "fields": {
+    "title": "Le savoir-faire artisanal",
+    "description": "Chaque produit est récolté, travaillé et conditionné à la main, selon des méthodes traditionnelles et respectueuses, garantes de qualité et d’authenticité.",
+    "icon_class": "fas fa-hands",
+    "is_active": true,
+    "order": 2
+  }
+},
+{
+  "model": "shop.feature1",
+  "pk": 3,
+  "fields": {
+    "title": "La valorisation du local",
+    "description": "Des produits issus exclusivement des terres riches et préservées du Sénégal, mettant en avant les ressources naturelles et les savoir-faire locaux.",
+    "icon_class": "fas fa-map-marker-alt",
+    "is_active": true,
+    "order": 3
+  }
+},
+{
+  "model": "shop.feature_about",
+  "pk": 2,
+  "fields": {
+    "title": "Authenticité",
+    "description": "Nous proposons des produits 100 % naturels, bruts et sans transformation excessive.",
+    "icon_class": "fas fa-seedling",
+    "is_active": true,
+    "order": 1
+  }
+},
+{
+  "model": "shop.feature_about",
+  "pk": 3,
+  "fields": {
+    "title": "Respect",
+    "description": "Respect de la nature, des plantes, des terres sénégalaises et des savoir-faire locaux.",
+    "icon_class": "fas fa-balance-scale",
+    "is_active": true,
+    "order": 2
+  }
+},
+{
+  "model": "shop.feature_about",
+  "pk": 4,
+  "fields": {
+    "title": "Engagement local",
+    "description": "Nous valorisons des produits 100 % locaux, issus de terres riches et préservées du Sénégal.",
+    "icon_class": "fas fa-globe-europe",
+    "is_active": true,
+    "order": 3
+  }
+},
+{
+  "model": "shop.teammember",
+  "pk": 1,
+  "fields": {
+    "name": "CIRA",
+    "role": "FONDATRICE",
+    "bio": "Fondatrice de Cindera Produits naturels, Cira est une entrepreneure sénégalaise engagée dans la valorisation de produits 100 % naturels issus des terres du Sénégal.",
+    "photo": "team/WhatsApp_Image_2026-02-25_at_02.27.04.jpeg",
+    "order": 1
+  }
+},
+{
+  "model": "shop.staticpage",
+  "pk": 1,
+  "fields": {
+    "title": "yyyyyyyyyyyyyyyyyyy",
+    "slug": "yyyyyyyyyyyyyyyyyyy",
+    "content": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "updated_at": "2026-02-28T07:36:08.092Z"
+  }
+},
+{
+  "model": "shop.staticpage",
+  "pk": 2,
+  "fields": {
+    "title": "ggggggggggggggggggg",
+    "slug": "ggggggggggggggggggg",
+    "content": "vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv",
+    "updated_at": "2026-02-28T08:14:53.104Z"
+  }
+},
+{
+  "model": "shop.newslettersubscriber",
+  "pk": 1,
+  "fields": {
+    "email": "souscrativ16@gmail.com",
+    "subscribed_at": "2026-03-04T16:28:30.035Z"
+  }
+},
+{
+  "model": "shop.newslettersubscriber",
+  "pk": 2,
+  "fields": {
+    "email": "mamadoundir2@gmail.com",
+    "subscribed_at": "2026-03-04T22:32:15.757Z"
+  }
+}
+]

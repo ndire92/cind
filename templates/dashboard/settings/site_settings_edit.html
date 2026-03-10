@@ -1,0 +1,12 @@
+{% extends "dashboard/base_dashboard.html" %}
+{% block title %}Modifier Paramètres{% endblock %}
+
+{% block content %}
+<h2>Modifier Paramètres</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-success">Enregistrer</button>
+    <a href="{% url 'dashboard:site_settings_list' %}" class="btn btn-link">Annuler</a>
+</form>
+{% endblock %}

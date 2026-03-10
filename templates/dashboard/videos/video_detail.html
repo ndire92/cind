@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+
+<section class="container py-5">
+    <h1 class="mb-4">{{ video.title }}</h1>
+
+    <div class="mb-4">
+
+        {% if video.video_file %}
+            <video controls style="width:100%; max-height:500px;">
+                <source src="{{ video.video_file.url }}" type="video/mp4">
+            </video>
+
+        {% elif video.video_url %}
+            <div class="ratio ratio-16x9">
+                <iframe src="{{ video.video_url }}"
+                        frameborder="0"
+                        allowfullscreen>
+                </iframe>
+            </div>
+        {% endif %}
+
+    </div>
+
+    <p>{{ video.description }}</p>
+
+</section>
+
+{% endblock %}

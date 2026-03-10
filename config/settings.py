@@ -19,6 +19,7 @@ SECRET_KEY = 'django-insecure-g8b&8g*t+#d0^rd6(yet4h@6_(=23k$m@leu-yqsl_8tsdf!cw
 DEBUG = True
 
 ALLOWED_HOSTS = []
+CSRF_TRUSTED_ORIGINS = []
 
 
 # Application definition
@@ -49,7 +50,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
           # ... garde le reste tel quel ...
-        'DIRS': [os.path.join(BASE_DIR, 'templates')], 
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         # ...
         'APP_DIRS': True,
         'OPTIONS': {
@@ -58,7 +59,8 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'shop.context_processors.cart_item_count',
-                'shop.context_processors.categories_context', # Ajoutez votre context processor ici
+                'shop.context_processors.categories_context',
+                'shop.context_processors.site_settings',# Ajoutez votre context processor ici
             ],
         },
     },
@@ -75,14 +77,25 @@ AUTH_PASSWORD_VALIDATORS = [
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
+##DATABASES = {
+ #   'default': {
+ #       'ENGINE': 'django.db.backends.sqlite3',
+  #      'NAME': BASE_DIR / 'db.sqlite3',
+   # }
+#}
+
+import os
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'postgres',
+        'USER': 'postgres',
+        'PASSWORD': 'cindera',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
-
-
 # 2. Configuration des Fichiers Statiques et Médias
 
 
@@ -141,13 +154,32 @@ PAYDUNYA_PUBLIC_KEY = "test_public_0nfRyIYUuyGhqp6pBpZHWV21rvd"
 PAYDUNYA_PRIVATE_KEY = "test_private_eDBH4wr1vOhAJxh2jwiCr4GPDY8"
 PAYDUNYA_TOKEN = "9CK96TxtYtKQSIf1mZoY"
 
+#PAYDUNYA_MASTER_KEY = "IZ1pSWiK-ccuu-AlCs-OlZq-tGbJQCUfvZ4T"
+#PAYDUNYA_PUBLIC_KEY = "live_public_lWc6uqOS1dVvJfTa21caESs0PM5"
+#PAYDUNYA_PRIVATE_KEY = "live_private_2AQffmGv0EGsK2LPe9s5v7yj68U"
+#PAYDUNYA_TOKEN = "78E9iiMRJ6D5G1Jwz54t"
+
+
+# Mode de fonctionnement
+DEXPAY_MODE = "TEST"  # ou "LIVE" en production
+
+# Clés API Dexpay
+DEXPAY_TEST_API_KEY = "pk_test_59f57230291f2a5da0c47edf960c3480"
+DEXPAY_LIVE_API_KEY = "pk_live_353f413e1c51857667b8ba7190d7c5c8"
+
+# URLs API
+DEXPAY_TEST_BASE_URL = "https://api-sandbox.dexpay.africa"
+DEXPAY_LIVE_BASE_URL = "https://api.dexpay.africa"
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
-EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
-EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+EMAIL_HOST_USER = os.getenv("EMAIL_USER")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_PASS")
 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+# Votre email professionnel pour recevoir les commandes
+ADMIN_EMAIL = "cinddera1@gmail.com"

@@ -1,30 +1,62 @@
 {% extends "dashboard/base_dashboard.html" %}
 
 {% block content %}
-<h3>{% if form.instance.pk %}Modifier la zone{% else %}Ajouter une zone{% endif %}</h3>
 
-<div class="card shadow p-4 mt-3" style="max-width: 600px;">
-    <form method="post">
+<h3 class="mb-4">
+    {% if form.instance.pk %}
+        Modifier la zone de livraison
+    {% else %}
+        Ajouter une zone de livraison
+    {% endif %}
+</h3>
+
+<div class="card shadow p-4" style="max-width: 800px;"> <!-- Un peu plus large pour la liste -->
+    <form method="post" novalidate>
         {% csrf_token %}
-        
+
+        <!-- Nom -->
         <div class="mb-3">
-            <label class="form-label">Nom de la zone</label>
+            <label class="form-label">Nom de la zone (pour l'admin)</label>
             {{ form.name }}
+            {% if form.name.errors %}
+                <div class="text-danger small">{{ form.name.errors }}</div>
+            {% endif %}
         </div>
-        
+
+        <!-- Zones (Liste déroulante multiple) -->
         <div class="mb-3">
-            <label class="form-label">Codes Pays (séparés par des virgules)</label>
-            {{ form.countries }}
+            <label class="form-label">
+                Zones couvertes
+            </label>
+
+            {{ form.zones }}
+
             <small class="text-muted">
-                Ex: SN pour Sénégal, FR pour France. Utilisez ALL pour le reste du monde.
+                <strong>Maintenez Ctrl</strong> (ou Cmd sur Mac) pour sélectionner plusieurs zones.
             </small>
+
+            {% if form.zones.errors %}
+                <div class="text-danger small">
+                    {{ form.zones.errors }}
+                </div>
+            {% endif %}
         </div>
 
+        <!-- Prix -->
         <div class="mb-3">
-            <label class="form-label">Frais de livraison (€)</label>
+            <label class="form-label">
+                Frais de livraison (FCFA)
+            </label>
             {{ form.price }}
+
+            {% if form.price.errors %}
+                <div class="text-danger small">
+                    {{ form.price.errors }}
+                </div>
+            {% endif %}
         </div>
 
+        <!-- Livraison gratuite -->
         <div class="form-check mb-3">
             {{ form.free_shipping }}
             <label class="form-check-label" for="id_free_shipping">
@@ -32,8 +64,39 @@
             </label>
         </div>
 
-        <button type="submit" class="btn btn-success">Enregistrer</button>
-        <a href="{% url 'dashboard:shipping_zones' %}" class="btn btn-link">Annuler</a>
+        <div class="d-flex gap-2 mt-4">
+            <button type="submit" class="btn btn-success">
+                <i class="bi bi-save me-2"></i> Enregistrer
+            </button>
+
+            <a href="{% url 'dashboard:shipping_zones' %}"
+               class="btn btn-outline-secondary">
+                Annuler
+            </a>
+        </div>
     </form>
 </div>
+
+<!-- Script UX pour le prix -->
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const freeShipping = document.getElementById("id_free_shipping");
+    const priceField = document.getElementById("id_price");
+
+    function togglePrice() {
+        if (freeShipping.checked) {
+            priceField.value = 0;
+            priceField.setAttribute("readonly", true);
+            priceField.style.backgroundColor = "#e9ecef"; // Petit effet visuel
+        } else {
+            priceField.removeAttribute("readonly");
+            priceField.style.backgroundColor = "";
+        }
+    }
+
+    freeShipping.addEventListener("change", togglePrice);
+    togglePrice(); // Appel initial
+});
+</script>
+
 {% endblock %}

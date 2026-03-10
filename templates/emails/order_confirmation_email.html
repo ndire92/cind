@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Confirmation de commande</title>
+</head>
+<body style="margin: 0; padding: 0; background-color: #f4f4f4; font-family: Arial, sans-serif;">
+    <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; overflow: hidden;">
+        
+        <!-- Header -->
+        <div style="background-color: #014215; padding: 30px; text-align: center;">
+            <h1 style="color: #ffffff; margin: 0; font-size: 24px;">Cindera  🌿</h1>
+        </div>
+
+        <!-- Body -->
+        <div style="padding: 40px 30px;">
+            <h2 style="color: #014215; margin-top: 0;">Merci pour votre commande, {{ order.first_name }} !</h2>
+            <p style="font-size: 16px; color: #555;">
+                Nous avons bien reçu votre commande <strong>#{{ order.id }}</strong>.
+            </p>
+            
+            <p style="background-color: #e8f5e9; padding: 15px; border-radius: 5px; color: #014215;">
+                <strong>📋 Prochaine étape :</strong><br>
+                Nous préparons votre commande avec soin. Vous recevrez un email dès qu'elle sera expédiée.
+            </p>
+
+            <!-- Récapitulatif -->
+            <div style="margin: 30px 0; border-top: 1px solid #eee; border-bottom: 1px solid #eee; padding: 20px 0;">
+                <p style="margin: 0 0 10px 0; font-weight: bold;">Récapitulatif :</p>
+                <p style="margin: 0; color: #555;">
+                    Total TTC : <strong style="color: #fd7e14; font-size: 18px;">{{ order.total_price }} FCFA</strong><br>
+                    Mode de paiement : {{ order.payment_method.name }}
+                </p>
+            </div>
+
+            <div style="text-align: center; margin-top: 30px;">
+                <a href="{{ site_url }}" style="background-color: #fd7e14; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold;">
+                    Suivre ma commande
+                </a>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div style="background-color: #333333; padding: 25px; text-align: center; color: #888;">
+            <p style="margin: 0; font-size: 14px;">
+                Merci pour votre confiance.<br>
+                <strong style="color: white;">L'équipe Cindera</strong>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

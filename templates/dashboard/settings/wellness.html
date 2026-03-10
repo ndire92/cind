@@ -1,0 +1,93 @@
+{% extends "dashboard/base_dashboard.html" %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold">Configuration Page "Bien-être"</h2>
+        <a href="{% url 'products:bien_etre' %}" target="_blank" class="btn btn-outline-primary btn-sm">
+            <i class="bi bi-eye me-1"></i> Voir la page
+        </a>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <!-- Section Hero -->
+                <h5 class="text-muted mb-3 border-bottom pb-2">Section Héro (Haut de page)</h5>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Titre Principal</label>
+                        {{ form.wellness_hero_title }}
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Sous-titre</label>
+                        {{ form.wellness_hero_subtitle }}
+                    </div>
+                    
+                    <!-- AJOUT : Image de fond Hero -->
+                    <div class="col-12 mt-3">
+                        <label class="form-label fw-bold">Image de fond (Hero)</label>
+                        {{ form.wellness_hero_bg }}
+                        {% if form.instance.wellness_hero_bg %}
+                            <div class="mt-2">
+                                <img src="{{ form.instance.wellness_hero_bg.url }}" style="max-width: 300px; border-radius: 5px; border: 1px solid #eee;">
+                                <small class="text-muted d-block mt-1">Image actuelle</small>
+                            </div>
+                        {% else %}
+                            <small class="text-muted">Aucune image uploadée (image par défaut utilisée).</small>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Section Philosophie -->
+                <h5 class="text-muted mb-3 border-bottom pb-2">Section Philosophie</h5>
+                <div class="row g-3 mb-4">
+                    <div class="col-12">
+                        <label class="form-label fw-bold">Titre Philosophie</label>
+                        {{ form.wellness_philosophy_title }}
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label fw-bold">Texte Philosophie</label>
+                        {{ form.wellness_philosophy_text }}
+                    </div>
+                </div>
+
+                <!-- Image de séparation -->
+                <h5 class="text-muted mb-3 border-bottom pb-2">Image de Séparation (Milieu de page)</h5>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Image</label>
+                        {{ form.wellness_image_break }}
+                        {% if form.instance.wellness_image_break %}
+                            <div class="mt-2">
+                                <img src="{{ form.instance.wellness_image_break.url }}" style="max-width: 200px; border-radius: 5px; border: 1px solid #eee;">
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Call to Action -->
+                <h5 class="text-muted mb-3 border-bottom pb-2">Appel à l'action (Bas de page)</h5>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Titre CTA</label>
+                        {{ form.wellness_cta_title }}
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Texte Bouton</label>
+                        {{ form.wellness_cta_text }}
+                    </div>
+                </div>
+
+                <div class="text-end mt-4">
+                    <button type="submit" class="btn btn-primary px-4">
+                        <i class="bi bi-check-circle me-1"></i> Enregistrer
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,124 +1,256 @@
 {% extends "base.html" %}
+{% load static %}
+
+{% block title %}Confirmation de commande{% endblock %}
 
 {% block content %}
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-lg-10">
-            
-            <!-- Message de succès (Design amélioré) -->
-            <div class="text-center mb-5">
-                <div class="mb-3">
-                    <i class="bi bi-check-circle-fill text-success" style="font-size: 5rem;"></i>
+<style>
+    /* Styles spécifiques à la page de confirmation */
+    .confirmation-header {
+        background: linear-gradient(135deg, #014215 0%, #025a24 100%);
+        color: white;
+        padding: 3rem;
+        border-radius: 15px;
+        margin-bottom: 2rem;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(1, 66, 21, 0.2);
+    }
+    .confirmation-icon {
+        width: 80px;
+        height: 80px;
+        background: rgba(255,255,255,0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1.5rem;
+        animation: popIn 0.5s ease-out;
+    }
+    .confirmation-icon i {
+        font-size: 3rem;
+        color: #fd7e14; /* Orange */
+    }
+    
+    /* Carte de récapitulatif style facture */
+    .receipt-card {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        overflow: hidden;
+    }
+    .receipt-header {
+        background-color: #f8f9fa;
+        padding: 1.5rem;
+        border-bottom: 1px dashed #dee2e6;
+    }
+    .receipt-body {
+        padding: 2rem;
+    }
+    
+    /* Liste des articles */
+    .item-row {
+        display: flex;
+        align-items: center;
+        padding: 1rem 0;
+        border-bottom: 1px solid #f1f1f1;
+    }
+    .item-row:last-child {
+        border-bottom: none;
+    }
+    .item-img {
+        width: 60px;
+        height: 60px;
+        border-radius: 8px;
+        object-fit: cover;
+        margin-right: 1rem;
+        border: 1px solid #eee;
+    }
+    .item-info {
+        flex-grow: 1;
+    }
+    .item-price {
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    /* Totaux */
+    .total-line {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+    }
+    .total-line.grand-total {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #014215;
+        border-top: 2px solid #014215;
+        padding-top: 1rem;
+        margin-top: 1rem;
+    }
+
+    /* Animation */
+    @keyframes popIn {
+        0% { transform: scale(0); opacity: 0; }
+        100% { transform: scale(1); opacity: 1; }
+    }
+</style>
+
+<section class="py-5">
+    <div class="container">
+        <!-- En-tête Succès -->
+        <div class="confirmation-header">
+            <div class="confirmation-icon">
+                <i class="bi bi-check2"></i>
+            </div>
+            <h2 class="fw-bold mb-2">Merci pour votre confiance !</h2>
+            <p class="mb-0 opacity-75">
+                Commande <strong>#{{ order.id }}</strong> validée avec succès.
+            </p>
+        </div>
+
+        <div class="row g-4">
+            <!-- Colonne Gauche : Infos & Paiement -->
+            <div class="col-lg-5">
+                <!-- Livraison -->
+                <div class="card receipt-card mb-4">
+                    <div class="receipt-header">
+                        <h5 class="mb-0 fw-bold text-uppercase text-muted small">
+                            <i class="bi bi-truck me-2"></i> Livraison
+                        </h5>
+                    </div>
+                    <div class="receipt-body">
+                        <p class="mb-1"><strong>{{ order.first_name }} {{ order.last_name }}</strong></p>
+                        <p class="text-muted small mb-1">{{ order.address }}</p>
+                        <p class="text-muted small mb-2">{{ order.postal_code }} {{ order.city }}</p>
+                        
+                        <div class="bg-light p-2 rounded mt-3">
+                            <small class="text-muted d-block">Zone de livraison</small>
+                            <strong class="text-primary"><i class="bi bi-geo-alt-fill me-1"></i> {{ order.zone }}</strong>
+                        </div>
+                    </div>
                 </div>
-                <h1 class="display-5 fw-bold">Merci pour votre commande !</h1>
-                <p class="lead text-muted mt-2">
-                    Votre commande <span class="badge bg-dark fs-6">#{{ order.id }}</span> a été enregistrée avec succès.
-                </p>
-                <p class="small text-muted">
-                    Un email de confirmation vous a été envoyé à <strong>{{ order.email }}</strong>.
-                </p>
+
+                <!-- Paiement -->
+                <div class="card receipt-card">
+                    <div class="receipt-header">
+                        <h5 class="mb-0 fw-bold text-uppercase text-muted small">
+                            <i class="bi bi-credit-card me-2"></i> Paiement
+                        </h5>
+                    </div>
+                    <div class="receipt-body">
+                        <p class="mb-0">
+                            Méthode : <strong>{{ order.payment_method.name }}</strong>
+                        </p>
+                        <p class="mb-0 small text-muted mt-2">
+                            Statut : 
+                            {% if order.payment_status == 'paid' %}
+                                <span class="badge bg-success">Payé</span>
+                            {% else %}
+                                <span class="badge bg-warning text-dark">En attente</span>
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
             </div>
 
-            <div class="row g-4">
-                <!-- Détails de la commande -->
-                <div class="col-lg-8 mb-4">
-                    <div class="card border-0 shadow-sm rounded-3 h-100">
-                        <div class="card-header bg-white py-3 border-bottom">
-                            <h5 class="mb-0 fw-bold"><i class="bi bi-bag-check text-primary me-2"></i>Récapitulatif</h5>
-                        </div>
-                        <div class="card-body p-0">
-                            <div class="table-responsive">
-                                <table class="table table-hover align-middle mb-0">
-                                    <thead class="bg-light text-muted small text-uppercase">
-                                        <tr>
-                                            <th class="ps-4 border-0">Produit</th>
-                                            <th class="text-center border-0">Quantité</th>
-                                            <th class="text-end border-0">Prix Unit.</th>
-                                            <th class="text-end pe-4 border-0">Total</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for item in order.items.all %}
-                                        <tr>
-                                            <td class="ps-4"><strong>{{ item.product_name }}</strong></td>
-                                            <td class="text-center text-muted">{{ item.quantity }}</td>
-                                            <td class="text-end">{{ item.price }} €</td>
-                                            <!-- Utilisation de la propriété total_price du modèle pour plus de fiabilité -->
-                                            <td class="text-end fw-bold pe-4">{{ item.total_price }} €</td>
-                                        </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
+            <!-- Colonne Droite : Articles & Totaux -->
+            <div class="col-lg-7">
+                <div class="card receipt-card">
+                    <div class="receipt-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0 fw-bold text-uppercase text-muted small">Détails de la commande</h5>
+                        <span class="text-muted small">{{ order.created_at|date:"d/m/Y" }}</span>
+                    </div>
+                    <div class="receipt-body">
+                        <!-- Liste des articles -->
+                        {% for item in order.items.all %}
+                        <div class="item-row">
+                            <img src="{% if item.product.image %}{{ item.product.image.url }}{% else %}https://via.placeholder.com/60{% endif %}" class="item-img" alt="">
+                            <div class="item-info">
+                                <strong class="d-block">{{ item.product_name }}</strong>
+                                <small class="text-muted">Qté: {{ item.quantity }}</small>
                             </div>
+                            <div class="item-price text-success">
+                                {{ item.total_price }} FCFA
+                            </div>
+                        </div>
+                        {% endfor %}
+
+                        <hr class="my-4">
+
+                        <!-- Calculs -->
+                       
+                        <div class="total-line text-muted">
+                            <span>Sous-total HT</span>
+                            <span>{{ order.subtotal }} FCFA</span>
+                        </div>
+
+                        <!-- Ligne TVA supprimée -->
+
+                        <div class="total-line text-muted">
+                            <span>Livraison</span>
+                            <span>
+                                {% if order.shipping_cost == 0 %}
+                                    <span class="text-success">Gratuite</span>
+                                {% else %}
+                                    {{ order.shipping_cost }} FCFA
+                                {% endif %}
+                            </span>
+                        </div>
+
+                        {% if order.discount_amount > 0 %}
+                        <div class="total-line text-danger">
+                            <span>Réduction</span>
+                            <span>- {{ order.discount_amount }} FCFA</span>
+                        </div>
+                        {% endif %}
+
+                        <div class="total-line grand-total">
+                            <span>Total TTC</span>
+                            <span>{{ order.total_price }} FCFA</span>
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
 
-                <!-- Sidebar : Total & Adresse -->
-                <div class="col-lg-4 mb-4">
-                    
-                    <!-- Détails du montant -->
-                    <div class="card border-0 shadow-sm rounded-3 mb-4">
-                        <div class="card-body">
-                            <h5 class="mb-3 fw-bold">Détails du montant</h5>
-                            <ul class="list-group list-group-flush">
-                                <li class="list-group-item d-flex justify-content-between px-0 border-0">
-                                    <span class="text-muted">Sous-total HT</span>
-                                    <span>{{ order.subtotal }} €</span>
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between px-0 border-0">
-                                    <span class="text-muted">TVA ({{ order.vat_rate }}%)</span>
-                                    <span>{{ order.vat_amount }} €</span>
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between px-0 border-0">
-                                    <span class="text-muted">Livraison</span>
-                                    <span>{{ order.shipping_cost }} €</span>
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between px-0 border-0">
-                                    <span class="text-muted">Mode de paiement</span>
-                                    <span class="fw-bold small">{{ order.payment_method.name }}</span>
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between px-0 fw-bold border-top pt-3 mt-2">
-                                    <span>Total TTC</span>
-                                    <span class="text-primary fs-4">{{ order.total_price }} €</span>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
+        <!-- Bouton Action -->
+        <div class="text-center mt-5">
+            <a href="{% url 'products:shop' %}" class="btn btn-primary btn-lg px-5 shadow-sm">
+                <i class="bi bi-bag-heart me-2"></i> Continuer mes achats
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}
 
-                    <!-- Adresse de livraison -->
-                    <div class="card border-0 shadow-sm rounded-3 mb-4 bg-light">
-                        <div class="card-body">
-                            <h6 class="mb-2 fw-bold text-uppercase text-muted small"><i class="bi bi-geo-alt me-2"></i>Adresse de livraison</h6>
-                            <address class="mb-0 small">
-                                <strong>{{ order.first_name }} {{ order.last_name }}</strong><br>
-                                {{ order.address }}<br>
-                                {{ order.postal_code }} {{ order.city }}<br>
-                                {{ order.country }}
-                            </address>
-                        </div>
-                    </div>
 
-                {% if order.payment_status == 'pending' and order.payment_method and order.payment_method.slug == 'paydunya' %}
-<a href="{% url 'products:paydunya_init' order.id %}" class="btn btn-success w-100">
-    <i class="bi bi-credit-card me-2"></i> Payer maintenant
-</a>
-<small class="text-muted d-block text-center mt-1">Redirection vers PayDunya</small>
-{% elif order.payment_method.slug == 'paiement-a-la-livraison' %}
-<div class="alert alert-info text-center mb-0 rounded-pill py-2">
-    <i class="bi bi-truck me-2"></i> Paiement à la livraison choisi.
+<!-- Calculs -->
+<div class="total-line text-muted">
+    <span>Sous-total HT</span>
+    <span>{{ order.subtotal }} FCFA</span>
+</div>
+
+<!-- Ligne TVA supprimée -->
+
+<div class="total-line text-muted">
+    <span>Livraison</span>
+    <span>
+        {% if order.shipping_cost == 0 %}
+            <span class="text-success">Gratuite</span>
+        {% else %}
+            {{ order.shipping_cost }} FCFA
+        {% endif %}
+    </span>
+</div>
+
+{% if order.discount_amount > 0 %}
+<div class="total-line text-danger">
+    <span>Réduction</span>
+    <span>- {{ order.discount_amount }} FCFA</span>
 </div>
 {% endif %}
 
-                </div>
-            </div>
-
-            <div class="text-center mt-5">
-                <a href="{% url 'products:shop' %}" class="btn btn-primary rounded-pill px-5 py-2">
-                    <i class="bi bi-arrow-left me-2"></i> Retour à la boutique
-                </a>
-            </div>
-        </div>
-    </div>
+<div class="total-line grand-total">
+    <span>Total TTC</span>
+    <span>{{ order.total_price }} FCFA</span>
 </div>
-{% endblock %}

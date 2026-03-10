@@ -1,0 +1,55 @@
+{% extends "dashboard/base_dashboard.html" %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold mb-0">
+            {% if form.instance.pk %}Modifier le membre{% else %}Ajouter un membre{% endif %}
+        </h2>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-3">
+                <div class="card-body p-4">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Nom</label>
+                                {{ form.name }}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Rôle</label>
+                                {{ form.role }}
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-bold">Biographie</label>
+                                {{ form.bio }}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Photo</label>
+                                {{ form.photo }}
+                                {% if form.instance.photo %}
+                                    <small class="text-muted d-block mt-1">{{ form.instance.photo.name }}</small>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Ordre</label>
+                                {{ form.order }}
+                                <small class="text-muted">Ordre d'affichage (plus petit = premier)</small>
+                            </div>
+                        </div>
+
+                        <div class="text-end mt-4">
+                            <a href="{% url 'dashboard:team_list' %}" class="btn btn-secondary">Annuler</a>
+                            <button type="submit" class="btn btn-success px-4">Enregistrer</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

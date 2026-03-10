@@ -79,8 +79,13 @@ class Product(models.Model):
     )
     name = models.CharField(max_length=200, verbose_name="Nom du produit")
     slug = models.SlugField(unique=True, blank=True)
-    image = models.ImageField(upload_to='products/', blank=True, null=True, verbose_name="Image principale")
-    
+    image = models.ImageField(
+        upload_to='products/',
+        blank=True,
+        null=True,
+        verbose_name="Image principale"
+    )
+
     short_description = models.TextField(
         max_length=300, blank=True, verbose_name="Description courte"
     )
@@ -93,10 +98,9 @@ class Product(models.Model):
     )
     tax_rate = models.DecimalField(
         max_digits=4, decimal_places=2,
-        default=Decimal('18.00'),
+        default=Decimal('0.00'),
         verbose_name="TVA (%)"
     )
-
 
     video = models.FileField(
         upload_to='products/videos/',
@@ -132,7 +136,7 @@ class Product(models.Model):
     @property
     def is_available(self):
         return self.available and self.stock > 0
-    
+
     @property
     def stock_status(self):
         if self.stock == 0: return "Rupture"
@@ -140,7 +144,6 @@ class Product(models.Model):
         return "Disponible"
 
     def save(self, *args, **kwargs):
-        # Génération de slug robuste avec compteur
         if not self.slug:
             base_slug = slugify(self.name)
             slug = base_slug
@@ -156,36 +159,15 @@ class Product(models.Model):
 
 
 class ProductImage(models.Model):
-    product = models.ForeignKey(
-        Product, related_name='images', on_delete=models.CASCADE
-    )
+    product = models.ForeignKey(Product, related_name='gallery', on_delete=models.CASCADE)
     image = models.ImageField(upload_to='products/gallery/', verbose_name="Image")
-    is_main = models.BooleanField(default=False, verbose_name="Image Principale")
 
     class Meta:
-        ordering = ['-is_main']
-        constraints = [
-            models.UniqueConstraint(
-                fields=['product'],
-                condition=Q(is_main=True),
-                name='unique_main_image_per_product'
-            )
-        ]
+        ordering = ['id']
 
     def __str__(self):
         return f"Image de {self.product.name}"
 
-    def save(self, *args, **kwargs):
-        with transaction.atomic():
-            super().save(*args, **kwargs)
-            if self.is_main:
-                # S'assurer qu'il n'y a qu'une seule image principale
-                self.product.images.exclude(pk=self.pk).update(is_main=False)
-            else:
-                # Si aucune image principale n'existe, forcer celle-ci
-                if not self.product.images.filter(is_main=True).exists():
-                    self.is_main = True
-                    super().save(update_fields=['is_main'])
 
 
 # ============================================================================
@@ -221,23 +203,108 @@ class PaymentMethod(models.Model):
     def __str__(self):
         return self.name
 
+
+
+
+# 🇸🇳 Zones de livraison Sénégal
+
+SENEGAL_ZONES = {
+
+    # =======================
+    # VILLE DE DAKAR (Centre)
+    # =======================
+    "DAKAR_PLATEAU": "Dakar-Plateau",
+    "MEDINA": "Médina",
+    "FANN_POINT_E_AMITIE": "Fann - Point E - Amitié",
+    "FASS_COLOBANE": "Gueule Tapée - Fass - Colobane",
+    "GRAND_DAKAR": "Grand Dakar",
+    "BISCUTERIE": "Biscuiterie",
+    "HLM": "HLM",
+    "DIEUPPEUL_DERKLE": "Dieuppeul - Derklé",
+    "LIBERTE": "Liberté",
+    "CAMBERENE": "Cambérène",
+    "PARCELLES_ASSAINIES": "Parcelles Assainies",
+    "YOFF": "Yoff",
+    "OUAKAM": "Ouakam",
+    "NGOR": "Ngor",
+    "PATTE_D_OIE": "Patte d'Oie",
+    "HANN_BEL_AIR": "Hann Bel Air",
+    "SICAP_LIBERTE": "Sicap Liberté",
+    "GRAND_YOFF": "Grand Yoff",
+    "MBAO": "Mbao",
+
+    # =======================
+    # PIKINE & GUÉDIAWAYE (Banlieue Ouest)
+    # =======================
+    "PIKINE_NORD": "Pikine Nord",
+    "PIKINE_OUEST": "Pikine Ouest",
+    "PIKINE_EST": "Pikine Est",
+    "PIKINE_SUD": "Pikine Sud",
+    "THIAROYE_SUR_MER": "Thiaroye Sur Mer",
+    "THIAROYE_GUEDEYE": "Thiaroye Guédé",
+    "DJIDDAH_THIAROYE_KAO": "Djiddah Thiaroye Kao",
+    "YEUMBEUL_NORD": "Yeumbeul Nord",
+    "YEUMBEUL_SUD": "Yeumbeul Sud",
+    "GUEDIAWAYE": "Guédiawaye",
+    "MALIKA": "Malika",
+    "KEUR_MASSAR": "Keur Massar",
+
+    # =======================
+    # RUFISQUE (Banlieue Est)
+    # =======================
+    "RUFISQUE": "Rufisque",
+    "BARGNY": "Bargny",
+    "DIAMNIADIO": "Diamniadio",
+    "SEBIKHOTANE": "Sébikhotane",
+    "YENE": "Yène",
+    "BAMBYLOR": "Bambylor",
+    "TIVAOUANE_PEULH": "Tivaouane Peulh",
+    "SENTOBE": "Sentobe",
+    "JAXAAY": "Jaxaay",
+    "DIENDER": "Diender",
+
+    # ====== AUTRES RÉGIONS ======
+    "THIES": "Thiès",
+    "DIOURBEL": "Diourbel",
+    "FATICK": "Fatick",
+    "KAOLACK": "Kaolack",
+    "KOLDA": "Kolda",
+    "LOUGA": "Louga",
+    "MATAM": "Matam",
+    "SAINT_LOUIS": "Saint-Louis",
+    "TAMBACOUNDA": "Tambacounda",
+    "ZIGUINCHOR": "Ziguinchor",
+    "KEDOUGOU": "Kédougou",
+    "SEDHIOU": "Sédhiou",
+    "KAFFRINE": "Kaffrine",
+    "INTERNATIONAL": "International (Hors Sénégal)",
+}
+
 class ShippingZone(models.Model):
+
     name = models.CharField(
         max_length=100,
         verbose_name="Nom de la zone"
     )
-    countries = models.CharField(
-        max_length=300,
-        verbose_name="Codes pays (ISO)",
-        help_text="Séparés par des virgules. Ex: FR, SN. Utilisez 'ALL' pour le reste du monde."
+
+    zones = models.CharField(
+        max_length=500,
+        verbose_name="Zones couvertes",
+        help_text="Séparées par des virgules. Exemple : DAKAR_PLATEAU, THIES"
     )
+
     price = models.DecimalField(
         max_digits=10,
-        decimal_places=2,
-        validators=[MinValueValidator(Decimal('0.00'))],
-        verbose_name="Frais de port HT (€)"
+        decimal_places=0,
+        validators=[MinValueValidator(Decimal('0'))],
+        verbose_name="Frais de livraison (FCFA)"
     )
-    free_shipping = models.BooleanField(default=False, verbose_name="Livraison gratuite")
+
+    free_shipping = models.BooleanField(
+        default=False,
+        verbose_name="Livraison gratuite"
+    )
+
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -246,52 +313,50 @@ class ShippingZone(models.Model):
         ordering = ['price']
 
     def __str__(self):
-        return f"{self.name} ({self.price} €)"
+        if self.free_shipping:
+            return f"{self.name} (Gratuit)"
+        return f"{self.name} ({self.price} FCFA)"
 
-    def get_country_codes(self):
-        """
-        Retourne la liste des codes pays normalisés.
-        Si 'ALL' est présent, on retourne uniquement ['ALL'].
-        """
-        codes = [c.strip().upper() for c in self.countries.split(',') if c.strip()]
-        if "ALL" in codes:
-            return ["ALL"]
-        return sorted(set(codes))
-
+    # 🔹 Nettoyage automatique
     def save(self, *args, **kwargs):
-        """
-        Normalise les codes pays avant sauvegarde (majuscules, suppression espaces).
-        """
-        self.countries = ",".join(
-            c.strip().upper() for c in self.countries.split(',') if c.strip()
+        self.zones = ",".join(
+            z.strip().upper() for z in self.zones.split(",") if z.strip()
         )
         super().save(*args, **kwargs)
 
+    # 🔹 Retourne liste propre
+    def get_zone_codes(self):
+        return sorted(set(
+            z.strip().upper() for z in self.zones.split(",") if z.strip()
+        ))
+
+    # 🔹 Validation
     def clean(self):
-        """
-        Validation des codes pays : doivent être ISO alpha-2 (2 lettres),
-        sauf le cas spécial 'ALL'.
-        """
-        codes = [c.strip().upper() for c in self.countries.split(',') if c.strip()]
+        codes = [z.strip().upper() for z in self.zones.split(",") if z.strip()]
         for code in codes:
-            if code != "ALL" and len(code) != 2:
-                raise ValidationError(f"Code pays invalide: {code}")
+            if code not in SENEGAL_ZONES:
+                raise ValidationError(f"Zone invalide : {code}")
 
+    # 🔹 Choix pour formulaire
     @classmethod
-    def get_country_choices(cls):
-        zones = cls.objects.all()
-        country_choices = set()
-        for zone in zones:
-            for code in zone.get_country_codes():
-                if code == "ALL":
-                    country_choices.add(('ALL', 'Autres pays (Reste du monde)'))
-                else:
-                    country_choices.add((code, code))
-        final_choices = [('', '-- Sélectionner un pays --')]
-        final_choices.extend(sorted(list(country_choices), key=lambda x: x[1]))
-        return final_choices
+    def get_zone_choices(cls):
+        choices = [('', '-- Sélectionner votre zone --')]
+        for code, name in SENEGAL_ZONES.items():
+            choices.append((code, name))
+        return choices
 
+    # 🔹 Calcul automatique
+    @classmethod
+    def get_shipping_for_zone(cls, zone_code):
+        for zone in cls.objects.all():
+            if zone_code in zone.get_zone_codes():
+                if zone.free_shipping:
+                    return 0
+                return zone.price
+        return 0
+    
 
+    
 class Order(models.Model):
     class PaymentStatus(models.TextChoices):
         PENDING = 'pending', 'En attente'
@@ -303,7 +368,7 @@ class Order(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.SET_NULL, null=True, blank=True, related_name='orders'
     )
-    
+
     # Infos client (snapshot)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
@@ -316,9 +381,10 @@ class Order(models.Model):
 
     phone = models.CharField(max_length=20, blank=True, verbose_name="Téléphone")
     city = models.CharField(max_length=100)
-    country = models.CharField(max_length=50)  # <-- ajoute ce champ
+    zone = models.CharField(max_length=50, verbose_name="Zone de livraison")
 
-    
+
+
     # Relations
     shipping_zone = models.ForeignKey(ShippingZone, on_delete=models.SET_NULL, null=True)
     payment_method = models.ForeignKey(PaymentMethod, on_delete=models.SET_NULL, null=True)
@@ -326,7 +392,7 @@ class Order(models.Model):
 
     # Champs financiers
     subtotal = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-    vat_rate = models.DecimalField(max_digits=5, decimal_places=2, default=18)
+    vat_rate = models.DecimalField(max_digits=5, decimal_places=2, default=0)
     vat_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     shipping_cost = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     discount_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
@@ -346,12 +412,12 @@ class Order(models.Model):
     def calculate_totals(self):
         """Recalcule tous les montants de la commande."""
         items = self.items.all()
-        
+
         # 1. Sous-total HT
         self.subtotal = sum(item.price * item.quantity for item in items)
 
-        # 2. TVA
-        self.vat_amount = (self.subtotal * self.vat_rate) / Decimal('100')
+        # 2. TVA (Mise à 0)
+        self.vat_amount = Decimal('0.00')
 
         # 3. Réduction
         if self.coupon and self.coupon.active:
@@ -379,37 +445,37 @@ class Order(models.Model):
 
         # 6. Total Final
         self.total_price = (
-            self.subtotal 
-            + self.vat_amount 
-            + self.shipping_cost 
-            + self.payment_fee 
+            self.subtotal
+            + self.vat_amount
+            + self.shipping_cost
+            + self.payment_fee
             - self.discount_amount
         )
         self.save()
 
+ # RENOMMAGE ET CORRECTION DE LA MÉTHODE
     @staticmethod
-    def get_shipping_cost_by_country(country_code):
-        if not country_code:
+    def get_shipping_cost_by_zone(zone_code):
+        if not zone_code:
             return Decimal('0.00')
 
         zones = ShippingZone.objects.all()
 
         for zone in zones:
-            codes = zone.get_country_codes()
-            if country_code.upper() in codes or "ALL" in codes:
+            # CORRECTION ICI : on utilise get_zone_codes()
+            codes = zone.get_zone_codes()
+            if zone_code.upper() in codes:
                 if zone.free_shipping:
                     return Decimal('0.00')
                 return zone.price
 
         return Decimal('0.00')
 
-        
 
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, related_name="items", on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.PROTECT)
-    
+    product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True, blank=True)
     # Snapshot pour historique
     product_name = models.CharField(max_length=200)
     price = models.DecimalField(max_digits=10, decimal_places=2) # Prix HT au moment de l'achat
@@ -558,11 +624,92 @@ class BlogPost(models.Model):
         super().save(*args, **kwargs)
 
 
+
+# Dans models.py
+
+from django.db import models
+from django.utils.text import slugify
+
+class Video(models.Model):
+    # --- AJOUT : Relation Catégorie ---
+    category = models.ForeignKey(
+        'Category',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='videos',
+        verbose_name="Catégorie"
+    )
+
+    title = models.CharField(max_length=200, verbose_name="Titre de la vidéo")
+    slug = models.SlugField(unique=True, max_length=255, blank=True)
+    description = models.TextField(verbose_name="Description", blank=True)
+
+    # Fichier vidéo uploadé
+    video_file = models.FileField(
+        upload_to='videos/',
+        verbose_name="Fichier Vidéo (MP4)",
+        blank=True,
+        null=True
+    )
+
+    # --- AJOUT : Lien externe (optionnel) ---
+    video_url = models.URLField(
+        max_length=255,
+        blank=True,
+        null=True,
+        verbose_name="Lien Vidéo (YouTube/Vimeo)"
+    )
+
+    # --- AJOUT : Image / Miniature ---
+    image = models.ImageField(
+        upload_to='videos/thumbnails/',
+        blank=True,
+        null=True,
+        verbose_name="Miniature (Image)"
+    )
+
+    is_active = models.BooleanField(default=True, verbose_name="Actif")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name = "Vidéo"
+        verbose_name_plural = "Vidéos"
+
+    def __str__(self):
+        return self.title
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            base_slug = slugify(self.title)
+            slug = base_slug
+            counter = 1
+            while Video.objects.filter(slug=slug).exclude(pk=self.pk).exists():
+                slug = f"{base_slug}-{counter}"
+                counter += 1
+            self.slug = slug
+        super().save(*args, **kwargs)
+
 class Banner(models.Model):
     image = models.ImageField(upload_to='shop_banners/')
     title = models.CharField(max_length=200, blank=True)
     subtitle = models.CharField(max_length=200, blank=True)
+
+    # --- AJOUT : Lien vers le produit ---
+    product = models.ForeignKey(
+        'Product',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name="Produit associé",
+        help_text="Produit vers lequel le bouton 'Découvrir' redirigera."
+    )
+    # -------------------------------------
+
     order = models.PositiveIntegerField(default=0)
+    # Optionnel : Ajouter un champ actif si vous voulez filtrer les bannières
+    # is_active = models.BooleanField(default=True)
 
     class Meta:
         ordering = ['order']
@@ -574,17 +721,81 @@ class Banner(models.Model):
 
 
 class ShopInfo(models.Model):
+    # ==============================
+    # CATÉGORIES
+    # ==============================
+    categories_title = models.CharField(max_length=200, blank=True)
+    categories_subtitle = models.CharField(max_length=200, blank=True)
+
+    # ==============================
+    # FEATURES
+    # ==============================
+    features_title = models.CharField(max_length=200, blank=True)
+    features_subtitle = models.CharField(max_length=200, blank=True)
+
+    # ==============================
+    # PRODUITS
+    # ==============================
+    products_title = models.CharField(max_length=200, blank=True)
+    products_subtitle = models.CharField(max_length=200, blank=True)
+
+    # ==============================
+    # PROMO
+    # ==============================
+    promo_title = models.CharField(max_length=200, blank=True)
+    promo_subtitle = models.CharField(max_length=200, blank=True)
     promo_image = models.ImageField(upload_to='shop_info/', blank=True, null=True)
     promo_text = models.TextField(blank=True)
 
+    # ==============================
+    # TRUST
+    # ==============================
+    trust_title = models.CharField(max_length=200, blank=True)
+    trust_subtitle = models.CharField(max_length=200, blank=True)
+
+    # ==============================
+    # ABOUT
+    # ==============================
     about_image = models.ImageField(upload_to='shop_info/', blank=True, null=True)
     about_title = models.CharField(max_length=200, blank=True)
     about_description = models.TextField(blank=True)
+    signature = models.CharField(max_length=100, blank=True)
 
+    # ==============================
+    # NEWSLETTER
+    # ==============================
     newsletter_bg_image = models.ImageField(upload_to='newsletter/', blank=True, null=True)
     newsletter_title = models.CharField(max_length=200, default="Rejoignez la communauté")
     newsletter_text = models.CharField(max_length=255, default="Recevez nos conseils...")
 
+    # ==============================
+    # BIEN-ÊTRE (WELLNESS PAGE)
+    # ==============================
+    wellness_hero_title = models.CharField(max_length=255, default="Sérénité & Équilibre", blank=True, verbose_name="Titre Hero Bien-être")
+    wellness_hero_subtitle = models.CharField(max_length=255, default="Retrouvez votre harmonie naturelle...", blank=True, verbose_name="Sous-titre Hero")
+# Dans models.py -> class ShopInfo
+
+# Ajoutez ce champ avec les autres champs "wellness"
+    wellness_hero_bg = models.ImageField(
+        upload_to='shop_info/',
+        blank=True,
+        null=True,
+        verbose_name="Image de fond Hero"
+    )
+    wellness_philosophy_title = models.CharField(max_length=255, default="Notre Philosophie", blank=True, verbose_name="Titre Philosophie")
+    wellness_philosophy_text = models.TextField(default="Chez Terra & Pure...", blank=True, verbose_name="Texte Philosophie")
+
+    wellness_image_break = models.ImageField(upload_to='shop_info/', blank=True, null=True, verbose_name="Image de séparation")
+
+    wellness_cta_title = models.CharField(max_length=255, default="Prêt à commencer votre transformation ?", blank=True, verbose_name="Titre Appel à l'action")
+    wellness_cta_text = models.CharField(max_length=255, default="Rejoignez notre communauté bien-être.", blank=True, verbose_name="Texte Appel à l'action")
+    about_hero_title = models.CharField(max_length=200, blank=True, default="Retour aux sources")
+    about_hero_subtitle = models.CharField(max_length=255, blank=True, default="Une aventure...")
+    process_title = models.CharField(max_length=200, blank=True, default="De la plante au pot")
+    process_subtitle = models.TextField(blank=True, default="Un processus lent...")
+    step1_text = models.CharField(max_length=100, blank=True, default="Cueillette à la main")
+    step2_text = models.CharField(max_length=100, blank=True, default="Macération à froid")
+    step3_text = models.CharField(max_length=100, blank=True, default="Conditionnement artisanal")
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
@@ -603,13 +814,101 @@ class ShopInfo(models.Model):
         return "Configuration Boutique"
 
 
+
 class SiteSettings(models.Model):
     site_name = models.CharField(max_length=200, default="Ma Boutique")
     contact_email = models.EmailField()
     contact_phone = models.CharField(max_length=50, blank=True)
-    vat_rate = models.DecimalField(max_digits=5, decimal_places=2, default=18)
-    currency = models.CharField(max_length=10, default="FCFA")
+    addresse = models.CharField(max_length=200, blank=True)
+
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return "Paramètres du site"
+
+
+class Feature(models.Model):
+    title = models.CharField(max_length=150)
+    description = models.TextField()
+    icon_class = models.CharField(max_length=100)
+    is_active = models.BooleanField(default=True)
+    order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ['order']
+
+    def __str__(self):
+        return self.title
+
+
+class Feature1(models.Model):
+    title = models.CharField(max_length=150)
+    description = models.TextField()
+    icon_class = models.CharField(max_length=100)
+    is_active = models.BooleanField(default=True)
+    order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ['order']
+
+    def __str__(self):
+        return self.title
+
+class Feature_about(models.Model):
+    title = models.CharField(max_length=150)
+    description = models.TextField()
+    icon_class = models.CharField(max_length=100)
+    is_active = models.BooleanField(default=True)
+    order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ['order']
+
+    def __str__(self):
+        return self.title
+
+class TeamMember(models.Model):
+    name = models.CharField(max_length=100, verbose_name="Nom")
+    role = models.CharField(max_length=100, verbose_name="Rôle")
+    bio = models.TextField(verbose_name="Biographie courte")
+    photo = models.ImageField(upload_to='team/', blank=True, null=True)
+    order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ['order']
+        verbose_name = "Membre de l'équipe"
+
+    def __str__(self):
+        return self.name
+
+
+class StaticPage(models.Model):
+    title = models.CharField(max_length=200, verbose_name="Titre")
+    slug = models.SlugField(unique=True, max_length=255, blank=True)
+    content = models.TextField(verbose_name="Contenu")
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Page Statique"
+        verbose_name_plural = "Pages Statiques"
+
+    def __str__(self):
+        return self.title
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        super().save(*args, **kwargs)
+
+
+class NewsletterSubscriber(models.Model):
+    email = models.EmailField(unique=True, verbose_name="Email")
+    # CORRECTION ICI : auto_now_add au lieu de auto_now_now
+    subscribed_at = models.DateTimeField(auto_now_add=True, verbose_name="Date d'inscription")
+
+    class Meta:
+        verbose_name = "Abonné Newsletter"
+        verbose_name_plural = "Abonnés Newsletter"
+
+    def __str__(self):
+        return self.email

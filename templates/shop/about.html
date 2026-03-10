@@ -6,10 +6,12 @@
 {% block content %}
 
 <!-- HERO SECTION -->
+<!-- HERO SECTION DYNAMIQUE -->
 <section class="hero-about">
     <div class="hero-about-content">
-        <h1>Retour aux sources</h1>
-        <p>Une aventure humaine et botanique au cœur de la nature.</p>
+        <!-- Utilisation des variables dynamiques avec valeurs par défaut -->
+        <h1>{{ shop_info.about_hero_title|default:"Retour aux sources" }}</h1>
+        <p>{{ shop_info.about_hero_subtitle|default:"Une aventure humaine et botanique au cœur de la nature." }}</p>
     </div>
 </section>
 
@@ -23,89 +25,99 @@
                 <img src="https://picsum.photos/seed/woman1/600/700" alt="Fondatrice">
             {% endif %}
         </div>
-        
+
         <div class="story-text">
             <h4>Notre Origine</h4>
             <h2>{{ shop_info.about_title|default:"Engagés pour la nature" }}</h2>
             <p>{{ shop_info.about_description|linebreaks|default:"Chez Cindera, nous croyons en la puissance des plantes. Tous nos ingrédients sont sourcés éthiquement." }}</p>
-            <div class="signature">Cinedera</div>
-        </div>
+                  <div class="signature mt-4">
+                    {{ shop_info.signature|default:"C" }}
+                </div>
     </div>
 </section>
 
 <!-- NOS VALEURS -->
+<!-- SECTION VALEURS (DYNAMIQUE) -->
 <section id="valeurs">
     <div class="section-header">
         <span class="sub-title">Ce qui nous anime</span>
         <h2>Nos Valeurs</h2>
     </div>
+
     <div class="values-grid">
+        {% for feature in fea %}
         <div class="value-card">
-            <i class="fas fa-seedling value-icon"></i>
-            <h3>Ingrédients Bruts</h3>
-            <p>Nous utilisons des extraits de plantes à l'état pur, sans transformations chimiques agressives.</p>
+            <!-- Icône dynamique -->
+            <i class="{{ feature.icon_class }} value-icon"></i>
+            <h3>{{ feature.title }}</h3>
+            <p>{{ feature.description }}</p>
         </div>
-        <div class="value-card">
-            <i class="fas fa-balance-scale value-icon"></i>
-            <h3>Transparence Totale</h3>
-            <p>Chaque ingrédient est listé. Nous n'avons rien à cacher. La liste INCI est aussi lisible qu'une recette.</p>
+        {% empty %}
+        <!-- Message si aucune feature n'est créée -->
+        <div class="col-12 text-center py-5 text-muted">
+            <p>Les valeurs de l'entreprise seront bientôt affichées ici.</p>
         </div>
-        <div class="value-card">
-            <i class="fas fa-globe-europe value-icon"></i>
-            <h3>Local & Éthique</h3>
-            <p>Nous privilégions les circuits courts pour soutenir les producteurs locaux et réduire notre empreinte.</p>
-        </div>
+        {% endfor %}
     </div>
 </section>
 
 <!-- PROCESSUS (Bannière) -->
+<!-- SECTION PROCESSUS (DYNAMIQUE) -->
 <div class="process-section">
     <div class="process-overlay">
-        <h2>De la plante au pot</h2>
-        <p>Un processus lent et respectueux, garanti sans chauffe excessive.</p>
-        
+        <!-- Titre et description dynamiques -->
+        <h2>{{ shop_info.process_title|default:"De la plante au pot" }}</h2>
+        <p>{{ shop_info.process_subtitle|default:"Un processus lent et respectueux, garanti sans chauffe excessive." }}</p>
+
         <div class="steps">
+            <!-- Étape 1 -->
             <div class="step">
                 <span class="step-num">1</span>
-                <span>Cueillette à la main</span>
+                <span>{{ shop_info.step1_text|default:"Cueillette à la main" }}</span>
             </div>
+
+            <!-- Étape 2 -->
             <div class="step">
                 <span class="step-num">2</span>
-                <span>Macération à froid</span>
+                <span>{{ shop_info.step2_text|default:"Macération à froid" }}</span>
             </div>
+
+            <!-- Étape 3 -->
             <div class="step">
                 <span class="step-num">3</span>
-                <span>Conditionnement artisanal</span>
+                <span>{{ shop_info.step3_text|default:"Conditionnement artisanal" }}</span>
             </div>
         </div>
     </div>
 </div>
 
-<!-- L'ÉQUIPE -->
+<!-- SECTION ÉQUIPE (DYNAMIQUE) -->
 <section id="team">
     <div class="section-header">
         <h2>Rencontrez l'équipe</h2>
         <p>Les esprits créatifs derrière Cindera.</p>
     </div>
+
     <div class="team-grid">
+        {% for member in team_members %}
         <div class="team-member">
-            <img src="https://picsum.photos/seed/person1/300/300" alt="Camille">
-            <div class="team-role">Fondatrice</div>
-            <h3>Camille Durand</h3>
-            <p>Herboriste experte et visionnaire.</p>
+            <!-- Affichage de la photo ou image par défaut -->
+            {% if member.photo %}
+                <img src="{{ member.photo.url }}" alt="{{ member.name }}">
+            {% else %}
+                <img src="https://picsum.photos/seed/{{ member.name }}/300/300" alt="{{ member.name }}">
+            {% endif %}
+
+            <div class="team-role">{{ member.role }}</div>
+            <h3>{{ member.name }}</h3>
+            <p>{{ member.bio }}</p>
         </div>
-        <div class="team-member">
-            <img src="https://picsum.photos/seed/person2/300/300" alt="Thomas">
-            <div class="team-role">Responsable Production</div>
-            <h3>Thomas Petit</h3>
-            <p>Garant de la qualité et de l'éco-conception.</p>
+        {% empty %}
+        <!-- Message si aucun membre n'est ajouté -->
+        <div class="col-12 text-center text-muted py-5">
+            <p>L'équipe sera bientôt présentée ici.</p>
         </div>
-        <div class="team-member">
-            <img src="https://picsum.photos/seed/person3/300/300" alt="Sarah">
-            <div class="team-role">Responsable Communication</div>
-            <h3>Sarah Lemoine</h3>
-            <p>Votre contact privilégié pour vos conseils.</p>
-        </div>
+        {% endfor %}
     </div>
 </section>
 
@@ -228,7 +240,7 @@
 
     /* === SECTION PROCESSUS === */
     .process-section {
-        background-image: url('https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?q=80&w=2070');
+        background-image: url();
         background-size: cover;
         background-attachment: fixed;
         position: relative;

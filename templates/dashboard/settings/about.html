@@ -3,16 +3,16 @@
 {% block content %}
 <div class="container-fluid py-4">
     <h2 class="fw-bold mb-4"><i class="bi bi-seedling text-success me-2"></i>Section À Propos</h2>
-    
+
     <div class="card shadow-sm border-0">
         <div class="card-body">
             <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
-                
+
                 <div class="row g-3">
                     <div class="col-md-4">
                         <label class="form-label fw-bold">Image</label>
-                        
+
                         {% if form.instance.about_image %}
                             <div class="d-flex align-items-center gap-3 mb-3 p-3 bg-light rounded border">
                                 <img src="{{ form.instance.about_image.url }}" class="rounded" style="width: 100px; height: 80px; object-fit: cover;">
@@ -29,7 +29,7 @@
                             <input type="file" name="about_image" accept="image/*">
                         </div>
                     </div>
-                    
+
                     <div class="col-md-8">
                         <div class="mb-3">
                             <label class="form-label fw-bold">Titre</label>
@@ -39,6 +39,16 @@
                             <label class="form-label fw-bold">Description</label>
                             <textarea name="about_description" rows="5" class="form-control">{{ form.about_description.value|default:'' }}</textarea>
                         </div>
+                                                <div class="mb-3">
+    <label for="signature" class="form-label fw-bold">Signature</label>
+    <input type="text" id="signature" name="signature"
+           value="{{ form.signature.value|default:'' }}"
+           placeholder="Nom ou slogan..."
+           class="form-control {% if form.signature.errors %}is-invalid{% endif %}">
+    {% for error in form.signature.errors %}
+        <div class="invalid-feedback">{{ error }}</div>
+    {% endfor %}
+</div>
                     </div>
                 </div>
 

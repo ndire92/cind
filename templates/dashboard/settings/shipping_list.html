@@ -1,37 +1,56 @@
 {% extends "dashboard/base_dashboard.html" %}
 
 {% block content %}
-<div class="d-flex justify-content-between mb-4">
-    <h3>Zones de Livraison</h3>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Zones de livraison</h2>
     <a href="{% url 'dashboard:add_shipping_zone' %}" class="btn btn-primary">
-        <i class="bi bi-plus"></i> Ajouter une zone
+        <i class="bi bi-plus-circle me-2"></i> Ajouter une zone
     </a>
 </div>
 
-<div class="card shadow">
+<div class="card shadow-sm border-0">
     <div class="table-responsive">
-        <table class="table table-hover">
-            <thead>
+        <table class="table table-hover mb-0">
+            <thead class="bg-light">
                 <tr>
-                    <th>Nom</th>
-                    <th>Pays (Codes ISO)</th>
-                    <th>Prix (€)</th>
-                    <th>Actions</th>
+                    <th>Nom de la zone</th>
+                    <th>Zones couvertes</th>
+                    <th>Prix</th>
+                    <th class="text-end">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 {% for zone in zones %}
                 <tr>
-                    <td>{{ zone.name }}</td>
-                    <td><code>{{ zone.countries }}</code></td>
-                    <td>{{ zone.price }} €</td>
+                    <td><strong>{{ zone.name }}</strong></td>
                     <td>
-                        <a href="{% url 'dashboard:edit_shipping_zone' zone.id %}" class="btn btn-sm btn-outline-info">Modifier</a>
-                        <a href="{% url 'dashboard:delete_shipping_zone' zone.id %}" class="btn btn-sm btn-outline-danger">Supprimer</a>
+                        <!-- On affiche les codes propres -->
+                        {% for code in zone.get_zone_codes %}
+                            <span class="badge bg-secondary me-1">{{ code }}</span>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% if zone.free_shipping %}
+                            <span class="text-success fw-bold">Gratuite</span>
+                        {% else %}
+                            {{ zone.price }} FCFA
+                        {% endif %}
+                    </td>
+                    <td class="text-end">
+                        <a href="{% url 'dashboard:edit_shipping_zone' zone.id %}" class="btn btn-sm btn-outline-primary me-1">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        <a href="{% url 'dashboard:delete_shipping_zone' zone.id %}" class="btn btn-sm btn-outline-danger">
+                            <i class="bi bi-trash"></i>
+                        </a>
                     </td>
                 </tr>
                 {% empty %}
-                <tr><td colspan="4" class="text-center">Aucune zone définie.</td></tr>
+                <tr>
+                    <td colspan="4" class="text-center py-4 text-muted">
+                        Aucune zone configurée.
+                    </td>
+                </tr>
                 {% endfor %}
             </tbody>
         </table>

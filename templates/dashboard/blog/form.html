@@ -26,12 +26,12 @@
         {% endif %}
 
         <div class="row g-4">
-            
+
             <!-- COLONNE PRINCIPALE (GAUCHE) -->
             <div class="col-lg-8">
                 <div class="card border-0 shadow-sm rounded-3 mb-4">
                     <div class="card-body p-4">
-                        
+
                         <!-- Titre -->
                         <div class="mb-4">
                             <label class="form-label text-muted text-uppercase small fw-bold mb-2">Titre de l'article</label>
@@ -63,22 +63,18 @@
 
             <!-- COLONNE LATÉRALE (DROITE) -->
             <div class="col-lg-4">
-                
+
                 <!-- Card: Publication & Actions -->
                 <div class="card border-0 shadow-sm rounded-3 mb-4">
                     <div class="card-header bg-white border-bottom py-3">
                         <h6 class="mb-0 fw-bold"><i class="bi bi-send me-2"></i>Publication</h6>
                     </div>
                     <div class="card-body">
-                        <!-- Statut -->
                         <div class="form-check form-switch mb-3">
                             {{ form.is_active }}
                             <label class="form-check-label fw-bold" for="id_is_active">Article actif (visible)</label>
                         </div>
-
                         <hr>
-
-                        <!-- Boutons d'action -->
                         <div class="d-grid gap-2">
                             <button type="submit" class="btn btn-success btn-lg fw-bold shadow-sm">
                                 <i class="bi bi-check-lg me-2"></i> Enregistrer
@@ -99,18 +95,18 @@
                                 <img src="{{ form.instance.image.url }}" class="img-fluid rounded shadow-sm" style="max-height: 200px;">
                             </div>
                         {% endif %}
-                        
-                        <!-- Custom file input pour être joli -->
                         <label for="id_image" class="btn btn-outline-primary w-100 rounded-pill">
                             <i class="bi bi-upload me-2"></i> Choisir une image
                         </label>
                         <input type="file" name="image" id="id_image" class="d-none" accept="image/*">
-                        
                         {% if form.image.errors %}
                             <div class="text-danger small mt-2">{{ form.image.errors.0 }}</div>
                         {% endif %}
                     </div>
                 </div>
+
+                <!-- Card: Vidéo (NOUVEAU) -->
+
 
                 <!-- Card: Organisation -->
                 <div class="card border-0 shadow-sm rounded-3">
@@ -118,7 +114,6 @@
                         <h6 class="mb-0 fw-bold"><i class="bi bi-folder me-2"></i>Organisation</h6>
                     </div>
                     <div class="card-body">
-                        <!-- Catégorie -->
                         <div class="mb-3">
                             <label class="form-label text-muted small fw-bold">Catégorie</label>
                             {{ form.category }}
@@ -126,8 +121,6 @@
                                 <div class="text-danger small mt-1">{{ form.category.errors.0 }}</div>
                             {% endif %}
                         </div>
-
-                        <!-- Slug -->
                         <div>
                             <label class="form-label text-muted small fw-bold">Slug (URL)</label>
                             <div class="input-group">

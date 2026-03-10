@@ -1,0 +1,27 @@
+{% extends "dashboard/base_dashboard.html" %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="card shadow-sm border-0">
+        <div class="card-body text-center">
+            <h3 class="mb-4">Supprimer le rituel</h3>
+            <p>
+                Es-tu sûr de vouloir supprimer le rituel
+                <strong>{{ feature1.title }}</strong> ?
+            </p>
+
+            <form method="post">
+                {% csrf_token %}
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-danger px-4">
+                        <i class="bi bi-trash me-1"></i> Supprimer
+                    </button>
+                    <a href="{% url 'dashboard:feature_list1' %}" class="btn btn-secondary px-4 ms-2">
+                        Annuler
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -30,7 +30,7 @@
                         <td>
                             <strong>{{ item.product.name }}</strong>
                         </td>
-                        <td>{{ item.price }} €</td>
+                        <td>{{ item.price }} FCFA</td>
                         <td>
                             <!-- CORRECTION ICI : Utilisation de cart_update et non cart_add -->
                             <form action="{% url 'products:cart_update' item.product.id %}" method="post" class="d-flex">
@@ -41,7 +41,7 @@
                                 </button>
                             </form>
                         </td>
-                        <td><strong>{{ item.total }} €</strong></td>
+                        <td><strong>{{ item.total }} FCFA</strong></td>
                         <td>
                             <a href="{% url 'products:cart_remove' item.product.id %}" class="btn btn-sm btn-outline-danger">
                                 <i class="bi bi-trash"></i>
@@ -60,7 +60,7 @@
                 </a>
             </div>
             <div class="col-md-6 text-end">
-                <h4>Total du panier : <span class="text-primary">{{ total }} €</span></h4>
+                <h4>Total du panier : <span class="text-primary">{{ total }} FCFA</span></h4>
                 <a href="{% url 'products:checkout' %}" class="btn btn-success btn-lg mt-2">
                     Passer la commande <i class="bi bi-arrow-right"></i>
                 </a>

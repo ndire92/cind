@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}{{ page.title }}{% endblock %}
+
+{% block content %}
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                
+                <!-- Fil d'Ariane -->
+                <nav aria-label="breadcrumb" class="mb-4">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{% url 'products:shop' %}">Accueil</a></li>
+                        <li class="breadcrumb-item active">{{ page.title }}</li>
+                    </ol>
+                </nav>
+
+                <!-- Titre -->
+                <h1 class="mb-4" style="font-family: 'Playfair Display', serif; color: var(--primary-dark);">
+                    {{ page.title }}
+                </h1>
+                <hr class="mb-5">
+
+                <!-- Contenu dynamique -->
+                <div class="page-content" style="line-height: 1.8; color: #555;">
+                    {{ page.content|safe }}
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .page-content h2 { margin-top: 2rem; color: var(--primary-dark); }
+    .page-content ul { margin-left: 20px; }
+</style>
+{% endblock %}

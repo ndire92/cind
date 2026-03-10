@@ -9,7 +9,7 @@ from .models import (
     User, Category, Product, ProductImage,
     ShippingZone, Coupon, PaymentMethod,
     Order, OrderItem,
-    Transaction, Invoice, BillingSettings,
+    Transaction, Invoice, BillingSettings,Feature1,
      BlogPost,
     Banner, ShopInfo, SiteSettings
 )
@@ -23,19 +23,19 @@ from .models import (
 class UserAdmin(admin.ModelAdmin):
     # --- Champs à afficher dans la liste ---
     list_display = ('username', 'email', 'role_colored', 'is_staff', 'is_active')
-    
+
     # --- Filtres sur le côté ---
     list_filter = ('role', 'is_staff', 'is_active')
-    
+
     # --- Recherche ---
     search_fields = ('username', 'email')
-    
- 
+
+
     # --- Champs personnalisés ---
     fieldsets = (
-        ('Informations personnelles', {'fields': ('username', 'email', 'role', 'phone', 'profile_image')}),
+        ('Informations personnelles', {'fields': ('username', 'email', 'role')}),
         ('Permissions', {'fields': ('is_staff', 'is_active', 'is_superuser')}),
-        
+
     )
 
     # --- Méthode pour colorer le rôle ---
@@ -87,7 +87,7 @@ class OrderItemInline(admin.TabularInline):
     # (sauf si vous savez exactement ce que vous faites)
     def has_add_permission(self, request, obj=None):
         return False
-    
+
     def has_delete_permission(self, request, obj=None):
         return False
 
@@ -101,7 +101,7 @@ class CategoryAdmin(admin.ModelAdmin):
     list_display = ('name', 'slug', 'image_preview')
     prepopulated_fields = {'slug': ('name',)}
     search_fields = ('name',)
-    
+
     def image_preview(self, obj):
         if obj.image:
             return format_html('<img src="{}" style="width: 40px; height: 40px; object-fit: cover;" />', obj.image.url)
@@ -128,7 +128,7 @@ class ProductAdmin(admin.ModelAdmin):
     def price_ttc(self, obj):
         return f"{obj.price_ttc} €"
     price_ttc.short_description = "Prix TTC"
-    
+
     def stock_status(self, obj):
         color = "green"
         if obj.stock == 0: color = "red"
@@ -140,12 +140,11 @@ class ProductAdmin(admin.ModelAdmin):
 # ============================================================================
 # VENTE & COMMANDE
 # ============================================================================
-
 @admin.register(ShippingZone)
 class ShippingZoneAdmin(admin.ModelAdmin):
-    list_display = ('name', 'countries', 'price', 'free_shipping')
+    list_display = ('name', 'zones', 'price', 'free_shipping')  # <-- zones au lieu de countries
     list_filter = ('free_shipping',)
-    search_fields = ('name', 'countries')
+    search_fields = ('name', 'zones')  # <-- recherche sur zones
 
 
 @admin.register(Coupon)
@@ -175,7 +174,7 @@ class OrderAdmin(admin.ModelAdmin):
         (_('Statuts'), {'fields': ('payment_status', 'is_shipped')}),
         (_('Dates'), {'fields': ('created_at',)}),
     )
-    
+
     def user_link(self, obj):
         if obj.user:
             link = reverse("admin:shop_user_change", args=[obj.user.id]) # Remplacez 'shop' par le nom de votre app
@@ -239,23 +238,77 @@ class SingletonModelAdmin(admin.ModelAdmin):
         if self.model.objects.count() >= 1:
             return False
         return super().has_add_permission(request)
-    
+
     def has_delete_permission(self, request, obj=None):
         return False
 
 @admin.register(ShopInfo)
-class ShopInfoAdmin(SingletonModelAdmin):
-    fieldsets = (
-        ("Promotionnelles", {'fields': ('promo_image', 'promo_text')}),
-        ("Section À Propos", {'fields': ('about_image', 'about_title', 'about_description')}),
-        ("Newsletter", {'fields': ('newsletter_bg_image', 'newsletter_title', 'newsletter_text')}),
+class ShopInfoAdmin(admin.ModelAdmin):
+    list_display = (
+        "categories_title",
+        "features_title",
+        "products_title",
+        "promo_title",
+        "trust_title",
+        "about_title",
+        "newsletter_title",
+        "updated_at",
     )
+    readonly_fields = ("updated_at",)
+
+    fieldsets = (
+        ("Catégories", {
+            "fields": ("categories_title", "categories_subtitle")
+        }),
+        ("Rituels / Features", {
+            "fields": ("features_title", "features_subtitle")
+        }),
+        ("Produits", {
+            "fields": ("products_title", "products_subtitle")
+        }),
+        ("Promo", {
+            "fields": ("promo_title", "promo_subtitle", "promo_image", "promo_text")
+        }),
+        ("Confiance / Trust", {
+            "fields": ("trust_title", "trust_subtitle")
+        }),
+        ("À propos", {
+            "fields": ("about_image", "about_title", "about_description", "signature")
+        }),
+        ("Newsletter", {
+            "fields": ("newsletter_bg_image", "newsletter_title", "newsletter_text")
+        }),
+        ("Bien-être (Wellness)", {
+            "fields": (
+                "wellness_hero_title",
+                "wellness_hero_subtitle",
+                "wellness_philosophy_title",
+                "wellness_philosophy_text",
+                "wellness_image_break",
+                "wellness_cta_title",
+                "wellness_cta_text",
+            )
+        }),
+        ("Méta", {
+            "fields": ("updated_at",)
+        }),
+    )
+
+    def has_add_permission(self, request):
+        # Empêche la création de plusieurs instances
+        return not ShopInfo.objects.exists()
+
+    def has_delete_permission(self, request, obj=None):
+        # Empêche la suppression
+        return False
+
+
 
 @admin.register(SiteSettings)
 class SiteSettingsAdmin(SingletonModelAdmin):
     fieldsets = (
-        ("Général", {'fields': ('site_name', 'contact_email', 'contact_phone')}),
-        ("E-commerce", {'fields': ('vat_rate', 'currency')}),
+        ("Général", {'fields': ('site_name', 'contact_email', 'contact_phone','addresse' )}),
+
     )
 
 @admin.register(BillingSettings)
@@ -279,13 +332,40 @@ class BlogPostAdmin(admin.ModelAdmin):
     search_fields = ('title', 'content')
     prepopulated_fields = {'slug': ('title',)}
 
+
 @admin.register(Banner)
 class BannerAdmin(admin.ModelAdmin):
-    list_display = ('title', 'order', 'image_preview')
+    # On ajoute 'product' pour voir le lien vers le produit
+    list_display = ('title', 'product', 'order', 'image_preview')
+
+    # On garde 'order' éditable directement dans la liste
     list_editable = ('order',)
-    
+
     def image_preview(self, obj):
         if obj.image:
-            return format_html('<img src="{}" style="width: 100px; height: auto;" />', obj.image.url)
+            return format_html('<img src="{}" style="width: 100px; height: auto; border-radius: 5px;" />', obj.image.url)
         return "-"
+
     image_preview.short_description = "Aperçu"
+
+@admin.register(Feature1)
+class Feature1Admin(admin.ModelAdmin):
+    list_display = ("title", "icon_class", "order", "is_active")
+    ordering = ("order",)
+
+from .models import StaticPage
+
+@admin.register(StaticPage)
+class StaticPageAdmin(admin.ModelAdmin):
+    list_display = ('title', 'slug', 'updated_at')
+    prepopulated_fields = {'slug': ('title',)} # Remplit le slug automatiquement
+
+
+
+
+from .models import NewsletterSubscriber
+
+@admin.register(NewsletterSubscriber)
+class NewsletterSubscriberAdmin(admin.ModelAdmin):
+    list_display = ('email', 'subscribed_at')
+    search_fields = ('email',)

@@ -1,0 +1,71 @@
+{% extends "dashboard/base_dashboard.html" %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Titre de la page -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold"><i class="fas fa-spa text-success me-2"></i> Gestion Bien-être</h2>
+    </div>
+
+    <div class="row g-4">
+
+        <!-- Cadre 1 : Gestion des Rituels (Features) -->
+        <div class="col-md-6">
+            <div class="card h-100 border-0 shadow-sm hover-card" style="border-left: 5px solid #fd7e14 !important;">
+                <div class="card-body d-flex flex-column">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="icon-lg bg-warning-subtle rounded-circle me-3">
+                            <i class="fas fa-star text-warning fs-4"></i>
+                        </div>
+                        <h4 class="card-title mb-0">Rituels & Features</h4>
+                    </div>
+                    <p class="card-text text-muted flex-grow-1">
+                        Gérez les cartes affichées sur la page (ex: Soin de la peau, Nutrition). Définissez les icônes, les textes et l'ordre d'affichage.
+                    </p>
+                    <a href="{% url 'dashboard:feature_list1' %}" class="btn btn-warning mt-auto align-self-start">
+                        <i class="bi bi-list-ul me-1"></i> Gérer les Rituels
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cadre 2 : Configuration de la Page -->
+        <div class="col-md-6">
+            <div class="card h-100 border-0 shadow-sm hover-card" style="border-left: 5px solid #014215 !important;">
+                <div class="card-body d-flex flex-column">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="icon-lg bg-success-subtle rounded-circle me-3">
+                            <i class="fas fa-cogs text-success fs-4"></i>
+                        </div>
+                        <h4 class="card-title mb-0">Apparence & Textes</h4>
+                    </div>
+                    <p class="card-text text-muted flex-grow-1">
+                        Modifiez les titres (Hero, Philosophie), les descriptions et les images de fond de la page Bien-être.
+                    </p>
+                    <a href="{% url 'dashboard:shop_wellness' %}" class="btn btn-success mt-auto align-self-start">
+                        <i class="bi bi-pencil-square me-1"></i> Configurer la Page
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<style>
+    .icon-lg {
+        width: 60px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .hover-card {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .hover-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+    }
+</style>
+{% endblock %}

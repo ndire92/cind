@@ -13,7 +13,7 @@
         <table class="table table-hover align-middle mb-0">
             <thead class="bg-light text-muted small text-uppercase">
                 <tr>
-                    <th class="ps-4">Image</th>
+                    <th class="ps-4">Media</th>
                     <th>Titre</th>
                     <th>Catégorie</th>
                     <th>Statut</th>
@@ -24,18 +24,31 @@
             <tbody>
                 {% for post in posts %}
                 <tr>
+                    <!-- COLONNE MEDIA (IMAGE + INDICATEUR VIDEO) -->
                     <td class="ps-4">
-                        {% if post.image %}
-                            <img src="{{ post.image.url }}" alt="{{ post.title }}" class="rounded" style="width: 60px; height: 40px; object-fit: cover;">
-                        {% else %}
-                            <div class="bg-secondary rounded" style="width: 60px; height: 40px;"></div>
-                        {% endif %}
+                        <div class="position-relative d-inline-block">
+                            {% if post.image %}
+                                <img src="{{ post.image.url }}" alt="{{ post.title }}" class="rounded" style="width: 60px; height: 40px; object-fit: cover;">
+                            {% else %}
+                                <div class="bg-secondary rounded" style="width: 60px; height: 40px;"></div>
+                            {% endif %}
+                            
+                            {% if post.video %}
+                                <!-- Icône Play si vidéo présente -->
+                                <span class="position-absolute top-50 start-50 translate-middle bg-dark bg-opacity-50 rounded-circle d-flex align-items-center justify-content-center" style="width: 20px; height: 20px;">
+                                    <i class="bi bi-play-fill text-white" style="font-size: 0.7rem;"></i>
+                                </span>
+                            {% endif %}
+                        </div>
                     </td>
+                    
                     <td>
                         <strong>{{ post.title }}</strong><br>
                         <small class="text-muted">{{ post.slug }}</small>
                     </td>
+                    
                     <td>{{ post.category.name|default:"Non classé" }}</td>
+                    
                     <td>
                         {% if post.is_active %}
                             <span class="badge bg-success-subtle text-success">Publié</span>
@@ -43,7 +56,9 @@
                             <span class="badge bg-secondary-subtle text-secondary">Brouillon</span>
                         {% endif %}
                     </td>
+                    
                     <td>{{ post.created_at|date:"d M Y" }}</td>
+                    
                     <td class="text-end pe-4">
                         <a href="{% url 'dashboard:blog_edit' post.id %}" class="btn btn-sm btn-outline-primary me-1" title="Modifier">
                             <i class="bi bi-pencil"></i>

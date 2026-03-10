@@ -7,7 +7,7 @@
 <section class="shop-hero">
     <div class="container text-center">
         <span class="hero-subtitle">Cindera</span>
-        <h1 class="hero-title">Notre Collection</h1>
+        <h1 class="hero-title">Nos Propositions</h1>
         <p class="hero-text">
             {% if current_category %}
                 Vous consultez : {{ current_category.name }}
@@ -21,7 +21,7 @@
 <!-- CONTENEUR PRINCIPAL -->
 <div class="container py-5">
     <div class="row">
-        
+
         <!-- =========================================
              SIDEBAR CATÉGORIES (Gauche)
              ========================================= -->
@@ -30,46 +30,45 @@
                 <div class="sidebar-header">
                     <h4>Nos Rayons</h4>
                 </div>
-                
+
                 <!-- Filtre Catégories -->
                 <div class="list-group list-group-flush category-list mb-4">
-                    <a href="{% url 'products:shop' %}" 
+                    <a href="{% url 'products:shop' %}"
                        class="list-group-item list-group-item-action {% if not current_category %}active{% endif %}">
                         <i class="bi bi-grid-fill me-2"></i> Tous les produits
                     </a>
                     {% for cat in categories %}
-                    <a href="{% url 'products:shop' %}?category={{ cat.id }}" 
+                    <a href="{% url 'products:shop' %}?category={{ cat.id }}"
                        class="list-group-item list-group-item-action {% if current_category and current_category.id == cat.id %}active{% endif %}">
                         <i class="bi bi-tag-fill me-2"></i> {{ cat.name }}
                     </a>
                     {% endfor %}
                 </div>
-                
+
                 <!-- Filtre Prix -->
                 <div class="price-filter p-3">
                     <h5 class="mb-3" style="font-size: 1rem; font-weight: 600; color: #014215;">Filtrer par prix</h5>
                     <form method="get">
-                        <!-- On garde la catégorie en mémoire si elle est active -->
                         {% if current_category %}
                             <input type="hidden" name="category" value="{{ current_category.id }}">
                         {% endif %}
-                        
+
                         <div class="mb-3">
-                            <label for="min_price" class="form-label small text-muted">Prix min (€)</label>
-                            <input type="number" class="form-control form-control-sm" id="min_price" name="min_price" 
+                            <label for="min_price" class="form-label small text-muted">Prix min (FCFA)</label>
+                            <input type="number" class="form-control form-control-sm" id="min_price" name="min_price"
                                    value="{{ request.GET.min_price }}" placeholder="Min">
                         </div>
                         <div class="mb-3">
-                            <label for="max_price" class="form-label small text-muted">Prix max (€)</label>
-                            <input type="number" class="form-control form-control-sm" id="max_price" name="max_price" 
+                            <label for="max_price" class="form-label small text-muted">Prix max (FCFA)</label>
+                            <input type="number" class="form-control form-control-sm" id="max_price" name="max_price"
                                    value="{{ request.GET.max_price }}" placeholder="Max">
                         </div>
                         <button type="submit" class="btn btn-outline-primary btn-sm w-100 rounded-pill">
                             <i class="bi bi-funnel me-1"></i> Filtrer
                         </button>
-                        
+
                         {% if request.GET.min_price or request.GET.max_price %}
-                            <a href="{% url 'products:shop' %}{% if current_category %}?category={{ current_category.id }}{% endif %}" 
+                            <a href="{% url 'products:shop' %}{% if current_category %}?category={{ current_category.id }}{% endif %}"
                                class="btn btn-link btn-sm w-100 mt-2 text-muted text-decoration-none" style="font-size: 0.8rem;">
                                 Réinitialiser
                             </a>
@@ -83,7 +82,7 @@
              GRILLE PRODUITS (Droite)
              ========================================= -->
         <div class="col-lg-9">
-            
+
             <!-- Barre d'infos -->
             <div class="shop-toolbar mb-4 d-flex justify-content-between align-items-center">
                 <span class="text-muted small">
@@ -96,17 +95,18 @@
                 {% for product in products %}
                 <div class="col-xl-4 col-md-6">
                     <div class="product-card shop-card">
-                        
+
                         <!-- Image -->
-                        <div class="product-image">
-                            <a href="{{ product.get_absolute_url }}">
+                        <!-- AJOUT : classe 'product-image-wrapper' pour le style -->
+                        <div class="product-image-wrapper">
+                            <a href="{{ product.get_absolute_url }}" class="product-image-link">
                                 {% if product.image %}
-                                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid">
+                                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-img">
                                 {% else %}
-                                    <img src="https://picsum.photos/seed/{{ product.slug }}/400/400" alt="{{ product.name }}" class="img-fluid">
+                                    <img src="https://picsum.photos/seed/{{ product.slug }}/400/400" alt="{{ product.name }}" class="product-img">
                                 {% endif %}
                             </a>
-                            
+
                             {% if product.badge %}
                             <span class="product-badge">{{ product.get_badge_display }}</span>
                             {% endif %}
@@ -129,10 +129,10 @@
                                 <a href="{{ product.get_absolute_url }}">{{ product.name }}</a>
                             </h3>
                             <div class="price-and-rating">
-                                <span class="product-price">{{ product.price_ttc|floatformat:2 }} €</span>
+                                <span class="product-price">{{ product.price_ttc|floatformat:2 }} FCFA</span>
                             </div>
-                            
-                            <!-- Bouton mobile (caché sur desktop) -->
+
+                            <!-- Bouton mobile -->
                             <a href="{% url 'products:cart_add' product.id %}" class="btn btn-add-cart-mobile mt-2 w-100">
                                 <i class="bi bi-bag-plus me-1"></i> Ajouter
                             </a>
@@ -148,10 +148,7 @@
                 </div>
                 {% endfor %}
             </div>
-            
-            <!-- Pagination (Placeholder) -->
-            <!-- Si vous avez beaucoup de produits, ajoutez la logique de pagination ici -->
-            
+
         </div>
     </div>
 </div>
@@ -174,7 +171,7 @@
     .shop-sidebar { background: white; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); overflow: hidden; }
     .sidebar-header { background-color: #f8f9fa; padding: 20px; border-bottom: 1px solid #eee; }
     .sidebar-header h4 { font-family: 'Playfair Display', serif; color: #014215; margin: 0; font-size: 1.2rem; }
-    
+
     .category-list .list-group-item {
         border: none; padding: 15px 20px; color: #495057; transition: all 0.3s ease;
         font-weight: 500; border-left: 3px solid transparent;
@@ -192,15 +189,48 @@
     }
     .shop-card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
 
-    .shop-card .product-image { position: relative; height: 230px; overflow: hidden; background: #f8f9fa; }
-    .shop-card .product-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
-    .shop-card:hover .product-image img { transform: scale(1.1); }
+    /* ==========================================
+       MODIFICATION IMPORTANTE : GESTION IMAGE
+       ========================================== */
+    .product-image-wrapper {
+        position: relative;
+        height: 280px;           /* Hauteur fixe pour uniformiser la grille */
+        background-color: #f8f9fa; /* Fond gris clair si l'image ne prend pas tout l'espace */
+        overflow: hidden;
+        display: flex;           /* Active Flexbox pour centrer */
+        align-items: center;     /* Centre verticalement */
+        justify-content: center; /* Centre horizontalement */
+        padding: 15px;           /* Petit espace pour que l'image ne touche pas les bords */
+    }
+
+    .product-image-link {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .product-img {
+        max-width: 100%;
+        max-height: 100%;
+        width: auto;
+        height: auto;
+        object-fit: contain;     /* L'image entière est visible, non coupée */
+        transition: transform 0.5s ease;
+    }
+
+    /* Zoom au survol (plus léger car contain) */
+    .shop-card:hover .product-img {
+        transform: scale(1.08);
+    }
 
     /* Actions Hover */
     .shop-card .product-actions {
         position: absolute; bottom: 15px; left: 50%;
         transform: translateX(-50%) translateY(20px); opacity: 0;
         display: flex; gap: 10px; transition: all 0.4s ease;
+        z-index: 10; /* S'assure que les boutons sont au-dessus */
     }
     .shop-card:hover .product-actions { opacity: 1; transform: translateX(-50%) translateY(0); }
 

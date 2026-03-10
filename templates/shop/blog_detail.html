@@ -7,7 +7,7 @@
 
     <!-- CONTENU PRINCIPAL -->
     <div class="blog-detail-container">
-        
+
         <!-- Lien Retour -->
         <a href="{% url 'products:bien_etre' %}" class="back-link">
             <i class="fas fa-arrow-left"></i> Retour aux articles
@@ -39,65 +39,17 @@
             <!-- Le filtre safe permet d'afficher le HTML (gras, titres, images) -->
             {{ post.content|safe }}
         </div>
-
+{% if post.video %}
+<div class="blog-video-container my-4">
+    <h5>📹 Vidéo associée</h5>
+    <video width="100%" controls style="border-radius: 10px; max-height: 500px;">
+        <source src="{{ post.video.url }}" type="video/mp4">
+        Votre navigateur ne supporte pas la lecture de vidéos.
+    </video>
+</div>
+{% endif %}
     </div>
-    
-    <!-- FOOTER -->
-    <footer id="footer">
-        <div class="footer-container">
-            <!-- Colonne 1 : Marque -->
-            <div class="footer-col">
-                <div class="footer-logo">
-                    <img src="{% static 'img/logo.jpg' %}" alt="Cindera">
-                </div>
-                <p class="footer-text">
-                    La nature est notre meilleure source d'inspiration.  
-                    Des soins authentiques, formulés avec passion pour révéler votre beauté naturelle.
-                </p>
-                <div class="footer-socials">
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#"><i class="fab fa-pinterest-p"></i></a>
-                </div>
-            </div>
 
-            <!-- Colonne 2 : Boutique -->
-            <div class="footer-col">
-                <h4>Catégories</h4>
-                <ul>
-                    {% for category in categories %}
-                        <li><a href="{% url 'products:shop' %}?category={{ category.id }}">{{ category.name }}</a></li>
-                    {% empty %}
-                        <li>Aucune catégorie</li>
-                    {% endfor %}
-                </ul>
-            </div>
-
-            <!-- Colonne 3 : Informations -->
-            <div class="footer-col">
-                <h4>Informations</h4>
-                <ul>
-                    <li><a href="#">À propos</a></li>
-                    <li><a href="#">Livraison & Retours</a></li>
-                    <li><a href="#">Conditions Générales</a></li>
-                    <li><a href="#">Politique de confidentialité</a></li>
-                </ul>
-            </div>
-
-            <!-- Colonne 4 : Newsletter -->
-            <div class="footer-col">
-                <h4>Newsletter</h4>
-                <p>Recevez -10% sur votre première commande.</p>
-                <form class="footer-newsletter">
-                    <input type="email" placeholder="Votre email">
-                    <button type="submit"><i class="fas fa-paper-plane"></i></button>
-                </form>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            © 2026 Cindera — Tous droits réservés.
-        </div>
-    </footer>
 
 <!-- CSS COMPLET (Article + Footer) -->
 <style>
@@ -186,10 +138,10 @@
         line-height: 1.9;
         color: #444;
     }
-    
+
     /* Styles des éléments inside */
     .detail-content p { margin-bottom: 1.8rem; }
-    
+
     .detail-content h2, .detail-content h3 {
         font-family: 'Playfair Display', serif;
         color: var(--primary-dark);

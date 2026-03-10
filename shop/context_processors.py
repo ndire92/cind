@@ -1,4 +1,4 @@
-from .models import Category
+from .models import Category,SiteSettings
 
 
 def cart_item_count(request):
@@ -6,9 +6,14 @@ def cart_item_count(request):
     total_quantity = sum(int(item['quantity']) for item in cart.values())
     return {'cart_item_count': total_quantity}
 
-from .models import Category
 
 def categories_context(request):
     return {
         'categories': Category.objects.all()
     }
+
+
+def site_settings(request):
+    settings = SiteSettings.objects.first()
+    return {"settings": settings}
+

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Nouvelle Commande</title>
+</head>
+<body style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;">
+    <div style="max-width: 600px; margin: 0 auto; background: white; padding: 20px; border-radius: 5px;">
+        
+        <div style="background-color: #fd7e14; color: white; padding: 10px; text-align: center;">
+            <h2 style="margin:0;">🔔 Nouvelle Commande Reçue</h2>
+        </div>
+
+        <div style="padding: 20px;">
+            <p>Bonjour,</p>
+            <p>Une nouvelle commande vient d'être passée sur <strong>Cindera</strong>.</p>
+
+            <div style="background: #f9f9f9; padding: 15px; border-left: 4px solid #014215; margin: 20px 0;">
+                <p style="margin:0;"><strong>Commande #{{ order.id }}</strong></p>
+                <p style="margin:5px 0;">Client : {{ order.first_name }} {{ order.last_name }} ({{ order.email }})</p>
+                <p style="margin:5px 0; font-size: 1.2em; color: #014215;"><strong>Total : {{ order.total_price }} FCFA</strong></p>
+                <p style="margin:5px 0;">Méthode : {{ order.payment_method.name }}</p>
+            </div>
+
+            <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+                <thead>
+                    <tr style="background: #eee;">
+                        <th style="padding: 8px; text-align: left;">Produit</th>
+                        <th style="padding: 8px;">Qté</th>
+                        <th style="padding: 8px; text-align: right;">Prix</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in order.items.all %}
+                    <tr>
+                        <td style="padding: 8px; border-bottom: 1px solid #ddd;">{{ item.product_name }}</td>
+                        <td style="padding: 8px; text-align: center; border-bottom: 1px solid #ddd;">{{ item.quantity }}</td>
+                        <td style="padding: 8px; text-align: right; border-bottom: 1px solid #ddd;">{{ item.price }} FCFA</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <div style="text-align: center; margin-top: 30px;">
+                <a href="{{ site_url }}/dashboard/orders/{{ order.id }}/" 
+                   style="background-color: #014215; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
+                   Voir la commande dans le Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
