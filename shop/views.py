@@ -625,7 +625,6 @@ def paydunya_callback(request, order_id):
     print("CALLBACK PAYDUNYA REÇU")
     return JsonResponse({"status": "ok"})
 
-
     
 def payment_success(request, order_id):
     order = get_object_or_404(Order, id=order_id)
