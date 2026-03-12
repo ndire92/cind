@@ -4,7 +4,7 @@ certifi==2026.1.4
 cffi==2.0.0
 charset-normalizer==3.4.4
 cssselect2==0.9.0
-Django==5.0
+Django==6.0.2
 dotenv==0.9.9
 fonttools==4.61.1
 gunicorn==25.1.0

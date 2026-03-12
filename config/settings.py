@@ -16,10 +16,22 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-g8b&8g*t+#d0^rd6(yet4h@6_(=23k$m@leu-yqsl_8tsdf!cw'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
-CSRF_TRUSTED_ORIGINS = []
+ALLOWED_HOSTS = [
+    "187.124.39.24",
+    "cinderaproduitsnaturels.com",
+    "www.cinderaproduitsnaturels.com",
+    "localhost",
+    "127.0.0.1"
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://cinderaproduitsnaturels.com",
+    "https://www.cinderaproduitsnaturels.com",
+    "http://187.124.39.24"
+]
+
 
 
 # Application definition
@@ -92,7 +104,7 @@ DATABASES = {
         'NAME': 'postgres',
         'USER': 'postgres',
         'PASSWORD': 'cindera',
-        'HOST': 'db',
+        'HOST': 'localhost',
         'PORT': '5432',
     }
 }
