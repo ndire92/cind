@@ -585,11 +585,11 @@ def paydunya_init(request, order_id):
     headers = {"Content-Type": "application/json", "PAYDUNYA-MASTER-KEY": settings.PAYDUNYA_MASTER_KEY, "PAYDUNYA-PRIVATE-KEY": settings.PAYDUNYA_PRIVATE_KEY, "PAYDUNYA-TOKEN": settings.PAYDUNYA_TOKEN}
     data = {
         "invoice": {"total_amount": float(order.total_price), "description": f"Commande #{order.id}"},
-        "store": {"name": "Cindera", "website_url": "https://cinedera.pythonanywhere.com"},
+        "store": {"name": "Cindera", "website_url": "https://cinderaproduitsnaturels.com"},
         "actions": {
-            "callback_url": f"https://cinedera.pythonanywhere.com/shop/paydunya_callback/{order.id}/",
-            "return_url": f"https://cinedera.pythonanywhere.com/payment/success/{order.id}/",
-            "cancel_url": f"https://cinedera.pythonanywhere.com/shop/order_cancelled/{order.id}/",
+            "callback_url": f"https://cinderaproduitsnaturels.com/shop/paydunya_callback/{order.id}/",
+            "return_url": f"https://cinderaproduitsnaturels.com/payment/success/{order.id}/",
+            "cancel_url": f"https://cinderaproduitsnaturels.com/shop/order_cancelled/{order.id}/",
         }
     }
     resp = requests.post(url, json=data, headers=headers)
