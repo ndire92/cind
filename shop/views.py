@@ -579,26 +579,45 @@ def invoice_download(request, order_id):
         return HttpResponse("Erreur serveur", status=500)
 
 # --- PAIEMENT PAYDUNYA ---
+# --- PAIEMENT PAYDUNYA ---
 def paydunya_init(request, order_id):
     order = get_object_or_404(Order, id=order_id)
-    url = "https://app.paydunya.com/sandbox-api/v1/checkout-invoice/create"
-    headers = {"Content-Type": "application/json", "PAYDUNYA-MASTER-KEY": settings.PAYDUNYA_MASTER_KEY, "PAYDUNYA-PRIVATE-KEY": settings.PAYDUNYA_PRIVATE_KEY, "PAYDUNYA-TOKEN": settings.PAYDUNYA_TOKEN}
+
+    # URL LIVE (PRODUCTION)
+    url = "https://app.paydunya.com/api/v1/checkout-invoice/create"
+
+    headers = {
+        "Content-Type": "application/json",
+        "PAYDUNYA-MASTER-KEY": settings.PAYDUNYA_MASTER_KEY,
+        "PAYDUNYA-PRIVATE-KEY": settings.PAYDUNYA_PRIVATE_KEY,
+        "PAYDUNYA-TOKEN": settings.PAYDUNYA_TOKEN,
+    }
+
     data = {
-        "invoice": {"total_amount": float(order.total_price), "description": f"Commande #{order.id}"},
-        "store": {"name": "Cindera", "website_url": "https://cinderaproduitsnaturels.com"},
+        "invoice": {
+            "total_amount": float(order.total_price),
+            "description": f"Commande #{order.id}",
+        },
+        "store": {
+            "name": "Cindera",
+            "website_url": "https://cinderaproduitsnaturels.com",
+        },
         "actions": {
             "callback_url": f"https://cinderaproduitsnaturels.com/shop/paydunya_callback/{order.id}/",
             "return_url": f"https://cinderaproduitsnaturels.com/payment/success/{order.id}/",
             "cancel_url": f"https://cinderaproduitsnaturels.com/shop/order_cancelled/{order.id}/",
-        }
+        },
     }
+
     resp = requests.post(url, json=data, headers=headers)
     result = resp.json()
+
     if result.get("response_code") == "00":
         order.transaction_id = result.get("token")
         order.save()
         return redirect(result["response_text"])
-    return redirect('products:checkout')
+
+    return redirect("products:checkout")
 
 def payment_success(request, order_id):
     order = get_object_or_404(Order, id=order_id)
