@@ -625,21 +625,34 @@ def paydunya_callback(request, order_id):
     print("CALLBACK PAYDUNYA REÇU")
     return JsonResponse({"status": "ok"})
 
-    
+
 def payment_success(request, order_id):
     order = get_object_or_404(Order, id=order_id)
     verify_url = "https://app.paydunya.com/api/v1/checkout-invoice/confirm/"
-    headers = {"Content-Type": "application/json", "PAYDUNYA-MASTER-KEY": settings.PAYDUNYA_MASTER_KEY, "PAYDUNYA-PRIVATE-KEY": settings.PAYDUNYA_PRIVATE_KEY, "PAYDUNYA-TOKEN": settings.PAYDUNYA_TOKEN}
+    headers = {
+        "Content-Type": "application/json",
+        "PAYDUNYA-MASTER-KEY": settings.PAYDUNYA_MASTER_KEY,
+        "PAYDUNYA-PRIVATE-KEY": settings.PAYDUNYA_PRIVATE_KEY,
+        "PAYDUNYA-TOKEN": settings.PAYDUNYA_TOKEN,
+    }
     resp = requests.post(verify_url, json={"token": order.transaction_id}, headers=headers)
     result = resp.json()
 
     if result.get("invoice_status") == "completed" and order.payment_status != Order.PaymentStatus.PAID:
         order.payment_status = Order.PaymentStatus.PAID
         order.save()
-        Transaction.objects.create(order=order, external_reference=order.transaction_id, description=f"Paiement PayDunya #{order.id}", type=Transaction.TypeChoices.INCOME, amount=order.total_price, status="completed")
+        Transaction.objects.create(
+            order=order,
+            external_reference=order.transaction_id,
+            description=f"Paiement PayDunya #{order.id}",
+            type=Transaction.TypeChoices.INCOME,
+            amount=order.total_price,
+            status="completed",
+        )
         send_order_confirmation_email(order)
         send_new_order_admin_email(order)
         return render(request, 'shop/orders/payment_success.html', {'order': order})
+
     return redirect('products:checkout')
 
 def order_cancelled(request, order_id):
