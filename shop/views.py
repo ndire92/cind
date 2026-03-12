@@ -618,7 +618,11 @@ def paydunya_init(request, order_id):
         return redirect(result["response_text"])
 
     return redirect("products:checkout")
-
+    @csrf_exempt
+def paydunya_callback(request, order_id):
+    print("CALLBACK PAYDUNYA REÇU")
+    return JsonResponse({"status": "ok"})
+    
 def payment_success(request, order_id):
     order = get_object_or_404(Order, id=order_id)
     verify_url = "https://app.paydunya.com/api/v1/checkout-invoice/confirm/"
