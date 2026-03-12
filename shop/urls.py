@@ -35,6 +35,7 @@ urlpatterns = [
     path('paydunya/<int:order_id>/', views.paydunya_init, name='paydunya_init'),
     path('payment/success/<int:order_id>/', views.payment_success, name='payment_success'),
     path('shop/order_cancelled/<int:order_id>/', views.order_cancelled, name='order_cancelled'),
+    path('paydunya_callback/<int:order_id>/', views.paydunya_callback, name='paydunya_callback'),
     path("payment/dexpay/init/<int:order_id>/", views.dexpays_init, name="dexpays_init"),
     path("payment/dexpay/success/<int:order_id>/", views.dexpays_success, name="dexpays_success"),
     path("payment/dexpay/callback/<int:order_id>/", views.dexpays_callback, name="dexpays_callback"),
