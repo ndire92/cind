@@ -763,6 +763,36 @@ def dexpay_init(request, order_id):
         return redirect(response["checkout_url"])
 
     return redirect("products:checkout")
+from django.shortcuts import get_object_or_404, redirect
+from .utils import DexPayClient
+
+def dexpay_init(request, order_id):
+
+    order = get_object_or_404(Order, id=order_id)
+
+    client = DexPayClient()
+
+    response = client.create_checkout(
+        reference=f"ORDER-{order.id}",
+        item_name=f"Commande #{order.id}",
+        amount=float(order.total_price),
+
+        webhook_url=f"https://cinderaproduitsnaturels.com/boutique/dexpay_callback/{order.id}/",
+        success_url=f"https://cinderaproduitsnaturels.com/boutique/payment/success/{order.id}/",
+        failure_url=f"https://cinderaproduitsnaturels.com/boutique/order_cancelled/{order.id}/",
+    )
+
+    checkout_url = None
+
+    if response.get("data"):
+        checkout_url = response["data"].get("checkout_url")
+
+    if checkout_url:
+        return redirect(checkout_url)
+
+    print("DexPay error:", response)
+
+    return redirect("products:checkout")
 
 
 # ============================================================================
