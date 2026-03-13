@@ -371,6 +371,9 @@ def order_create(request):
 
                     if pm_slug == "paydunya":
                         return redirect("products:paydunya_init", order_id=order.id)
+                    if order.payment_method.slug == "dexpay":
+                        return redirect("products:dexpay_init", order.id)
+
 
                     # Paiement hors ligne (ex : cash livraison)
                     transaction.on_commit(lambda o=order: send_order_confirmation_email(o))
@@ -739,6 +742,37 @@ def order_cancelled(request, order_id):
 
     return render(request, 'shop/orders/order_cancelled.html', {'order': order})
 
+
+def dexpay_init(request, order_id):
+
+    order = get_object_or_404(Order, id=order_id)
+
+    payload = {
+        "amount": float(order.total_price),
+        "currency": "XOF",
+        "reference": f"ORDER-{order.id}",
+        "callback_url": f"https://cinderaproduitsnaturels.com/boutique/dexpay_callback/{order.id}/",
+        "success_url": f"https://cinderaproduitsnaturels.com/boutique/payment/success/{order.id}/",
+        "cancel_url": f"https://cinderaproduitsnaturels.com/boutique/order_cancelled/{order.id}/"
+    }
+
+    headers = {
+        "Authorization": f"Bearer {settings.DEXPAY_SECRET_KEY}",
+        "Content-Type": "application/json"
+    }
+
+    response = requests.post(
+        "https://api.dexpay.africa/v1/checkout",
+        json=payload,
+        headers=headers
+    )
+
+    data = response.json()
+
+    if "checkout_url" in data:
+        return redirect(data["checkout_url"])
+
+    return redirect("products:checkout")
 
 # ============================================================================
 # DASHBOARD VIEWS
