@@ -742,58 +742,33 @@ def order_cancelled(request, order_id):
 
     return render(request, 'shop/orders/order_cancelled.html', {'order': order})
 
-from .utils import DexPayClient
-
-def dexpay_init(request, order_id):
-
-    order = get_object_or_404(Order, id=order_id)
-
-    client = DexPayClient()
-
-    response = client.create_checkout(
-        reference=f"ORDER-{order.id}",
-        item_name=f"Commande #{order.id}",
-        amount=float(order.total_price),
-        webhook_url=f"https://cinderaproduitsnaturels.com/boutique/dexpay_callback/{order.id}/",
-        success_url=f"https://cinderaproduitsnaturels.com/boutique/payment/success/{order.id}/",
-        failure_url=f"https://cinderaproduitsnaturels.com/boutique/order_cancelled/{order.id}/",
-    )
-
-    if response.get("checkout_url"):
-        return redirect(response["checkout_url"])
-
-    return redirect("products:checkout")
 from django.shortcuts import get_object_or_404, redirect
 from .utils import DexPayClient
+import logging
+
+logger = logging.getLogger(__name__)
 
 def dexpay_init(request, order_id):
-
     order = get_object_or_404(Order, id=order_id)
-
     client = DexPayClient()
 
-    response = client.create_checkout(
-        reference=f"ORDER-{order.id}",
-        item_name=f"Commande #{order.id}",
-        amount=float(order.total_price),
-
-        webhook_url=f"https://cinderaproduitsnaturels.com/boutique/dexpay_callback/{order.id}/",
-        success_url=f"https://cinderaproduitsnaturels.com/boutique/payment/success/{order.id}/",
-        failure_url=f"https://cinderaproduitsnaturels.com/boutique/order_cancelled/{order.id}/",
-    )
-
-    checkout_url = None
-
-    if response.get("data"):
-        checkout_url = response["data"].get("checkout_url")
-
-    if checkout_url:
-        return redirect(checkout_url)
-
-    print("DexPay error:", response)
+    try:
+        response = client.create_checkout(
+            reference=f"ORDER-{order.id}",
+            item_name=f"Commande #{order.id}",
+            amount=float(order.total_price),
+            webhook_url=f"https://cinderaproduitsnaturels.com/boutique/dexpay_callback/{order.id}/",
+            success_url=f"https://cinderaproduitsnaturels.com/boutique/payment/success/{order.id}/",
+            failure_url=f"https://cinderaproduitsnaturels.com/boutique/order_cancelled/{order.id}/",
+        )
+        checkout_url = response.get("data", {}).get("checkout_url")
+        if checkout_url:
+            return redirect(checkout_url)
+        logger.error(f"DexPay error: {response}")
+    except Exception as e:
+        logger.error(f"DexPay connection error: {e}")
 
     return redirect("products:checkout")
-
 
 # ============================================================================
 # DASHBOARD VIEWS
