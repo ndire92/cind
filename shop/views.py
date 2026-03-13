@@ -369,22 +369,14 @@ def order_create(request):
                     # Redirection & Envoi Email
                     pm_slug = payment_method.slug if payment_method else None
 
-                    if pm_slug == 'paydunya':
-                        return redirect('products:paydunya_init', order_id=order.id)
+                    if pm_slug == "paydunya":
+                        return redirect("products:paydunya_init", order_id=order.id)
 
-                    elif pm_slug == 'dexpay':
-                        return redirect('products:dexpays_init', order_id=order.id)
+                    # Paiement hors ligne (ex : cash livraison)
+                    transaction.on_commit(lambda o=order: send_order_confirmation_email(o))
+                    transaction.on_commit(lambda o=order: send_new_order_admin_email(o))
 
-                    elif pm_slug == 'wave':
-                        return redirect('products:wave_init', order_id=order.id)
-
-                    elif pm_slug == 'orange_money':
-                        return redirect('products:orange_init', order_id=order.id)
-
-                    else:
-                        transaction.on_commit(lambda o=order: send_order_confirmation_email(o))
-                        transaction.on_commit(lambda o=order: send_new_order_admin_email(o))
-                        return redirect('products:order_confirmation', order_id=order.id)
+                    return redirect("products:order_confirmation", order_id=order.id)
 
             except Exception as e:
                 logger.error(f"Erreur création commande: {e}")
@@ -581,9 +573,12 @@ def invoice_download(request, order_id):
 # --- PAIEMENT PAYDUNYA ---
 # --- PAIEMENT PAYDUNYA ---
 def paydunya_init(request, order_id):
+
     order = get_object_or_404(Order, id=order_id)
 
-    # URL LIVE (PRODUCTION)
+    if order.payment_status == Order.PaymentStatus.PAID:
+        return redirect("products:order_confirmation", order_id=order.id)
+
     url = "https://app.paydunya.com/api/v1/checkout-invoice/create"
 
     headers = {
@@ -605,12 +600,16 @@ def paydunya_init(request, order_id):
         "actions": {
             "callback_url": f"https://cinderaproduitsnaturels.com/boutique/paydunya_callback/{order.id}/",
             "return_url": f"https://cinderaproduitsnaturels.com/boutique/payment/success/{order.id}/",
-            "cancel_url": f"https://cinderaproduitsnaturels.com//boutique/order_cancelled/{order.id}/",
+            "cancel_url": f"https://cinderaproduitsnaturels.com/boutique/order_cancelled/{order.id}/",
         },
     }
 
-    resp = requests.post(url, json=data, headers=headers)
-    result = resp.json()
+    try:
+        resp = requests.post(url, json=data, headers=headers, timeout=30)
+        result = resp.json()
+    except Exception as e:
+        logger.error(f"Erreur PayDunya : {e}")
+        return redirect("products:checkout")
 
     if result.get("response_code") == "00":
         order.transaction_id = result.get("token")
@@ -622,223 +621,124 @@ def paydunya_init(request, order_id):
 
 @csrf_exempt
 def paydunya_callback(request, order_id):
-    print("CALLBACK PAYDUNYA REÇU")
-    return JsonResponse({"status": "ok"})
 
-
-def payment_success(request, order_id):
     order = get_object_or_404(Order, id=order_id)
+
     verify_url = "https://app.paydunya.com/api/v1/checkout-invoice/confirm/"
+
     headers = {
         "Content-Type": "application/json",
         "PAYDUNYA-MASTER-KEY": settings.PAYDUNYA_MASTER_KEY,
         "PAYDUNYA-PRIVATE-KEY": settings.PAYDUNYA_PRIVATE_KEY,
         "PAYDUNYA-TOKEN": settings.PAYDUNYA_TOKEN,
     }
-    resp = requests.post(verify_url, json={"token": order.transaction_id}, headers=headers)
-    result = resp.json()
-
-    if result.get("invoice_status") == "completed" and order.payment_status != Order.PaymentStatus.PAID:
-        order.payment_status = Order.PaymentStatus.PAID
-        order.save()
-        Transaction.objects.create(
-            order=order,
-            external_reference=order.transaction_id,
-            description=f"Paiement PayDunya #{order.id}",
-            type=Transaction.TypeChoices.INCOME,
-            amount=order.total_price,
-            status="completed",
-        )
-        send_order_confirmation_email(order)
-        send_new_order_admin_email(order)
-        return render(request, 'shop/orders/payment_success.html', {'order': order})
-
-    return redirect('products:checkout')
-
-def order_cancelled(request, order_id):
-    order = get_object_or_404(Order, id=order_id)
-    order.payment_status = Order.PaymentStatus.FAILED
-    order.save()
-    return render(request, 'shop/orders/order_cancelled.html', {'order': order})
-logger = logging.getLogger(__name__)
-
-# --- Config Dexpay ---
-def get_dexpay_config():
-    if settings.DEXPAY_MODE.upper() == "LIVE":
-        return {"api_key": settings.DEXPAY_LIVE_API_KEY, "base_url": settings.DEXPAY_LIVE_BASE_URL}
-    return {"api_key": settings.DEXPAY_TEST_API_KEY, "base_url": settings.DEXPAY_TEST_BASE_URL}
-
-
-# --- INIT DEXPAY ---
-def dexpays_init(request, order_id):
-    order = get_object_or_404(Order, id=order_id)
-    config = get_dexpay_config()
-    url = f"{config['base_url']}/v1/invoice/create"
-    headers = {
-        "Content-Type": "application/json",
-        "Authorization": f"Bearer {config['api_key']}"
-    }
-
-    data = {
-        "amount": round(float(order.total_price), 2),
-        "currency": "XOF",
-        "description": f"Commande #{order.id}",
-        "callback_url": request.build_absolute_uri(reverse("products:dexpays_callback", args=[order.id])),
-        "return_url": request.build_absolute_uri(reverse("products:dexpays_success", args=[order.id])),
-        "cancel_url": request.build_absolute_uri(reverse("products:dexpays_cancel", args=[order.id]))
-    }
 
     try:
-        resp = requests.post(url, json=data, headers=headers, timeout=10)
+        resp = requests.post(
+            verify_url,
+            json={"token": order.transaction_id},
+            headers=headers,
+            timeout=30
+        )
+
         result = resp.json()
-        logger.info(f"Dexpay init response: {result}")
+
     except Exception as e:
-        logger.error(f"Erreur Dexpay init: {e}")
-        return redirect("products:checkout")
+        logger.error(f"Webhook PayDunya erreur : {e}")
+        return JsonResponse({"status": "error"})
 
-    if result.get("status") == "success" and result.get("payment_url"):
-        order.transaction_id = result.get("invoice_id")
-        order.save()
-        return redirect(result.get("payment_url"))
-    else:
-        logger.error(f"Dexpay init failed: {result}")
-        return redirect("products:checkout")
+    if result.get("invoice_status") == "completed":
 
+        if order.payment_status != Order.PaymentStatus.PAID:
 
-# --- SUCCESS ---
-def dexpays_success(request, order_id):
+            order.payment_status = Order.PaymentStatus.PAID
+            order.save()
+
+            Transaction.objects.create(
+                order=order,
+                external_reference=order.transaction_id,
+                description=f"Paiement PayDunya #{order.id}",
+                type=Transaction.TypeChoices.INCOME,
+                amount=order.total_price,
+                status="completed",
+            )
+
+            send_order_confirmation_email(order)
+            send_new_order_admin_email(order)
+
+    return JsonResponse({"status": "ok"})
+
+def payment_success(request, order_id):
+
     order = get_object_or_404(Order, id=order_id)
+
+    # sécurité : vérifier si transaction existe
     if not order.transaction_id:
         return redirect("products:checkout")
 
-    config = get_dexpay_config()
-    url = f"{config['base_url']}/v1/invoice/{order.transaction_id}/status"
-    headers = {"Authorization": f"Bearer {config['api_key']}"}
+    # protection double paiement
+    if order.payment_status == Order.PaymentStatus.PAID:
+        return render(request, "shop/orders/payment_success.html", {"order": order})
+
+    verify_url = "https://app.paydunya.com/api/v1/checkout-invoice/confirm/"
+
+    headers = {
+        "Content-Type": "application/json",
+        "PAYDUNYA-MASTER-KEY": settings.PAYDUNYA_MASTER_KEY,
+        "PAYDUNYA-PRIVATE-KEY": settings.PAYDUNYA_PRIVATE_KEY,
+        "PAYDUNYA-TOKEN": settings.PAYDUNYA_TOKEN,
+    }
 
     try:
-        resp = requests.get(url, headers=headers, timeout=10)
+        resp = requests.post(
+            verify_url,
+            json={"token": order.transaction_id},
+            headers=headers,
+            timeout=30
+        )
+
         result = resp.json()
-        logger.info(f"Dexpay status response: {result}")
+
     except Exception as e:
-        logger.error(f"Erreur Dexpay status: {e}")
+        logger.error(f"Erreur vérification PayDunya : {e}")
         return redirect("products:checkout")
 
-    if result.get("status") == "paid" and order.payment_status != Order.PaymentStatus.PAID:
+    if result.get("invoice_status") == "completed":
+
         order.payment_status = Order.PaymentStatus.PAID
         order.save()
-        Transaction.objects.create(
-            order=order,
-            external_reference=order.transaction_id,
-            description=f"Paiement Dexpay #{order.id}",
-            type=Transaction.TypeChoices.INCOME,
-            amount=order.total_price,
-            status="completed"
-        )
+
+        # éviter transaction en double
+        if not Transaction.objects.filter(external_reference=order.transaction_id).exists():
+
+            Transaction.objects.create(
+                order=order,
+                external_reference=order.transaction_id,
+                description=f"Paiement PayDunya #{order.id}",
+                type=Transaction.TypeChoices.INCOME,
+                amount=order.total_price,
+                status="completed",
+            )
+
         send_order_confirmation_email(order)
         send_new_order_admin_email(order)
+
         return render(request, "shop/orders/payment_success.html", {"order": order})
-    
-    return redirect("products:checkout")
-
-
-# --- CALLBACK (Webhook) ---
-@csrf_exempt
-def dexpays_callback(request, order_id):
-    order = get_object_or_404(Order, id=order_id)
-    try:
-        data = json.loads(request.body)
-        logger.info(f"Dexpay callback data: {data}")
-        if data.get("status") == "paid" and order.payment_status != Order.PaymentStatus.PAID:
-            order.payment_status = Order.PaymentStatus.PAID
-            order.save()
-    except Exception as e:
-        logger.error(f"Erreur Dexpay callback: {e}")
-    return JsonResponse({"status": "ok"})
-
-
-# --- CANCEL ---
-def dexpays_cancel(request, order_id):
-    return redirect("products:checkout")
-
-def wave_payment(request):
-
-    url = "https://api.wave.com/v1/checkout/sessions"
-
-    headers = {
-        "Authorization": "Bearer YOUR_API_KEY",
-        "Content-Type": "application/json"
-    }
-
-    data = {
-        "amount": "5000",
-        "currency": "XOF",
-        "error_url": "https://tonsite.com/payment-error",
-        "success_url": "https://tonsite.com/payment-success"
-    }
-
-    response = requests.post(url, json=data, headers=headers)
-    result = response.json()
-
-    checkout_url = result["wave_launch_url"]
-
-    return redirect(checkout_url)
-
-
-def wave_init(request, order_id):
-
-    order = get_object_or_404(Order, id=order_id)
-
-    url = "https://api.wave.com/v1/checkout/sessions"
-
-    headers = {
-        "Authorization": f"Bearer {settings.WAVE_API_KEY}",
-        "Content-Type": "application/json"
-    }
-
-    data = {
-        "amount": int(order.total_price),
-        "currency": "XOF",
-        "success_url": request.build_absolute_uri(
-            reverse("products:wave_success", args=[order.id])
-        ),
-        "error_url": request.build_absolute_uri(
-            reverse("products:checkout")
-        )
-    }
-
-    response = requests.post(url, json=data, headers=headers)
-    result = response.json()
-
-    if "wave_launch_url" in result:
-        order.transaction_id = result.get("id")
-        order.save()
-        return redirect(result["wave_launch_url"])
 
     return redirect("products:checkout")
 
 
-def wave_success(request, order_id):
+def order_cancelled(request, order_id):
 
     order = get_object_or_404(Order, id=order_id)
 
-    if order.payment_status != Order.PaymentStatus.PAID:
+    order.payment_status = Order.PaymentStatus.FAILED
+    order.save()
 
-        order.payment_status = Order.PaymentStatus.PAID
-        order.save()
+    logger.info(f"Commande {order.id} annulée")
 
-        Transaction.objects.create(
-            order=order,
-            external_reference=order.transaction_id,
-            description=f"Paiement Wave #{order.id}",
-            type=Transaction.TypeChoices.INCOME,
-            amount=order.total_price,
-            status="completed"
-        )
+    return render(request, 'shop/orders/order_cancelled.html', {'order': order})
 
-        send_order_confirmation_email(order)
-        send_new_order_admin_email(order)
-
-    return render(request, "shop/orders/payment_success.html", {"order": order})
 
 # ============================================================================
 # DASHBOARD VIEWS
@@ -1012,6 +912,7 @@ def add_payment_method(request):
         if form.is_valid(): form.save(); messages.success(request, "Ajouté."); return redirect('dashboard:payment_methods')
     else: form = PaymentMethodForm()
     return render(request, 'dashboard/settings/payment_form.html', {'form': form})
+
 @login_required
 @admin_or_manager_required
 def edit_payment_method(request, method_id):
@@ -1022,6 +923,13 @@ def edit_payment_method(request, method_id):
     else: form = PaymentMethodForm(instance=m)
     return render(request, 'dashboard/settings/payment_form.html', {'form': form})
 
+def delete_payment_method(request, pk):
+    method = get_object_or_404(PaymentMethod, pk=pk)
+    if request.method == "POST":
+        method.delete()
+        messages.success(request, f"Le moyen de paiement '{method.name}' a été supprimé.")
+        return redirect(reverse('dashboard:payment_methods'))
+    return redirect(reverse('dashboard:payment_methods'))
 # Blog CRUD
 @login_required
 @admin_or_manager_required
