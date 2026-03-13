@@ -757,7 +757,6 @@ def dexpay_init(request, order_id):
     order = get_object_or_404(Order, id=order_id)
     client = DexPayClient()
 
-    # Crée le checkout auprès de DexPay
     response = client.create_checkout(
         reference=f"ORDER-{order.id}",
         item_name=f"Commande #{order.id}",
@@ -769,18 +768,18 @@ def dexpay_init(request, order_id):
         failure_url=f"https://cinderaproduitsnaturels.com/boutique/order_cancelled/{order.id}/",
     )
 
-    # Log complet de la réponse pour debug
     logger.info(f"DexPay response for Order {order.id}: {response}")
 
-    # Extraction sécurisée du checkout_url
-    checkout_url = response.get("data", {}).get("checkout_url")
+    # Utiliser 'payment_url' fourni par DexPay
+    payment_url = response.get("data", {}).get("payment_url")
 
-    if checkout_url:
-        return redirect(checkout_url)
+    if payment_url:
+        return redirect(payment_url)
 
-    # Si pas de checkout_url, on log l'erreur et retourne sur la page checkout
+    # Si pas de payment_url, log et retourne sur checkout
     logger.error(f"DexPay checkout failed for Order {order.id}: {response}")
     return redirect("products:checkout")
+
 
 # ============================================================================
 # DASHBOARD VIEWS
