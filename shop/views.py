@@ -671,64 +671,71 @@ def paydunya_callback(request, order_id):
 
     return JsonResponse({"status": "ok"})
 
-def payment_success(request, order_id):
+logger = logging.getLogger(__name__)
 
+def payment_success(request, order_id):
     order = get_object_or_404(Order, id=order_id)
 
     # sécurité : vérifier si transaction existe
     if not order.transaction_id:
+        logger.warning(f"Commande {order.id} sans transaction_id")
         return redirect("products:checkout")
 
     # protection double paiement
     if order.payment_status == Order.PaymentStatus.PAID:
         return render(request, "shop/orders/payment_success.html", {"order": order})
 
-    verify_url = "https://app.paydunya.com/api/v1/checkout-invoice/confirm/"
+    # Vérification selon la passerelle
+    if order.gateway == "paydunya":
+        verify_url = "https://app.paydunya.com/api/v1/checkout-invoice/confirm/"
+        headers = {
+            "Content-Type": "application/json",
+            "PAYDUNYA-MASTER-KEY": settings.PAYDUNYA_MASTER_KEY,
+            "PAYDUNYA-PRIVATE-KEY": settings.PAYDUNYA_PRIVATE_KEY,
+            "PAYDUNYA-TOKEN": settings.PAYDUNYA_TOKEN,
+        }
+        try:
+            resp = requests.post(
+                verify_url,
+                json={"token": order.transaction_id},
+                headers=headers,
+                timeout=30
+            )
+            result = resp.json()
+        except Exception as e:
+            logger.error(f"Erreur vérification PayDunya : {e}")
+            return redirect("products:checkout")
 
-    headers = {
-        "Content-Type": "application/json",
-        "PAYDUNYA-MASTER-KEY": settings.PAYDUNYA_MASTER_KEY,
-        "PAYDUNYA-PRIVATE-KEY": settings.PAYDUNYA_PRIVATE_KEY,
-        "PAYDUNYA-TOKEN": settings.PAYDUNYA_TOKEN,
-    }
+        if result.get("invoice_status") == "completed":
+            order.payment_status = Order.PaymentStatus.PAID
 
-    try:
-        resp = requests.post(
-            verify_url,
-            json={"token": order.transaction_id},
-            headers=headers,
-            timeout=30
+    elif order.gateway == "dexpay":
+        # DexPay : le webhook met déjà à jour le statut,
+        # ici on se contente de confirmer
+        if order.payment_status != Order.PaymentStatus.PAID:
+            order.payment_status = Order.PaymentStatus.PAID
+
+    # Sauvegarde finale
+    order.save()
+
+    # éviter transaction en double
+    if not Transaction.objects.filter(external_reference=order.transaction_id).exists():
+        Transaction.objects.create(
+            order=order,
+            external_reference=order.transaction_id,
+            description=f"Paiement {order.gateway.capitalize()} #{order.id}",
+            type=Transaction.TypeChoices.INCOME,
+            amount=order.total_price,
+            status="completed",
         )
 
-        result = resp.json()
+    # Notifications
+    send_order_confirmation_email(order)
+    send_new_order_admin_email(order)
 
-    except Exception as e:
-        logger.error(f"Erreur vérification PayDunya : {e}")
-        return redirect("products:checkout")
+    return render(request, "shop/orders/payment_success.html", {"order": order})
 
-    if result.get("invoice_status") == "completed":
 
-        order.payment_status = Order.PaymentStatus.PAID
-        order.save()
-
-        # éviter transaction en double
-        if not Transaction.objects.filter(external_reference=order.transaction_id).exists():
-
-            Transaction.objects.create(
-                order=order,
-                external_reference=order.transaction_id,
-                description=f"Paiement PayDunya #{order.id}",
-                type=Transaction.TypeChoices.INCOME,
-                amount=order.total_price,
-                status="completed",
-            )
-
-        send_order_confirmation_email(order)
-        send_new_order_admin_email(order)
-
-        return render(request, "shop/orders/payment_success.html", {"order": order})
-
-    return redirect("products:checkout")
 
 
 def order_cancelled(request, order_id):
