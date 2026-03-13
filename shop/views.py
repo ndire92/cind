@@ -780,6 +780,31 @@ def dexpay_init(request, order_id):
     logger.error(f"DexPay checkout failed for Order {order.id}: {response}")
     return redirect("products:checkout")
 
+@csrf_exempt
+def dexpay_callback(request, order_id):
+    try:
+        data = json.loads(request.body)
+        order = get_object_or_404(Order, id=order_id)
+
+        # DexPay renvoie un statut (ex: "success", "failed", "initiated")
+        status = data.get("status")
+
+        if status == "success":
+            order.payment_status = "paid"
+        elif status == "failed":
+            order.payment_status = "failed"
+        else:
+            order.payment_status = "pending"
+
+        order.save()
+        logger.info(f"Order {order.id} updated to {order.payment_status}")
+
+        return JsonResponse({"message": "Order updated", "status": order.payment_status})
+
+    except Exception as e:
+        logger.error(f"DexPay webhook error: {e}")
+        return JsonResponse({"error": str(e)}, status=400)
+
 
 # ============================================================================
 # DASHBOARD VIEWS
