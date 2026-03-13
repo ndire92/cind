@@ -170,9 +170,11 @@ PAYDUNYA_PUBLIC_KEY = "live_public_Hc60iR3lK6rDTclOQ15nATFNzUf"
 PAYDUNYA_PRIVATE_KEY = "live_private_vp02fb24B4Ig6YkzgZFNLqUJt8S"
 PAYDUNYA_TOKEN = "tyHUazVzYSPjW91wSATI"  # facultatif, généré dynamiquement pour chaque facture
 
+
 DEXPAY_PUBLIC_KEY = os.getenv("DEXPAY_PUBLIC_KEY")
 DEXPAY_SECRET_KEY = os.getenv("DEXPAY_SECRET_KEY")
 
+# Côté serveur, utiliser la clé secrète pour les requêtes API
 DEXPAY_API_KEY = DEXPAY_SECRET_KEY
 DEXPAY_BASE_URL = "https://api.dexpay.africa/api/v1"
 
