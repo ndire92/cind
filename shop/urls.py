@@ -31,15 +31,14 @@ urlpatterns = [
     path('order/confirmation/<int:order_id>/', views.order_confirmation, name='order_confirmation'),
     path('order/invoice/<int:order_id>/', views.invoice_download, name='invoice_download'),
     
-    # Passerelles de paiement
+# Passerelles de paiement
     path('paydunya/<int:order_id>/', views.paydunya_init, name='paydunya_init'),
-    path('payment/success/<int:order_id>/', views.payment_success, name='payment_success'),
-    path('shop/order_cancelled/<int:order_id>/', views.order_cancelled, name='order_cancelled'),
-    path('paydunya_callback/<int:order_id>/', views.paydunya_callback, name='paydunya_callback'),
-    path("payment/dexpay/init/<int:order_id>/", views.dexpays_init, name="dexpays_init"),
-    path("payment/dexpay/success/<int:order_id>/", views.dexpays_success, name="dexpays_success"),
-    path("payment/dexpay/callback/<int:order_id>/", views.dexpays_callback, name="dexpays_callback"),
-    path("payment/dexpay/cancel/<int:order_id>/", views.dexpays_cancel, name="dexpays_cancel"),
+
+    path('boutique/paydunya_callback/<int:order_id>/',views.paydunya_callback, name='paydunya_callback'),
+
+    path('boutique/payment/success/<int:order_id>/', views.payment_success, name='payment_success'),
+
+    path('boutique/order_cancelled/<int:order_id>/', views.order_cancelled, name='order_cancelled'),
 
     # --- Blog & Pages ---
     path('bien-etre/', views.bien_etre, name='bien_etre'),
@@ -54,9 +53,6 @@ urlpatterns = [
     
     # --- Newsletter ---
     path('newsletter/subscribe/', views.newsletter_subscribe, name='newsletter_subscribe'),
-        path("payer-wave/", views.wave_payment, name="wave_payment"),
 
-        path("wave/<int:order_id>/", views.wave_init, name="wave_init"),
-path("wave/success/<int:order_id>/", views.wave_success, name="wave_success"),
 
 ]
