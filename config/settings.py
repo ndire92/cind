@@ -172,6 +172,9 @@ PAYDUNYA_TOKEN = "tyHUazVzYSPjW91wSATI"  # facultatif, généré dynamiquement p
 
 DEXPAY_PUBLIC_KEY = os.getenv("DEXPAY_PUBLIC_KEY")
 DEXPAY_SECRET_KEY = os.getenv("DEXPAY_SECRET_KEY")
+DEXPAY_BASE_URL = "https://api.dexpay.africa/api/v1"
+
+
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = os.getenv("EMAIL_HOST")
