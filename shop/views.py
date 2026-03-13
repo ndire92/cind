@@ -749,25 +749,37 @@ import logging
 logger = logging.getLogger(__name__)
 
 def dexpay_init(request, order_id):
+    """
+    Initialise le paiement DexPay pour une commande donnée.
+    Redirige vers la page de checkout DexPay si tout est OK,
+    sinon revient sur la page de checkout classique.
+    """
     order = get_object_or_404(Order, id=order_id)
     client = DexPayClient()
 
-    try:
-        response = client.create_checkout(
-            reference=f"ORDER-{order.id}",
-            item_name=f"Commande #{order.id}",
-            amount=float(order.total_price),
-            webhook_url=f"https://cinderaproduitsnaturels.com/boutique/dexpay_callback/{order.id}/",
-            success_url=f"https://cinderaproduitsnaturels.com/boutique/payment/success/{order.id}/",
-            failure_url=f"https://cinderaproduitsnaturels.com/boutique/order_cancelled/{order.id}/",
-        )
-        checkout_url = response.get("data", {}).get("checkout_url")
-        if checkout_url:
-            return redirect(checkout_url)
-        logger.error(f"DexPay error: {response}")
-    except Exception as e:
-        logger.error(f"DexPay connection error: {e}")
+    # Crée le checkout auprès de DexPay
+    response = client.create_checkout(
+        reference=f"ORDER-{order.id}",
+        item_name=f"Commande #{order.id}",
+        amount=float(order.total_price),
+        currency="XOF",
+        countryISO="SN",
+        webhook_url=f"https://cinderaproduitsnaturels.com/boutique/dexpay_callback/{order.id}/",
+        success_url=f"https://cinderaproduitsnaturels.com/boutique/payment/success/{order.id}/",
+        failure_url=f"https://cinderaproduitsnaturels.com/boutique/order_cancelled/{order.id}/",
+    )
 
+    # Log complet de la réponse pour debug
+    logger.info(f"DexPay response for Order {order.id}: {response}")
+
+    # Extraction sécurisée du checkout_url
+    checkout_url = response.get("data", {}).get("checkout_url")
+
+    if checkout_url:
+        return redirect(checkout_url)
+
+    # Si pas de checkout_url, on log l'erreur et retourne sur la page checkout
+    logger.error(f"DexPay checkout failed for Order {order.id}: {response}")
     return redirect("products:checkout")
 
 # ============================================================================
