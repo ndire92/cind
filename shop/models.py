@@ -189,14 +189,21 @@ class Coupon(models.Model):
 
 
 class PaymentMethod(models.Model):
-    name = models.CharField(max_length=100, verbose_name="Nom")
+
+    name = models.CharField(max_length=100)
     description = models.TextField(blank=True)
     is_active = models.BooleanField(default=True)
-    extra_fee = models.DecimalField(max_digits=8, decimal_places=2, default=0, verbose_name="Frais supplémentaires")
-    slug = models.SlugField(blank=True, null=True)  # temporairement nullable et non unique
+
+    extra_fee = models.DecimalField(
+        max_digits=8,
+        decimal_places=2,
+        default=0
+    )
+
+    slug = models.SlugField(unique=True)
 
     def save(self, *args, **kwargs):
-        if not self.slug and self.name:
+        if not self.slug:
             self.slug = slugify(self.name)
         super().save(*args, **kwargs)
 
@@ -398,7 +405,13 @@ class Order(models.Model):
     discount_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     payment_fee = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     total_price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
-
+    transaction_id = models.CharField(
+        max_length=200,
+        blank=True,
+        null=True,
+        db_index=True,
+        verbose_name="Transaction PayDunya"
+    )
     payment_status = models.CharField(max_length=20, choices=PaymentStatus.choices, default=PaymentStatus.PENDING)
     is_shipped = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -501,22 +514,53 @@ class OrderItem(models.Model):
 # ============================================================================
 
 class Transaction(models.Model):
+
     class TypeChoices(models.TextChoices):
         INCOME = 'income', 'Encaissement'
         EXPENSE = 'expense', 'Dépense'
         REFUND = 'refund', 'Remboursement'
         FEE = 'fee', 'Frais plateforme'
 
-    order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True, blank=True, related_name='transactions')
-    external_reference = models.CharField(max_length=150, blank=True, null=True)
+    class StatusChoices(models.TextChoices):
+        PENDING = "pending", "En attente"
+        COMPLETED = "completed", "Complété"
+        FAILED = "failed", "Échoué"
+
+    order = models.ForeignKey(
+        Order,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='transactions'
+    )
+
+    external_reference = models.CharField(
+        max_length=150,
+        blank=True,
+        null=True,
+        unique=True,
+        db_index=True
+    )
+
+    payment_method = models.CharField(max_length=50, blank=True, null=True)
+
     date = models.DateTimeField(auto_now_add=True)
+
     description = models.CharField(max_length=255)
+
     type = models.CharField(max_length=20, choices=TypeChoices.choices)
+
     amount = models.DecimalField(max_digits=10, decimal_places=2)
-    status = models.CharField(max_length=20, default='pending')
+
+    status = models.CharField(
+        max_length=20,
+        choices=StatusChoices.choices,
+        default=StatusChoices.PENDING,
+        db_index=True
+    )
 
     def __str__(self):
-        return f"{self.get_type_display()} - {self.amount} €"
+        return f"{self.get_type_display()} - {self.amount} FCFA"
 
 
 class BillingSettings(models.Model):
