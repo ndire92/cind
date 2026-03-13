@@ -31,9 +31,17 @@
                         {% endif %}
                     </td>
                     <td>{{ method.extra_fee }} FCFA</td>
-                    <td>
-                        <a href="{% url 'dashboard:edit_payment_method' method.id %}" class="btn btn-sm btn-outline-info">Modifier</a>
-                    </td>
+<td>
+    <a href="{% url 'dashboard:edit_payment_method' method.id %}" class="btn btn-sm btn-outline-info">Modifier</a>
+
+    <!-- Bouton Supprimer -->
+    <form method="post" action="{% url 'dashboard:delete_payment_method' method.id %}" style="display:inline-block;">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce moyen de paiement ?');">
+            Supprimer
+        </button>
+    </form>
+</td>
                 </tr>
                 {% endfor %}
             </tbody>
