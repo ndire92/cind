@@ -163,27 +163,15 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-PAYDUNYA_MASTER_KEY = "IZ1pSWiK-ccuu-AlCs-OlZq-tGbJQCUfvZ4T"
-PAYDUNYA_PUBLIC_KEY = "test_public_0nfRyIYUuyGhqp6pBpZHWV21rvd"
-PAYDUNYA_PRIVATE_KEY = "test_private_eDBH4wr1vOhAJxh2jwiCr4GPDY8"
-PAYDUNYA_TOKEN = "9CK96TxtYtKQSIf1mZoY"
-
 #PAYDUNYA_MASTER_KEY = "IZ1pSWiK-ccuu-AlCs-OlZq-tGbJQCUfvZ4T"
-#PAYDUNYA_PUBLIC_KEY = "live_public_lWc6uqOS1dVvJfTa21caESs0PM5"
-#PAYDUNYA_PRIVATE_KEY = "live_private_2AQffmGv0EGsK2LPe9s5v7yj68U"
-#PAYDUNYA_TOKEN = "78E9iiMRJ6D5G1Jwz54t"
+#PAYDUNYA_PUBLIC_KEY = "test_public_0nfRyIYUuyGhqp6pBpZHWV21rvd"
+#PAYDUNYA_PRIVATE_KEY = "test_private_eDBH4wr1vOhAJxh2jwiCr4GPDY8"
+#PAYDUNYA_TOKEN = "9CK96TxtYtKQSIf1mZoY"
 
-
-# Mode de fonctionnement
-DEXPAY_MODE = "TEST"  # ou "LIVE" en production
-
-# Clés API Dexpay
-DEXPAY_TEST_API_KEY = "pk_test_59f57230291f2a5da0c47edf960c3480"
-DEXPAY_LIVE_API_KEY = "pk_live_353f413e1c51857667b8ba7190d7c5c8"
-
-# URLs API
-DEXPAY_TEST_BASE_URL = "https://api-sandbox.dexpay.africa"
-DEXPAY_LIVE_BASE_URL = "https://api.dexpay.africa"
+PAYDUNYA_MASTER_KEY = "IZ1pSWiK-ccuu-AlCs-OlZq-tGbJQCUfvZ4T"
+PAYDUNYA_PUBLIC_KEY = "live_public_lWc6uqOS1dVvJfTa21caESs0PM5"
+PAYDUNYA_PRIVATE_KEY = "live_private_2AQffmGv0EGsK2LPe9s5v7yj68U"
+PAYDUNYA_TOKEN = "78E9iiMRJ6D5G1Jwz54t"
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = os.getenv("EMAIL_HOST")
