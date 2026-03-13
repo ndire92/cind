@@ -56,7 +56,8 @@ urlpatterns = [
     path('settings/payment-methods/', views.payment_methods, name='payment_methods'),
     path('settings/payment-methods/add/', views.add_payment_method, name='add_payment_method'),
     path('settings/payment-methods/edit/<int:method_id>/', views.edit_payment_method, name='edit_payment_method'),
-
+    path('settings/payment-methods/delete/<int:pk>/', views.delete_payment_method, name='delete_payment_method'),
+   
     # --- Site Settings (Contact) ---
     path("site-settings/add/", views.site_settings_add, name="site_settings_add"),
     path("site-settings/list/", views.site_settings_list, name="site_settings_list"),
