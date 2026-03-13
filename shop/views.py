@@ -742,8 +742,7 @@ def order_cancelled(request, order_id):
 
     return render(request, 'shop/orders/order_cancelled.html', {'order': order})
 
-from .dexpay import DexPayClient
-
+from .utils import DexPayClient
 
 def dexpay_init(request, order_id):
 
