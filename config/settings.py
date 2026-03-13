@@ -163,16 +163,15 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-#PAYDUNYA_MASTER_KEY = "IZ1pSWiK-ccuu-AlCs-OlZq-tGbJQCUfvZ4T"
-#PAYDUNYA_PUBLIC_KEY = "test_public_0nfRyIYUuyGhqp6pBpZHWV21rvd"
-#PAYDUNYA_PRIVATE_KEY = "test_private_eDBH4wr1vOhAJxh2jwiCr4GPDY8"
-#PAYDUNYA_TOKEN = "9CK96TxtYtKQSIf1mZoY"
 
 # Clés PayDunya Live
 PAYDUNYA_MASTER_KEY = "IZ1pSWiK-ccuu-AlCs-OlZq-tGbJQCUfvZ4T"  # Master Key Live
 PAYDUNYA_PUBLIC_KEY = "live_public_Hc60iR3lK6rDTclOQ15nATFNzUf"
 PAYDUNYA_PRIVATE_KEY = "live_private_vp02fb24B4Ig6YkzgZFNLqUJt8S"
 PAYDUNYA_TOKEN = "tyHUazVzYSPjW91wSATI"  # facultatif, généré dynamiquement pour chaque facture
+
+DEXPAY_PUBLIC_KEY = os.getenv("DEXPAY_PUBLIC_KEY")
+DEXPAY_SECRET_KEY = os.getenv("DEXPAY_SECRET_KEY")
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = os.getenv("EMAIL_HOST")
