@@ -39,6 +39,8 @@ urlpatterns = [
     path('boutique/payment/success/<int:order_id>/', views.payment_success, name='payment_success'),
 
     path('boutique/order_cancelled/<int:order_id>/', views.order_cancelled, name='order_cancelled'),
+    path('dexpay/<int:order_id>/', views.dexpay_init, name='dexpay_init'),
+
 
     # --- Blog & Pages ---
     path('bien-etre/', views.bien_etre, name='bien_etre'),
