@@ -742,37 +742,29 @@ def order_cancelled(request, order_id):
 
     return render(request, 'shop/orders/order_cancelled.html', {'order': order})
 
+from .dexpay import DexPayClient
+
 
 def dexpay_init(request, order_id):
 
     order = get_object_or_404(Order, id=order_id)
 
-    payload = {
-        "amount": float(order.total_price),
-        "currency": "XOF",
-        "reference": f"ORDER-{order.id}",
-        "callback_url": f"https://cinderaproduitsnaturels.com/boutique/dexpay_callback/{order.id}/",
-        "success_url": f"https://cinderaproduitsnaturels.com/boutique/payment/success/{order.id}/",
-        "cancel_url": f"https://cinderaproduitsnaturels.com/boutique/order_cancelled/{order.id}/"
-    }
+    client = DexPayClient()
 
-    headers = {
-        "Authorization": f"Bearer {settings.DEXPAY_SECRET_KEY}",
-        "Content-Type": "application/json"
-    }
-
-    response = requests.post(
-        "https://api.dexpay.africa/v1/checkout",
-        json=payload,
-        headers=headers
+    response = client.create_checkout(
+        reference=f"ORDER-{order.id}",
+        item_name=f"Commande #{order.id}",
+        amount=float(order.total_price),
+        webhook_url=f"https://cinderaproduitsnaturels.com/boutique/dexpay_callback/{order.id}/",
+        success_url=f"https://cinderaproduitsnaturels.com/boutique/payment/success/{order.id}/",
+        failure_url=f"https://cinderaproduitsnaturels.com/boutique/order_cancelled/{order.id}/",
     )
 
-    data = response.json()
-
-    if "checkout_url" in data:
-        return redirect(data["checkout_url"])
+    if response.get("checkout_url"):
+        return redirect(response["checkout_url"])
 
     return redirect("products:checkout")
+
 
 # ============================================================================
 # DASHBOARD VIEWS
