@@ -1341,3 +1341,25 @@ def shop_newsletter(request):
     else:
         form = NewsletterSettingsForm(instance=instance)
     return render(request, 'dashboard/settings/newsletter.html', {'form': form})
+
+
+
+
+from shop.models import NewsletterSubscriber
+
+def newsletter_subscribers_list(request):
+    """
+    Affiche la liste des abonnés à la newsletter dans le dashboard.
+    """
+    subscribers = NewsletterSubscriber.objects.all().order_by('-subscribed_at')
+
+    # Optionnel : ajouter une recherche simple via GET
+    query = request.GET.get('q')
+    if query:
+        subscribers = subscribers.filter(email__icontains=query)
+
+    context = {
+        'subscribers': subscribers,
+        'query': query,
+    }
+    return render(request, 'dashboard/newsletter_subscribers.html', context)
