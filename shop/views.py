@@ -615,17 +615,24 @@ def paydunya_init(request, order_id):
         return redirect("products:checkout")
 
     if result.get("response_code") == "00":
+
         order.transaction_id = result.get("token")
+        order.gateway = "paydunya"
         order.save()
+
         return redirect(result["response_text"])
 
     return redirect("products:checkout")
+    
 
 
 @csrf_exempt
 def paydunya_callback(request, order_id):
 
     order = get_object_or_404(Order, id=order_id)
+
+    if order.payment_status == Order.PaymentStatus.PAID:
+        return JsonResponse({"status": "already_paid"})
 
     verify_url = "https://app.paydunya.com/api/v1/checkout-invoice/confirm/"
 
@@ -643,7 +650,6 @@ def paydunya_callback(request, order_id):
             headers=headers,
             timeout=30
         )
-
         result = resp.json()
 
     except Exception as e:
@@ -652,26 +658,23 @@ def paydunya_callback(request, order_id):
 
     if result.get("invoice_status") == "completed":
 
-        if order.payment_status != Order.PaymentStatus.PAID:
+        order.payment_status = Order.PaymentStatus.PAID
+        order.save()
 
-            order.payment_status = Order.PaymentStatus.PAID
-            order.save()
+        Transaction.objects.create(
+            order=order,
+            external_reference=order.transaction_id,
+            description=f"Paiement PayDunya #{order.id}",
+            type=Transaction.TypeChoices.INCOME,
+            amount=order.total_price,
+            status="completed",
+        )
 
-            Transaction.objects.create(
-                order=order,
-                external_reference=order.transaction_id,
-                description=f"Paiement PayDunya #{order.id}",
-                type=Transaction.TypeChoices.INCOME,
-                amount=order.total_price,
-                status="completed",
-            )
-
-            send_order_confirmation_email(order)
-            send_new_order_admin_email(order)
+        send_order_confirmation_email(order)
+        send_new_order_admin_email(order)
 
     return JsonResponse({"status": "ok"})
 
-logger = logging.getLogger(__name__)
 
 def payment_success(request, order_id):
     order = get_object_or_404(Order, id=order_id)
@@ -735,9 +738,6 @@ def payment_success(request, order_id):
 
     return render(request, "shop/orders/payment_success.html", {"order": order})
 
-
-
-
 def order_cancelled(request, order_id):
 
     order = get_object_or_404(Order, id=order_id)
@@ -756,11 +756,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 def dexpay_init(request, order_id):
-    """
-    Initialise le paiement DexPay pour une commande donnée.
-    Redirige vers la page de checkout DexPay si tout est OK,
-    sinon revient sur la page de checkout classique.
-    """
+
     order = get_object_or_404(Order, id=order_id)
     client = DexPayClient()
 
@@ -775,42 +771,87 @@ def dexpay_init(request, order_id):
         failure_url=f"https://cinderaproduitsnaturels.com/boutique/order_cancelled/{order.id}/",
     )
 
-    logger.info(f"DexPay response for Order {order.id}: {response}")
+    logger.info(f"DexPay response: {response}")
 
-    # Utiliser 'payment_url' fourni par DexPay
     payment_url = response.get("data", {}).get("payment_url")
 
     if payment_url:
+
+        order.gateway = "dexpay"
+        order.transaction_id = response.get("data", {}).get("reference")
+        order.save()
+
         return redirect(payment_url)
 
-    # Si pas de payment_url, log et retourne sur checkout
-    logger.error(f"DexPay checkout failed for Order {order.id}: {response}")
+    logger.error(f"DexPay error: {response}")
     return redirect("products:checkout")
 
 @csrf_exempt
 def dexpay_callback(request, order_id):
+
     try:
         data = json.loads(request.body)
         order = get_object_or_404(Order, id=order_id)
 
-        # DexPay renvoie un statut (ex: "success", "failed", "initiated")
+        if order.payment_status == Order.PaymentStatus.PAID:
+            return JsonResponse({"message": "already processed"})
+
         status = data.get("status")
 
         if status == "success":
-            order.payment_status = "paid"
+            order.payment_status = Order.PaymentStatus.PAID
+
         elif status == "failed":
-            order.payment_status = "failed"
+            order.payment_status = Order.PaymentStatus.FAILED
+
         else:
-            order.payment_status = "pending"
+            order.payment_status = Order.PaymentStatus.PENDING
 
         order.save()
+
         logger.info(f"Order {order.id} updated to {order.payment_status}")
 
-        return JsonResponse({"message": "Order updated", "status": order.payment_status})
+        return JsonResponse({"status": "ok"})
 
     except Exception as e:
         logger.error(f"DexPay webhook error: {e}")
         return JsonResponse({"error": str(e)}, status=400)
+
+def payment_success(request, order_id):
+
+    order = get_object_or_404(Order, id=order_id)
+
+    if not order.transaction_id:
+        return redirect("products:checkout")
+
+    if order.payment_status == Order.PaymentStatus.PAID:
+        return render(request, "shop/orders/payment_success.html", {"order": order})
+
+    if order.gateway == "paydunya":
+        # vérification PayDunya
+        pass
+
+    elif order.gateway == "dexpay":
+        order.payment_status = Order.PaymentStatus.PAID
+
+    order.save()
+
+    if not Transaction.objects.filter(external_reference=order.transaction_id).exists():
+
+        Transaction.objects.create(
+            order=order,
+            external_reference=order.transaction_id,
+            description=f"Paiement {order.gateway}",
+            type=Transaction.TypeChoices.INCOME,
+            amount=order.total_price,
+            status="completed",
+        )
+
+    send_order_confirmation_email(order)
+    send_new_order_admin_email(order)
+
+    return render(request, "shop/orders/payment_success.html", {"order": order})
+
 
 
 # ============================================================================
