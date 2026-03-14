@@ -41,6 +41,7 @@ urlpatterns = [
     path('boutique/order_cancelled/<int:order_id>/', views.order_cancelled, name='order_cancelled'),
     path('dexpay/<int:order_id>/', views.dexpay_init, name='dexpay_init'),
     path("dexpay_callback/<int:order_id>/", views.dexpay_callback, name="dexpay_callback"),
+    path("payment/success/<int:order_id>/", views.payment_success, name="payment_success"),
 
 
 
