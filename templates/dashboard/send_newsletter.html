@@ -14,7 +14,19 @@
             <label class="form-label">Message</label>
             <textarea name="message" rows="6" class="form-control" required></textarea>
         </div>
+
+        <div class="mb-4">
+            <label class="form-label">Aperçu :</label>
+            <div class="border p-3 rounded bg-light">
+                <strong id="preview-subject"></strong>
+                <p id="preview-message"></p>
+            </div>
+        </div>
+
         <button type="submit" class="btn btn-primary">Envoyer</button>
+        <a href="{% url 'dashboard:newsletter_subscribers' %}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Retour à la liste
+        </a>
     </form>
 
     <hr>
@@ -27,4 +39,14 @@
         {% endfor %}
     </ul>
 </div>
+
+<script>
+    const subjectInput = document.querySelector('input[name="subject"]');
+    const messageInput = document.querySelector('textarea[name="message"]');
+    const previewSubject = document.getElementById('preview-subject');
+    const previewMessage = document.getElementById('preview-message');
+
+    subjectInput.addEventListener('input', () => previewSubject.textContent = subjectInput.value);
+    messageInput.addEventListener('input', () => previewMessage.textContent = messageInput.value);
+</script>
 {% endblock %}
