@@ -1,0 +1,37 @@
+{% extends "dashboard/base_dashboard.html" %}
+
+{% block content %}
+<h2>Abonnés à la newsletter</h2>
+
+<form method="get" class="mb-3 d-flex gap-2">
+    <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="Rechercher par email">
+    <button class="btn btn-primary">Rechercher</button>
+</form>
+
+<div class="card shadow">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Email</th>
+                        <th>Date d'inscription</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for subscriber in subscribers %}
+                    <tr>
+                        <td>{{ subscriber.email }}</td>
+                        <td>{{ subscriber.subscribed_at|date:"d/m/Y H:i" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="2" class="text-center text-muted">Aucun abonné.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
