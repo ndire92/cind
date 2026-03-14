@@ -66,7 +66,7 @@ def send_order_confirmation_email(order):
         subject = f"Confirmation de votre commande #{order.id} 📝"
         html_content = render_to_string("emails/order_confirmation_email.html", {
             "order": order,
-            "site_url": getattr(settings, 'SITE_URL', "http://127.0.0.1:8888")
+            "site_url": getattr(settings, 'SITE_URL', "https://cinderaproduitsnaturels.com")
         })
         email = EmailMessage(subject, html_content, settings.DEFAULT_FROM_EMAIL, [order.email])
         email.content_subtype = "html"
@@ -82,7 +82,7 @@ def send_new_order_admin_email(order):
         subject = f"🛒 Nouvelle Commande #{order.id} - {order.total_price} FCFA"
         html_content = render_to_string("emails/admin_new_order_notification.html", {
             "order": order,
-            "site_url": getattr(settings, 'SITE_URL', "http://127.0.0.1:8888")
+            "site_url": getattr(settings, 'SITE_URL', "https://cinderaproduitsnaturels.com")
         })
         email = EmailMessage(subject, html_content, settings.DEFAULT_FROM_EMAIL, [settings.ADMIN_EMAIL])
         email.content_subtype = "html"
@@ -345,7 +345,7 @@ def order_create(request):
                     if request.user.is_authenticated:
                         if not Order.objects.filter(user=request.user).exists():
                             discount_rate = Decimal('15.00')
-                            messages.success(request, "🎉 Bienvenue ! Remise de 15% appliquée.")
+                            messages.success(request, "🎉 Bienvenue ! Remise de 10% appliquée.")
                         elif NewsletterSubscriber.objects.filter(email=request.user.email).exists():
                             discount_rate = Decimal('10.00')
                             messages.success(request, "💌 Remise de 10% appliquée.")
