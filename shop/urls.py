@@ -32,19 +32,17 @@ urlpatterns = [
     path('order/invoice/<int:order_id>/', views.invoice_download, name='invoice_download'),
     
 # Passerelles de paiement
-    path('paydunya/<int:order_id>/', views.paydunya_init, name='paydunya_init'),
+   path('paydunya/<int:order_id>/', views.paydunya_init, name='paydunya_init'),
 
-    path('boutique/paydunya_callback/<int:order_id>/',views.paydunya_callback, name='paydunya_callback'),
-
-    path('boutique/payment/success/<int:order_id>/', views.payment_success, name='payment_success'),
+    path('boutique/paydunya_callback/<int:order_id>/', views.paydunya_callback, name='paydunya_callback'),
 
     path('boutique/order_cancelled/<int:order_id>/', views.order_cancelled, name='order_cancelled'),
+
     path('dexpay/<int:order_id>/', views.dexpay_init, name='dexpay_init'),
-    path("dexpay_callback/<int:order_id>/", views.dexpay_callback, name="dexpay_callback"),
-    path("payment/success/<int:order_id>/", views.payment_success, name="payment_success"),
 
+    path('boutique/dexpay_callback/<int:order_id>/', views.dexpay_callback, name='dexpay_callback'),
 
-
+    path('boutique/payment/success/<int:order_id>/', views.payment_success, name='payment_success'),
 
 
     # --- Blog & Pages ---
