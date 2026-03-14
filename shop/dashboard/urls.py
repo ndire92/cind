@@ -108,5 +108,9 @@ urlpatterns = [
     path("banners/", views.banner_list, name="banner_list"),
     path("banners/add/", views.banner_create, name="banner_create"),
     path("banners/<int:pk>/edit/", views.banner_update, name="banner_update"),
-    path("banners/<int:pk>/delete/", views.banner_delete, name="banner_delete"),
+    path("banners/<int:pk>/delete/", views.banner_delete, name="banner_delete"),# urls.py du dashboard
+path('newsletter/subscribers/', views.newsletter_subscribers_list, name='newsletter_subscribers'),
+
+    
+    
 ]
