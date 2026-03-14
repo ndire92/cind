@@ -412,6 +412,13 @@ class Order(models.Model):
         db_index=True,
         verbose_name="Transaction PayDunya"
     )
+    gateway = models.CharField(
+    max_length=50,
+    blank=True,
+    null=True,
+    db_index=True,
+    verbose_name="Passerelle de paiement"
+    )
     payment_status = models.CharField(max_length=20, choices=PaymentStatus.choices, default=PaymentStatus.PENDING)
     is_shipped = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
