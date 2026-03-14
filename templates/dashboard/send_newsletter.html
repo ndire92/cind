@@ -1,0 +1,30 @@
+{% extends "dashboard/base_dashboard.html" %}
+
+{% block content %}
+<div class="container">
+    <h2>Envoyer une Newsletter</h2>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label class="form-label">Sujet</label>
+            <input type="text" name="subject" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Message</label>
+            <textarea name="message" rows="6" class="form-control" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Envoyer</button>
+    </form>
+
+    <hr>
+    <h5>Liste des abonnés ({{ subscribers.count }})</h5>
+    <ul>
+        {% for sub in subscribers %}
+            <li>{{ sub.email }} - {{ sub.subscribed_at|date:"d/m/Y H:i" }}</li>
+        {% empty %}
+            <li>Aucun abonné pour le moment.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}
