@@ -1344,16 +1344,20 @@ def shop_newsletter(request):
 
 
 
-
-from shop.models import NewsletterSubscriber
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.core.mail import EmailMessage
+from django.template.loader import render_to_string
+from .models import NewsletterSubscriber
+from django.conf import settings
 
 def newsletter_subscribers_list(request):
     """
     Affiche la liste des abonnés à la newsletter dans le dashboard.
+    Avec recherche simple par email.
     """
     subscribers = NewsletterSubscriber.objects.all().order_by('-subscribed_at')
 
-    # Optionnel : ajouter une recherche simple via GET
     query = request.GET.get('q')
     if query:
         subscribers = subscribers.filter(email__icontains=query)
@@ -1365,28 +1369,29 @@ def newsletter_subscribers_list(request):
     return render(request, 'dashboard/newsletter_subscribers.html', context)
 
 
-from django.core.mail import send_mass_mail
-
 def send_newsletter(request):
     """
-    Page pour envoyer un email à tous les abonnés newsletter.
+    Page pour envoyer une newsletter à tous les abonnés.
     """
     subscribers = NewsletterSubscriber.objects.all()
 
     if request.method == "POST":
         subject = request.POST.get("subject")
         message = request.POST.get("message")
-        from_email = "no-reply@tonsite.com"  # ou settings.DEFAULT_FROM_EMAIL
+        from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', 'no-reply@tonsite.com')
 
         if not subject or not message:
             messages.error(request, "Veuillez remplir le sujet et le message.")
             return redirect("dashboard:send_newsletter")
 
-        # Préparer les emails
-        emails = [(subject, message, from_email, [sub.email]) for sub in subscribers]
-
-        # Envoi multiple
-        send_mass_mail(emails, fail_silently=False)
+        for sub in subscribers:
+            html_content = render_to_string(
+                "emails/newsletter_email.html",
+                {"subject": subject, "message": message}
+            )
+            email = EmailMessage(subject, html_content, from_email, [sub.email])
+            email.content_subtype = "html"
+            email.send(fail_silently=False)
 
         messages.success(request, f"Newsletter envoyée à {subscribers.count()} abonnés.")
         return redirect("dashboard:send_newsletter")
