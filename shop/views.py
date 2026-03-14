@@ -1363,3 +1363,32 @@ def newsletter_subscribers_list(request):
         'query': query,
     }
     return render(request, 'dashboard/newsletter_subscribers.html', context)
+
+
+from django.core.mail import send_mass_mail
+
+def send_newsletter(request):
+    """
+    Page pour envoyer un email à tous les abonnés newsletter.
+    """
+    subscribers = NewsletterSubscriber.objects.all()
+
+    if request.method == "POST":
+        subject = request.POST.get("subject")
+        message = request.POST.get("message")
+        from_email = "no-reply@tonsite.com"  # ou settings.DEFAULT_FROM_EMAIL
+
+        if not subject or not message:
+            messages.error(request, "Veuillez remplir le sujet et le message.")
+            return redirect("dashboard:send_newsletter")
+
+        # Préparer les emails
+        emails = [(subject, message, from_email, [sub.email]) for sub in subscribers]
+
+        # Envoi multiple
+        send_mass_mail(emails, fail_silently=False)
+
+        messages.success(request, f"Newsletter envoyée à {subscribers.count()} abonnés.")
+        return redirect("dashboard:send_newsletter")
+
+    return render(request, "dashboard/send_newsletter.html", {"subscribers": subscribers})
