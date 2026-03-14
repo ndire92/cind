@@ -832,9 +832,10 @@ def payment_success(request, order_id):
         pass
 
     elif order.gateway == "dexpay":
-        order.payment_status = Order.PaymentStatus.PAID
-
-    order.save()
+        # DexPay : le webhook peut ne pas passer, donc on marque ici comme payé
+        if order.payment_status != Order.PaymentStatus.PAID:
+            order.payment_status = Order.PaymentStatus.PAID
+            order.save()
 
     if not Transaction.objects.filter(external_reference=order.transaction_id).exists():
 
