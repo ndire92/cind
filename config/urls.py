@@ -3,7 +3,12 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path, include
 from shop import views
+from django.contrib.sitemaps.views import sitemap
+from shop.sitemaps import ProductSitemap  # ton sitemap de produits
 
+sitemaps = {
+    'products': ProductSitemap,
+}
 urlpatterns = [
     # Administration Django
     path('admin/', admin.site.urls),
@@ -18,6 +23,7 @@ urlpatterns = [
     # URLs du Dashboard (Partie Gestion)
     # Tout ce qui commence par 'dashboard/' ira dans shop/dashboard/urls.py
     path('dashboard/', include('shop.dashboard.urls')),
+    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='sitemap')
 ]
 
 # Servir les fichiers médias (images, pdf) en mode développement
