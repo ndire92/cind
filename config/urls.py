@@ -12,15 +12,13 @@ from shop.sitemaps import ProductSitemap  # ton sitemap de produits
 sitemaps = {
     'products': ProductSitemap,
 }
+# Fonction pour servir robots.txt
 def robots_txt(request):
-    lines = [
-        "User-agent: *",
-        "Disallow: /admin/",
-        "Disallow: /dashboard/",
-        "Allow: /",
-        "Sitemap: https://cinderaproduitsnaturels.com/sitemap.xml"
-    ]
-    return HttpResponse("\n".join(lines), content_type="text/plain")
+    return FileResponse(
+        open(os.path.join(settings.BASE_DIR, 'static/robots.txt'), 'rb'),
+        content_type='text/plain'
+    )
+
 urlpatterns = [
     # Administration Django
     path('admin/', admin.site.urls),
