@@ -1,11 +1,11 @@
-import logging
-from decimal import Decimal
 import os
 import json
+import logging
 import traceback
-from django.http import FileResponse, HttpResponse
+from decimal import Decimal
 
 import requests
+
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login, logout
@@ -15,21 +15,21 @@ from django.core.mail import EmailMessage
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db import transaction
 from django.db.models import Q, Sum, Count, Min, Max
-from django.http import JsonResponse, HttpResponse, FileResponse
+from django.http import HttpResponse, JsonResponse, FileResponse
 from django.shortcuts import render, redirect, get_object_or_404, reverse
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
-from urllib3 import request
-from django.template.loader import render_to_string
-from django.conf import settings
-import os
-# ReportLab imports
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
-from reportlab.lib.styles import getSampleStyleSheet
+
+# ReportLab
 from reportlab.lib import colors
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.units import cm
+from reportlab.lib.enums import TA_RIGHT, TA_LEFT, TA_CENTER
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
 
 # Imports locaux
 from .decorators import admin_or_manager_required
@@ -296,12 +296,17 @@ def newsletter_subscribe(request):
 # COMMANDE & PAIEMENT
 # ============================================================================
 
+
 def order_create(request):
     cart = get_cart(request)
-    if not cart: return redirect('products:shop')
+    if not cart:
+        return redirect('products:shop')
     
     cart_total = Decimal('0.00')
-    for item in cart.values(): cart_total += Decimal(item['price']) * int(item['quantity'])
+    for item in cart.values():
+        cart_total += Decimal(item['price']) * int(item['quantity'])
+
+    auto_disc = Decimal('0.00')  # valeur par défaut pour le template
 
     if request.method == 'POST':
         form = OrderCreateForm(request.POST, user=request.user)
@@ -309,12 +314,16 @@ def order_create(request):
             try:
                 with transaction.atomic():
                     order = form.save(commit=False)
-                    if request.user.is_authenticated: order.user = request.user
-                    
+
+                    if request.user.is_authenticated:
+                        order.user = request.user
+
+                    # Paiement
                     payment_method = form.cleaned_data.get('payment_method')
                     order.payment_method = payment_method
                     order.payment_fee = payment_method.extra_fee if payment_method else Decimal('0.00')
 
+                    # Création des items
                     subtotal = Decimal('0.00')
                     items_to_create = []
                     for product_id, item_data in cart.items():
@@ -322,7 +331,12 @@ def order_create(request):
                         price = Decimal(item_data['price'])
                         qty = int(item_data['quantity'])
                         subtotal += price * qty
-                        items_to_create.append(OrderItem(product=product, product_name=product.name, price=price, quantity=qty))
+                        items_to_create.append(OrderItem(
+                            product=product,
+                            product_name=product.name,
+                            price=price,
+                            quantity=qty
+                        ))
 
                     order.subtotal = subtotal
                     order.vat_rate = Decimal('0.00')  # TVA mise à 0
@@ -332,7 +346,9 @@ def order_create(request):
                     zone_code = form.cleaned_data.get('zone')
                     shipping_cost, found_zone = Decimal('0.00'), None
                     for z in ShippingZone.objects.all():
-                        if zone_code in z.get_zone_codes(): found_zone = z; break
+                        if zone_code in z.get_zone_codes():
+                            found_zone = z
+                            break
                     if found_zone:
                         shipping_cost = Decimal('0.00') if found_zone.free_shipping else found_zone.price
                         order.shipping_zone = found_zone
@@ -340,17 +356,24 @@ def order_create(request):
                             order.shipping_note = found_zone.note or ""
                     order.shipping_cost = shipping_cost
 
-                    # Remises
+                    # ----------------- Remises -----------------
                     discount_rate = Decimal('0.00')
+                    email = form.cleaned_data.get('email')
+
+                    # 🎉 Première commande
                     if request.user.is_authenticated:
                         if not Order.objects.filter(user=request.user).exists():
-                            discount_rate = Decimal('15.00')
-                            messages.success(request, "🎉 Bienvenue ! Remise de 10% appliquée.")
-                        elif NewsletterSubscriber.objects.filter(email=request.user.email).exists():
-                            discount_rate = Decimal('10.00')
-                            messages.success(request, "💌 Remise de 10% appliquée.")
-                    
+                            discount_rate += Decimal('15.00')
+                            messages.success(request, "🎉 Première commande : -15%")
+
+                    # 💌 Abonné newsletter
+                    if email and NewsletterSubscriber.objects.filter(email=email).exists():
+                        discount_rate += Decimal('10.00')
+                        messages.success(request, "💌 Abonné newsletter : -10%")
+
                     auto_disc = (subtotal * discount_rate) / Decimal('100')
+
+                    # Coupon
                     coupon_disc = Decimal('0.00')
                     coupon = form.cleaned_data.get('coupon')
                     if coupon and coupon.active and coupon.valid_from <= timezone.now() <= coupon.valid_to:
@@ -358,24 +381,28 @@ def order_create(request):
                         messages.info(request, f"Code promo '{coupon.code}' appliqué.")
 
                     order.discount_amount = auto_disc + coupon_disc
+
+                    # Total
                     order.total_price = order.subtotal + order.vat_amount + order.shipping_cost + order.payment_fee - order.discount_amount
                     order.payment_status = Order.PaymentStatus.PENDING
                     order.save()
 
-                    for item in items_to_create: item.order = order
+                    # Création des OrderItems
+                    for item in items_to_create:
+                        item.order = order
                     OrderItem.objects.bulk_create(items_to_create)
+
+                    # Vider le panier
                     request.session['cart'] = {}
 
-                    # Redirection & Envoi Email
+                    # Redirections selon paiement
                     pm_slug = payment_method.slug if payment_method else None
-
                     if pm_slug == "paydunya":
                         return redirect("products:paydunya_init", order_id=order.id)
                     if order.payment_method.slug == "dexpay":
                         return redirect("products:dexpay_init", order.id)
 
-
-                    # Paiement hors ligne (ex : cash livraison)
+                    # Paiement hors ligne : envoi emails
                     transaction.on_commit(lambda o=order: send_order_confirmation_email(o))
                     transaction.on_commit(lambda o=order: send_new_order_admin_email(o))
 
@@ -385,11 +412,15 @@ def order_create(request):
                 logger.error(f"Erreur création commande: {e}")
                 messages.error(request, "Erreur lors de la création de la commande.")
                 return render(request, 'shop/orders/create.html', {'form': form, 'total': cart_total})
-    
+
     else:
         form = OrderCreateForm(user=request.user)
-    
-    return render(request, 'shop/orders/create.html', {'form': form, 'total': cart_total})
+
+    return render(request, 'shop/orders/create.html', {
+        'form': form,
+        'total': cart_total,
+        'discount': auto_disc  # pour le JS du checkout
+    })
 
 def order_confirmation(request, order_id):
     order = get_object_or_404(Order, id=order_id)
@@ -404,14 +435,7 @@ def shipping_cost_ajax(request):
 
 
 
-from reportlab.lib import colors
-from reportlab.lib.pagesizes import A4
-from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-from reportlab.lib.units import cm
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
-from reportlab.lib.enums import TA_RIGHT, TA_LEFT, TA_CENTER
-from django.conf import settings
-import os
+
 
 def generate_invoice_pdf(order):
     file_name = f"facture_{order.id}.pdf"
