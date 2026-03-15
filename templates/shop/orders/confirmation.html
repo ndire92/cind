@@ -96,161 +96,242 @@
 </style>
 
 <section class="py-5">
-    <div class="container">
-        <!-- En-tête Succès -->
-        <div class="confirmation-header">
-            <div class="confirmation-icon">
-                <i class="bi bi-check2"></i>
-            </div>
-            <h2 class="fw-bold mb-2">Merci pour votre confiance !</h2>
-            <p class="mb-0 opacity-75">
-                Commande <strong>#{{ order.id }}</strong> validée avec succès.
-            </p>
-        </div>
+<div class="container">
 
-        <div class="row g-4">
-            <!-- Colonne Gauche : Infos & Paiement -->
-            <div class="col-lg-5">
-                <!-- Livraison -->
-                <div class="card receipt-card mb-4">
-                    <div class="receipt-header">
-                        <h5 class="mb-0 fw-bold text-uppercase text-muted small">
-                            <i class="bi bi-truck me-2"></i> Livraison
-                        </h5>
-                    </div>
-                    <div class="receipt-body">
-                        <p class="mb-1"><strong>{{ order.first_name }} {{ order.last_name }}</strong></p>
-                        <p class="text-muted small mb-1">{{ order.address }}</p>
-                        <p class="text-muted small mb-2">{{ order.postal_code }} {{ order.city }}</p>
-                        
-                        <div class="bg-light p-2 rounded mt-3">
-                            <small class="text-muted d-block">Zone de livraison</small>
-                            <strong class="text-primary"><i class="bi bi-geo-alt-fill me-1"></i> {{ order.zone }}</strong>
-                        </div>
-                    </div>
-                </div>
+<!-- Header confirmation -->
+<div class="confirmation-header text-center mb-5">
 
-                <!-- Paiement -->
-                <div class="card receipt-card">
-                    <div class="receipt-header">
-                        <h5 class="mb-0 fw-bold text-uppercase text-muted small">
-                            <i class="bi bi-credit-card me-2"></i> Paiement
-                        </h5>
-                    </div>
-                    <div class="receipt-body">
-                        <p class="mb-0">
-                            Méthode : <strong>{{ order.payment_method.name }}</strong>
-                        </p>
-                        <p class="mb-0 small text-muted mt-2">
-                            Statut : 
-                            {% if order.payment_status == 'paid' %}
-                                <span class="badge bg-success">Payé</span>
-                            {% else %}
-                                <span class="badge bg-warning text-dark">En attente</span>
-                            {% endif %}
-                        </p>
-                    </div>
-                </div>
-            </div>
+<div class="confirmation-icon mb-3">
+<i class="bi bi-check2-circle text-success" style="font-size:60px;"></i>
+</div>
 
-            <!-- Colonne Droite : Articles & Totaux -->
-            <div class="col-lg-7">
-                <div class="card receipt-card">
-                    <div class="receipt-header d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0 fw-bold text-uppercase text-muted small">Détails de la commande</h5>
-                        <span class="text-muted small">{{ order.created_at|date:"d/m/Y" }}</span>
-                    </div>
-                    <div class="receipt-body">
-                        <!-- Liste des articles -->
-                        {% for item in order.items.all %}
-                        <div class="item-row">
-                            <img src="{% if item.product.image %}{{ item.product.image.url }}{% else %}https://via.placeholder.com/60{% endif %}" class="item-img" alt="">
-                            <div class="item-info">
-                                <strong class="d-block">{{ item.product_name }}</strong>
-                                <small class="text-muted">Qté: {{ item.quantity }}</small>
-                            </div>
-                            <div class="item-price text-success">
-                                {{ item.total_price }} FCFA
-                            </div>
-                        </div>
-                        {% endfor %}
+<h2 class="fw-bold mb-2">Merci pour votre confiance !</h2>
 
-                        <hr class="my-4">
+<p class="text-muted">
+Commande <strong>#{{ order.id }}</strong> validée avec succès
+</p>
 
-                        <!-- Calculs -->
-                       
-                        <div class="total-line text-muted">
-                            <span>Sous-total HT</span>
-                            <span>{{ order.subtotal }} FCFA</span>
-                        </div>
+</div>
 
-                        <!-- Ligne TVA supprimée -->
 
-                        <div class="total-line text-muted">
-                            <span>Livraison</span>
-                            <span>
-                                {% if order.shipping_cost == 0 %}
-                                    <span class="text-success">Gratuite</span>
-                                {% else %}
-                                    {{ order.shipping_cost }} FCFA
-                                {% endif %}
-                            </span>
-                        </div>
+<div class="row g-4">
 
-                        {% if order.discount_amount > 0 %}
-                        <div class="total-line text-danger">
-                            <span>Réduction</span>
-                            <span>- {{ order.discount_amount }} FCFA</span>
-                        </div>
-                        {% endif %}
+<!-- ======================
+COLONNE GAUCHE
+====================== -->
 
-                        <div class="total-line grand-total">
-                            <span>Total TTC</span>
-                            <span>{{ order.total_price }} FCFA</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+<div class="col-lg-5">
 
-        <!-- Bouton Action -->
-        <div class="text-center mt-5">
-            <a href="{% url 'products:shop' %}" class="btn btn-primary btn-lg px-5 shadow-sm">
-                <i class="bi bi-bag-heart me-2"></i> Continuer mes achats
-            </a>
-        </div>
-    </div>
+<!-- Livraison -->
+
+<div class="card receipt-card mb-4">
+
+<div class="card-header bg-light">
+<strong><i class="bi bi-truck me-2"></i> Livraison</strong>
+</div>
+
+<div class="card-body">
+
+<p class="mb-1">
+<strong>{{ order.first_name }} {{ order.last_name }}</strong>
+</p>
+
+<p class="text-muted small mb-1">
+{{ order.address }}
+</p>
+
+<p class="text-muted small mb-2">
+{{ order.postal_code }} {{ order.city }}
+</p>
+
+<div class="bg-light p-2 rounded">
+
+<small class="text-muted">Zone de livraison</small><br>
+
+<strong class="text-primary">
+<i class="bi bi-geo-alt-fill me-1"></i>
+{{ order.zone }}
+</strong>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- Paiement -->
+
+<div class="card receipt-card">
+
+<div class="card-header bg-light">
+<strong><i class="bi bi-credit-card me-2"></i> Paiement</strong>
+</div>
+
+<div class="card-body">
+
+<p>
+Méthode :
+<strong>{{ order.payment_method.name }}</strong>
+</p>
+
+<p class="small text-muted">
+
+Statut :
+
+{% if order.payment_status == "paid" %}
+<span class="badge bg-success">Payé</span>
+{% else %}
+<span class="badge bg-warning text-dark">En attente</span>
+{% endif %}
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- ======================
+COLONNE DROITE
+====================== -->
+
+<div class="col-lg-7">
+
+<div class="card receipt-card">
+
+<div class="card-header d-flex justify-content-between">
+
+<strong>Détails de la commande</strong>
+
+<span class="text-muted small">
+{{ order.created_at|date:"d/m/Y" }}
+</span>
+
+</div>
+
+
+<div class="card-body">
+
+<!-- Articles -->
+
+{% for item in order.items.all %}
+
+<div class="d-flex align-items-center mb-3">
+
+<img
+src="{% if item.product.image %}{{ item.product.image.url }}{% else %}https://via.placeholder.com/60{% endif %}"
+width="60"
+class="rounded me-3"
+/>
+
+<div class="flex-grow-1">
+
+<strong>{{ item.product_name }}</strong><br>
+
+<small class="text-muted">
+Qté : {{ item.quantity }}
+</small>
+
+</div>
+
+<div class="text-success">
+
+{{ item.total_price }} FCFA
+
+</div>
+
+</div>
+
+{% endfor %}
+
+
+<hr class="my-4">
+
+
+<!-- ======================
+TOTALS
+====================== -->
+
+<div class="d-flex justify-content-between text-muted mb-2">
+<span>Sous-total</span>
+<span>{{ order.subtotal }} FCFA</span>
+</div>
+
+
+<div class="d-flex justify-content-between text-muted mb-2">
+
+<span>Livraison</span>
+
+<span>
+
+{% if order.shipping_cost == 0 %}
+<span class="text-success">Gratuite</span>
+{% else %}
+{{ order.shipping_cost }} FCFA
+{% endif %}
+
+</span>
+
+</div>
+
+
+{% if order.discount_amount > 0 %}
+
+<div class="d-flex justify-content-between text-danger mb-2">
+
+<span>Réduction</span>
+
+<span>- {{ order.discount_amount }} FCFA</span>
+
+</div>
+
+{% endif %}
+
+
+<hr>
+
+
+<div class="d-flex justify-content-between fw-bold fs-5">
+
+<span>Total</span>
+
+<span class="text-success">
+
+{{ order.total_price }} FCFA
+
+</span>
+
+</div>
+
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- Bouton retour -->
+
+<div class="text-center mt-5">
+
+<a href="{% url 'products:shop' %}" class="btn btn-success btn-lg px-5">
+
+<i class="bi bi-bag-heart me-2"></i>
+
+Continuer mes achats
+
+</a>
+
+</div>
+
+</div>
+
 </section>
 {% endblock %}
 
-
-<!-- Calculs -->
-<div class="total-line text-muted">
-    <span>Sous-total HT</span>
-    <span>{{ order.subtotal }} FCFA</span>
-</div>
-
-<!-- Ligne TVA supprimée -->
-
-<div class="total-line text-muted">
-    <span>Livraison</span>
-    <span>
-        {% if order.shipping_cost == 0 %}
-            <span class="text-success">Gratuite</span>
-        {% else %}
-            {{ order.shipping_cost }} FCFA
-        {% endif %}
-    </span>
-</div>
-
-{% if order.discount_amount > 0 %}
-<div class="total-line text-danger">
-    <span>Réduction</span>
-    <span>- {{ order.discount_amount }} FCFA</span>
-</div>
-{% endif %}
-
-<div class="total-line grand-total">
-    <span>Total TTC</span>
-    <span>{{ order.total_price }} FCFA</span>
-</div>
