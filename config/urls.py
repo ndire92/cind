@@ -1,3 +1,4 @@
+import os
 from django.contrib import admin
 from django.conf import settings
 from django.http import FileResponse
@@ -6,6 +7,7 @@ from django.urls import path, include
 from shop import views
 from django.contrib.sitemaps.views import sitemap
 from shop.sitemaps import ProductSitemap  # ton sitemap de produits
+
 
 sitemaps = {
     'products': ProductSitemap,
