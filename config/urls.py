@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.conf import settings
+from django.http import FileResponse
 from django.conf.urls.static import static
 from django.urls import path, include
 from shop import views
@@ -9,6 +10,8 @@ from shop.sitemaps import ProductSitemap  # ton sitemap de produits
 sitemaps = {
     'products': ProductSitemap,
 }
+def robots_txt(request):
+    return FileResponse(open(os.path.join(settings.BASE_DIR, 'static/robots.txt'), 'rb'), content_type='text/plain')
 urlpatterns = [
     # Administration Django
     path('admin/', admin.site.urls),
@@ -23,7 +26,8 @@ urlpatterns = [
     # URLs du Dashboard (Partie Gestion)
     # Tout ce qui commence par 'dashboard/' ira dans shop/dashboard/urls.py
     path('dashboard/', include('shop.dashboard.urls')),
-    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='sitemap')
+    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='sitemap'),
+    path('robots.txt', robots_txt),
 ]
 
 # Servir les fichiers médias (images, pdf) en mode développement
