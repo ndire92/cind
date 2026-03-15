@@ -1,5 +1,10 @@
-User-agent: *
-Disallow: /admin/
-Allow: /
+from django.http import HttpResponse
 
-Sitemap: https://cinderaproduitsnaturels.com/sitemap.xml
+def robots_txt(request):
+    lines = [
+        "User-agent: *",
+        "Disallow: /admin/",
+        "Allow: /",
+        "Sitemap: https://cinderaproduitsnaturels.com/sitemap.xml"
+    ]
+    return HttpResponse("\n".join(lines), content_type="text/plain")
