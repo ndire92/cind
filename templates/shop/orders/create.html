@@ -4,15 +4,14 @@
     <h2 class="mb-4">Finaliser la commande</h2>
 
     <div class="row">
-        <!-- Formulaire à gauche -->
+        <!-- Formulaire -->
         <div class="col-lg-8">
             <div class="card shadow-sm p-4">
-                <!-- J'ai ajouté un ID au formulaire pour le JS -->
                 <form method="post" id="checkout-form">
                     {% csrf_token %}
 
-                    <!-- Informations personnelles -->
                     <h5 class="mb-3 border-bottom pb-2">Informations de livraison</h5>
+
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Prénom</label>
@@ -54,12 +53,11 @@
                         </div>
                     </div>
 
-                    <!-- ALERTE TRANSPORT -->
+                    <!-- Alerte transport -->
                     <div id="shipping-alert" class="alert alert-warning py-2 px-3 mb-3" style="display: none; border-left: 4px solid #fd7e14;">
                         <small>
                             <i class="bi bi-exclamation-triangle me-1"></i>
-                            <strong>Attention :</strong> Pour les livraisons hors Dakar, l’expédition peut se faire par transport routier ou par avion (GP). Les frais d’envoi sont à la charge du client.
-Pour toute information ou assistance concernant votre commande, n’hésitez pas à nous contacter au +221 77 743 16 98..
+                            Attention pour les livraisons hors Dakar.
                         </small>
                     </div>
 
@@ -70,15 +68,14 @@ Pour toute information ou assistance concernant votre commande, n’hésitez pas
                         {{ form.payment_method }}
                     </div>
 
-                    <!-- Bouton sans onclick inline (géré par le script plus bas) -->
-<button type="submit" id="btn-submit" class="btn btn-success btn-lg w-100 mt-3">
-    <i class="bi bi-check-circle me-2"></i> Confirmer la commande
-</button>
+                    <button type="submit" id="btn-submit" class="btn btn-success btn-lg w-100 mt-3">
+                        <i class="bi bi-check-circle me-2"></i> Confirmer la commande
+                    </button>
                 </form>
             </div>
         </div>
 
-        <!-- Récapitulatif à droite -->
+        <!-- Récapitulatif -->
         <div class="col-lg-4 mt-4 mt-lg-0">
             <div class="card shadow-sm position-sticky" style="top: 20px;">
                 <div class="card-header bg-white">
@@ -87,18 +84,30 @@ Pour toute information ou assistance concernant votre commande, n’hésitez pas
                 <div class="card-body">
                     <p class="d-flex justify-content-between">
                         <span>Sous-total HT</span>
-                        <span>{{ total }} FCFA</span>
+                        <span>{{ total|floatformat:0 }} FCFA</span>
                     </p>
-            
-                    <hr>
+{% if order.discount_amount > 0 %}
+
+<div class="d-flex justify-content-between text-danger mb-2">
+
+<span>Réduction</span>
+
+<span>- {{ order.discount_amount }} FCFA</span>
+
+</div>
+
+{% endif %}
+
                     <p class="d-flex justify-content-between">
-                        <span><strong>Livraison </strong></span>
+                        <span><strong>Livraison</strong></span>
                         <span id="shipping-cost"><small>Zone de livraison</small></span>
                     </p>
+
                     <hr>
+
                     <h4 class="d-flex justify-content-between text-success">
                         <span>Total TTC</span>
-                        <span id="total-price">{{ total }} FCFA</span>
+                        <span id="total-price">{{ total|floatformat:0 }} FCFA</span>
                     </h4>
                 </div>
             </div>
@@ -106,96 +115,58 @@ Pour toute information ou assistance concernant votre commande, n’hésitez pas
     </div>
 </div>
 {% endblock %}
+
 {% block scripts %}
 <script>
-    // 1. Gestion du bouton de soumission
-    const checkoutForm = document.getElementById('checkout-form');
-    const submitBtn = document.getElementById('btn-submit');
+const checkoutForm = document.getElementById('checkout-form');
+const submitBtn = document.getElementById('btn-submit');
 
-    checkoutForm.addEventListener('submit', function() {
+if (checkoutForm) {
+    checkoutForm.addEventListener('submit', function () {
         submitBtn.disabled = true;
         submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Traitement en cours...';
     });
+}
 
-    // 2. Gestion du calcul dynamique
-    const zoneSelect = document.getElementById('id_zone');
-    const shippingDisplay = document.getElementById('shipping-cost');
-    const totalDisplay = document.getElementById('total-price');
-    const shippingAlert = document.getElementById('shipping-alert');
+const zoneSelect = document.getElementById('id_zone');
+const shippingDisplay = document.getElementById('shipping-cost');
+const totalDisplay = document.getElementById('total-price');
+const shippingAlert = document.getElementById('shipping-alert');
 
-    const subtotal = parseFloat("{{ total }}");
+const subtotal = parseFloat("{{ total|default:0 }}");
+const discount = parseFloat("{{ discount|default:0 }}");
 
-    function updateTotals() {
-        const zoneCode = zoneSelect.value;
-        if (!zoneCode) return;
+function updateTotals() {
+    const zoneCode = zoneSelect.value;
+    if (!zoneCode) return;
 
-        fetch(`/boutique/checkout/shipping-cost/?zone=${zoneCode}`)
-            .then(response => response.json())
-            .then(data => {
-                const shipping = parseFloat(data.cost) || 0;
-                
-                // Calcul du total SANS TVA
-                const total = subtotal + shipping;
+    fetch(`/boutique/checkout/shipping-cost/?zone=${zoneCode}`)
+        .then(response => response.json())
+        .then(data => {
+            const shipping = parseFloat(data.cost) || 0;
+            const total = subtotal + shipping - discount;
 
-                // --- AFFICHAGE PRIX LIVRAISON ---
-                               // --- AFFICHAGE PRIX LIVRAISON (MODIFIÉ) ---
-                if (shipping === 0) {
-                    // Ajout de 'text-end' pour aligner à droite et 'd-block' pour l'espace
-                    shippingDisplay.innerHTML = '<span class="text-success fw-bold text-end d-block">Les frais d\'envoi sont à la charge du client</span>';
-                } else {
-                    shippingDisplay.textContent = shipping.toFixed(0) + ' FCFA';
-                }
+            shippingDisplay.textContent = shipping === 0 ? 'Les frais d\'envoi sont à la charge du client' : shipping.toFixed(0) + ' FCFA';
+            totalDisplay.textContent = total.toFixed(0) + ' FCFA';
 
-                // Mise à jour du total
-                totalDisplay.textContent = total.toFixed(0) + ' FCFA';
+            const zones_dakar = ["DAKAR_PLATEAU","MEDINA","FANN_POINT_E_AMITIE","FASS_COLOBANE","GRAND_DAKAR","BISCUTERIE","HLM","DIEUPPEUL_DERKLE","LIBERTE","CAMBERENE","PARCELLES_ASSAINIES","YOFF","OUAKAM","NGOR","PATTE_D_OIE","HANN_BEL_AIR","SICAP_LIBERTE","GRAND_YOFF","MBAO","PIKINE_NORD","PIKINE_OUEST","PIKINE_EST","PIKINE_SUD","THIAROYE_SUR_MER","THIAROYE_GUEDEYE","DJIDDAH_THIAROYE_KAO","YEUMBEUL_NORD","YEUMBEUL_SUD","GUEDIAWAYE","MALIKA","KEUR_MASSAR","RUFISQUE","BARGNY","DIAMNIADIO","SEBIKHOTANE","YENE","BAMBYLOR","TIVAOUANE_PEULH","SENTOBE","JAXAAY","DIENDER"];
 
-                // --- LOGIQUE ALERTE ---
-                // Liste complète des codes de la région Dakar (Centre + Banlieue)
-                const zones_dakar = [
-                    // Centre
-                    "DAKAR_PLATEAU", "MEDINA", "FANN_POINT_E_AMITIE", "FASS_COLOBANE", 
-                    "GRAND_DAKAR", "BISCUTERIE", "HLM", "DIEUPPEUL_DERKLE", 
-                    "LIBERTE", "CAMBERENE", "PARCELLES_ASSAINIES", "YOFF", "OUAKAM", "NGOR",
-                    "PATTE_D_OIE", "HANN_BEL_AIR", "SICAP_LIBERTE", "GRAND_YOFF", "MBAO",
-                    // Pikine & Guédiawaye
-                    "PIKINE_NORD", "PIKINE_OUEST", "PIKINE_EST", "PIKINE_SUD",
-                    "THIAROYE_SUR_MER", "THIAROYE_GUEDEYE", "DJIDDAH_THIAROYE_KAO",
-                    "YEUMBEUL_NORD", "YEUMBEUL_SUD", "GUEDIAWAYE", "MALIKA", "KEUR_MASSAR",
-                    // Rufisque
-                    "RUFISQUE", "BARGNY", "DIAMNIADIO", "SEBIKHOTANE", "YENE", 
-                    "BAMBYLOR", "TIVAOUANE_PEULH", "SENTOBE", "JAXAAY", "DIENDER"
-                ];
+            if (zoneCode === "INTERNATIONAL") {
+                shippingAlert.innerHTML = '<small><i class="bi bi-globe me-1"></i> Livraison hors Sénégal par transport aérien. Frais à la charge du client. Contact: +221 77 743 16 98</small>';
+                shippingAlert.style.display = "block";
+            } else if (!zones_dakar.includes(zoneCode)) {
+                shippingAlert.innerHTML = '<small><i class="bi bi-exclamation-triangle me-1"></i> Livraison hors Dakar. Frais à la charge du client. Contact: +221 77 743 16 98</small>';
+                shippingAlert.style.display = "block";
+            } else {
+                shippingAlert.style.display = "none";
+            }
+        })
+        .catch(error => console.error("Erreur:", error));
+}
 
-                if (zoneCode === "INTERNATIONAL") {
-                    shippingAlert.innerHTML = `
-                        <small>
-                            <i class="bi bi-globe me-1"></i>
-                            <strong>International :</strong><br>
-                            Pour les livraisons hors Sénégal, l’expédition se fait par transport aérien.
-                            Les frais d’envoi sont à la charge du client.<br>
-                            Contactez-nous au +221 77 743 16 98.
-                        </small>`;
-                    shippingAlert.style.display = 'block';
-                } else if (!zones_dakar.includes(zoneCode)) {
-                    shippingAlert.innerHTML = `
-                        <small>
-                            <i class="bi bi-exclamation-triangle me-1"></i>
-                            <strong>Attention :</strong><br>
-                            Pour les livraisons hors Dakar, l’expédition peut se faire par transport routier ou par avion (GP).
-                            Les frais d'envoi sont à la charge du client.<br>
-                            Pour toute information, contactez-nous au +221 77 743 16 98.
-                        </small>`;
-                    shippingAlert.style.display = 'block';
-                } else {
-                    shippingAlert.style.display = 'none';
-                }
-            })
-            .catch(error => console.error('Erreur:', error));
-    }
-
-    if (zoneSelect) {
-        zoneSelect.addEventListener('change', updateTotals);
-        if (zoneSelect.value) updateTotals();
-    }
+if (zoneSelect) {
+    zoneSelect.addEventListener("change", updateTotals);
+    if (zoneSelect.value) updateTotals();
+}
 </script>
 {% endblock %}
