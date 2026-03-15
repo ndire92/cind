@@ -13,7 +13,14 @@ sitemaps = {
     'products': ProductSitemap,
 }
 def robots_txt(request):
-    return FileResponse(open(os.path.join(settings.BASE_DIR, 'static/robots.txt'), 'rb'), content_type='text/plain')
+    lines = [
+        "User-agent: *",
+        "Disallow: /admin/",
+        "Disallow: /dashboard/",
+        "Allow: /",
+        "Sitemap: https://cinderaproduitsnaturels.com/sitemap.xml"
+    ]
+    return HttpResponse("\n".join(lines), content_type="text/plain")
 urlpatterns = [
     # Administration Django
     path('admin/', admin.site.urls),
