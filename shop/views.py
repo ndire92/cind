@@ -508,9 +508,9 @@ def generate_invoice_pdf(order):
     company_info = [
         logo,
         Spacer(1, 5),
-        Paragraph("CINDERA PRODUITS NATURELS", styles['CompanyTitle']),
+        Paragraph("", styles['CompanyTitle']),
         Spacer(1, 5),
-        Paragraph("Prenons soin de nous!", styles['SmallGrey']),
+        Paragraph("", styles['SmallGrey']),
     ]
 
     # Bloc droit: Titre Facture + Numéro + Date
