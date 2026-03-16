@@ -466,11 +466,6 @@ def generate_invoice_pdf(order):
 
     company_info = [
         logo,
-        Paragraph("CINDERA PRODUITS NATURELS", styles['CompanyTitle']),
-        Paragraph("Prenons soin de nous!", styles['Small']),
-        Paragraph("Sacré Coeur 3 Montagne Villa 9678", styles['Small']),
-        Paragraph("Tel: 338425040 / 777431698", styles['Small']),
-        Paragraph("NINEA: 010413946 / RCCM SN.DKR.2023.M.26514", styles['Small']),
     ]
 
     invoice_info = [
