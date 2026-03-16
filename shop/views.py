@@ -611,9 +611,12 @@ def paydunya_init(request, order_id):
     headers = {
         "Content-Type": "application/json",
         "PAYDUNYA-MASTER-KEY": settings.PAYDUNYA_MASTER_KEY,
+        "PAYDUNYA-PUBLIC-KEY": settings.PAYDUNYA_PUBLIC_KEY,  # ⚠️ tu ne l’as pas mis
         "PAYDUNYA-PRIVATE-KEY": settings.PAYDUNYA_PRIVATE_KEY,
         "PAYDUNYA-TOKEN": settings.PAYDUNYA_TOKEN,
     }
+    
+
 
     data = {
         "invoice": {
