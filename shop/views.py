@@ -655,52 +655,35 @@ def paydunya_init(request, order_id):
 
 @csrf_exempt
 def paydunya_callback(request, order_id):
-
+    """
+    Callback IPN PayDunya : met à jour le statut de la commande
+    """
     order = get_object_or_404(Order, id=order_id)
 
-    if order.payment_status == Order.PaymentStatus.PAID:
-        return JsonResponse({"status": "already_paid"})
+    if request.method == "POST":
+        try:
+            data = request.POST.dict()  # ou json.loads(request.body) si PayDunya envoie du JSON
+            # Exemple : vérifier le statut renvoyé
+            status = data.get("status")
 
-    verify_url = "https://app.paydunya.com/api/v1/checkout-invoice/confirm/"
+            if status == "completed":
+                order.payment_status = Order.PaymentStatus.PAID
+                order.save()
+                return JsonResponse({"message": "Paiement confirmé"}, status=200)
 
-    headers = {
-        "Content-Type": "application/json",
-        "PAYDUNYA-MASTER-KEY": settings.PAYDUNYA_MASTER_KEY,
-        "PAYDUNYA-PRIVATE-KEY": settings.PAYDUNYA_PRIVATE_KEY,
-        "PAYDUNYA-TOKEN": settings.PAYDUNYA_TOKEN,
-    }
+            elif status == "cancelled":
+                order.payment_status = Order.PaymentStatus.CANCELLED
+                order.save()
+                return JsonResponse({"message": "Paiement annulé"}, status=200)
 
-    try:
-        resp = requests.post(
-            verify_url,
-            json={"token": order.transaction_id},
-            headers=headers,
-            timeout=30
-        )
-        result = resp.json()
+            else:
+                return JsonResponse({"message": "Statut inconnu"}, status=400)
 
-    except Exception as e:
-        logger.error(f"Webhook PayDunya erreur : {e}")
-        return JsonResponse({"status": "error"})
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
 
-    if result.get("invoice_status") == "completed":
+    return JsonResponse({"message": "Méthode non autorisée"}, status=405)
 
-        order.payment_status = Order.PaymentStatus.PAID
-        order.save()
-
-        Transaction.objects.create(
-            order=order,
-            external_reference=order.transaction_id,
-            description=f"Paiement PayDunya #{order.id}",
-            type=Transaction.TypeChoices.INCOME,
-            amount=order.total_price,
-            status="completed",
-        )
-
-        send_order_confirmation_email(order)
-        send_new_order_admin_email(order)
-
-    return JsonResponse({"status": "ok"})
 
 
 
