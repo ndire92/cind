@@ -398,6 +398,7 @@ def order_create(request):
                     # Redirections selon paiement
                     pm_slug = payment_method.slug if payment_method else None
                     if pm_slug == "paydunya":
+                        print("Redirection PayDunya OK")
                         return redirect("products:paydunya_init", order_id=order.id)
                     if order.payment_method.slug == "dexpay":
                         return redirect("products:dexpay_init", order.id)
