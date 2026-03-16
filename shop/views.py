@@ -461,14 +461,14 @@ def generate_invoice_pdf(order):
     # --- STYLES PERSONNALISÉS ---
     styles.add(ParagraphStyle(
         name='CompanyTitle', 
-        fontSize=22, 
+        fontSize=15, 
         textColor=COLOR_GREEN,
         fontName='Helvetica-Bold', 
         spaceAfter=2
     ))
     styles.add(ParagraphStyle(
         name='InvoiceTitle', 
-        fontSize=36, 
+        fontSize=30, 
         textColor=COLOR_ORANGE,
         fontName='Helvetica-Bold', 
         alignment=TA_RIGHT
