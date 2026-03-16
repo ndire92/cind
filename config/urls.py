@@ -6,11 +6,12 @@ from django.conf.urls.static import static
 from django.urls import path, include
 from shop import views
 from django.contrib.sitemaps.views import sitemap
-from shop.sitemaps import ProductSitemap  # ton sitemap de produits
+from shop.sitemaps import ProductSitemap,StaticViewSitemap# ton sitemap de produits
 
 
 sitemaps = {
     'products': ProductSitemap,
+    'pages': StaticViewSitemap,
 }
 # Fonction pour servir robots.txt
 def robots_txt(request):
