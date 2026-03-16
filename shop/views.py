@@ -468,7 +468,7 @@ def generate_invoice_pdf(order):
     ))
     styles.add(ParagraphStyle(
         name='InvoiceTitle', 
-        fontSize=25, 
+        fontSize=20, 
         textColor=COLOR_ORANGE,
         fontName='Helvetica-Bold', 
         alignment=TA_RIGHT
@@ -500,7 +500,7 @@ def generate_invoice_pdf(order):
     
     # Gestion du logo (avec fallback si le fichier n'existe pas)
     if os.path.exists(logo_path):
-        logo = Image(logo_path, width=4*cm, height=4*cm)
+        logo = Image(logo_path, width=3*cm, height=3*cm)
     else:
         logo = Paragraph("<b>CINDERA</b>", styles['CompanyTitle'])
 
@@ -509,6 +509,7 @@ def generate_invoice_pdf(order):
         logo,
         Spacer(1, 5),
         Paragraph("CINDERA PRODUITS NATURELS", styles['CompanyTitle']),
+        Spacer(1, 5),
         Paragraph("Prenons soin de nous!", styles['SmallGrey']),
     ]
 
