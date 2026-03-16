@@ -444,124 +444,239 @@ def generate_invoice_pdf(order):
     doc = SimpleDocTemplate(
         file_path,
         pagesize=A4,
-        rightMargin=2*cm, leftMargin=2*cm,
+        rightMargin=1.5*cm, leftMargin=1.5*cm,
         topMargin=2*cm, bottomMargin=2*cm
     )
 
     elements = []
     styles = getSampleStyleSheet()
 
-    # Styles personnalisés
-    styles.add(ParagraphStyle(name='CompanyTitle', fontSize=24, textColor=colors.HexColor('#014215'),
-                              fontName='Helvetica-Bold', spaceAfter=10))
-    styles.add(ParagraphStyle(name='InvoiceTitle', fontSize=30, textColor=colors.HexColor('#fd7e14'),
-                              fontName='Helvetica-Bold', alignment=TA_RIGHT))
-    styles.add(ParagraphStyle(name='Small', fontSize=9, textColor=colors.grey))
-    styles.add(ParagraphStyle(name='Total', fontSize=14, textColor=colors.HexColor('#014215'),
-                              fontName='Helvetica-Bold', alignment=TA_RIGHT))
+    # --- DÉFINITION DES COULEURS ---
+    COLOR_GREEN = colors.HexColor('#014215')
+    COLOR_ORANGE = colors.HexColor('#fd7e14')
+    COLOR_LIGHT_GREY = colors.HexColor('#f8f9fa')
+    COLOR_TEXT = colors.HexColor('#333333')
+    COLOR_BORDER = colors.HexColor('#eeeeee')
 
-    # --- EN-TÊTE ---
+    # --- STYLES PERSONNALISÉS ---
+    styles.add(ParagraphStyle(
+        name='CompanyTitle', 
+        fontSize=22, 
+        textColor=COLOR_GREEN,
+        fontName='Helvetica-Bold', 
+        spaceAfter=2
+    ))
+    styles.add(ParagraphStyle(
+        name='InvoiceTitle', 
+        fontSize=36, 
+        textColor=COLOR_ORANGE,
+        fontName='Helvetica-Bold', 
+        alignment=TA_RIGHT
+    ))
+    styles.add(ParagraphStyle(
+        name='SmallGrey', 
+        fontSize=9, 
+        textColor=colors.grey, 
+        alignment=TA_LEFT
+    ))
+    styles.add(ParagraphStyle(
+        name='TotalBig', 
+        fontSize=16, 
+        textColor=colors.white, # Texte blanc sur fond vert
+        fontName='Helvetica-Bold', 
+        alignment=TA_RIGHT
+    ))
+    styles.add(ParagraphStyle(
+        name='SectionHeader', 
+        fontSize=10, 
+        textColor=COLOR_GREEN,
+        fontName='Helvetica-Bold', 
+        spaceBefore=10,
+        spaceAfter=5
+    ))
+
+    # --- 1. EN-TÊTE (LOGO + TITRE FACTURE) ---
     logo_path = os.path.join(settings.STATIC_ROOT, "img/logo.jpg")
-    logo = Image(logo_path, width=4*cm, height=4*cm)
+    
+    # Gestion du logo (avec fallback si le fichier n'existe pas)
+    if os.path.exists(logo_path):
+        logo = Image(logo_path, width=4*cm, height=4*cm)
+    else:
+        logo = Paragraph("<b>CINDERA</b>", styles['CompanyTitle'])
 
+    # Bloc gauche: Logo + Infos entreprise
     company_info = [
         logo,
+        Spacer(1, 5),
+        Paragraph("CINDERA PRODUITS NATURELS", styles['CompanyTitle']),
+        Paragraph("Prenons soin de nous!", styles['SmallGrey']),
     ]
 
+    # Bloc droit: Titre Facture + Numéro + Date
     invoice_info = [
         Paragraph("FACTURE", styles['InvoiceTitle']),
-        Spacer(1, 0.5*cm),
-        Paragraph(f"N° {order.id}", styles['Normal']),
-        Paragraph(f"Date: {order.created_at.strftime('%d/%m/%Y')}", styles['Normal']),
+        Spacer(1, 10),
+        Paragraph(f"<b>N° {order.id}</b>", ParagraphStyle('Normal', alignment=TA_RIGHT, fontSize=12)),
+        Paragraph(f"Date: {order.created_at.strftime('%d/%m/%Y')}", ParagraphStyle('Normal', alignment=TA_RIGHT, textColor=colors.grey)),
+        Paragraph(f"Statut: Payé", ParagraphStyle('Normal', alignment=TA_RIGHT, textColor=COLOR_GREEN, fontName='Helvetica-Bold')),
     ]
 
-    header_table = Table([[company_info, invoice_info]], colWidths=[10*cm, 6*cm])
+    header_table = Table([[company_info, invoice_info]], colWidths=[11*cm, 7*cm])
     header_table.setStyle(TableStyle([
         ('VALIGN', (0, 0), (-1, -1), 'TOP'),
         ('ALIGN', (1, 0), (1, 0), 'RIGHT'),
     ]))
     elements.append(header_table)
+    
+    # Ligne de séparation élégante
+    elements.append(Spacer(1, 0.5*cm))
+    line_table = Table([['']], colWidths=[18*cm])
+    line_table.setStyle(TableStyle([('LINEABOVE', (0, 0), (-1, 0), 1, COLOR_GREEN)]))
+    elements.append(line_table)
     elements.append(Spacer(1, 1*cm))
 
-    # --- CLIENT ---
-    client_data = [
-        [Paragraph("<b>Facturer à :</b>", styles['Normal']), "", Paragraph("<b>Livrer à :</b>", styles['Normal']), ""],
-        [order.first_name + " " + order.last_name, "", order.first_name + " " + order.last_name, ""],
-        [order.address, "", order.address, ""],
-        [f"{order.postal_code} {order.city}", "", f"Zone: {order.zone}", ""],
+    # --- 2. ADRESSES (CLIENT & LIVRAISON) ---
+    # Style pour le contenu des adresses
+    addr_style = ParagraphStyle('AddrStyle', fontSize=10, leading=14, textColor=COLOR_TEXT)
+    header_addr_style = ParagraphStyle('HeaderAddr', fontSize=9, textColor=COLOR_ORANGE, fontName='Helvetica-Bold')
+
+    # Colonne Gauche : Facturation
+    billing_content = [
+        Paragraph("ADRESSE DE FACTURATION", header_addr_style),
+        Spacer(1, 3),
+        Paragraph(f"<b>{order.first_name} {order.last_name}</b>", addr_style),
+        Paragraph(order.address, addr_style),
+        Paragraph(f"{order.postal_code} {order.city}", addr_style),
     ]
 
-    client_table = Table(client_data, colWidths=[6*cm, 3*cm, 6*cm, 3*cm])
-    client_table.setStyle(TableStyle([
-        ('BOX', (0, 0), (0, -1), 1, colors.HexColor('#014215')),
-        ('BOX', (2, 0), (2, -1), 1, colors.HexColor('#fd7e14')),
-        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#f8f9fa')),
-        ('INNERGRID', (0, 0), (-1, -1), 0.5, colors.lightgrey),
-        ('SPAN', (0, 1), (1, -1)),
-        ('SPAN', (2, 1), (3, -1)),
-        ('VALIGN', (0, 0), (-1, -1), 'TOP'),
-        ('LEFTPADDING', (0, 0), (-1, -1), 10),
-        ('RIGHTPADDING', (0, 0), (-1, -1), 10),
-        ('TOPPADDING', (0, 0), (-1, -1), 5),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 5),
-    ]))
-    elements.append(client_table)
-    elements.append(Spacer(1, 1*cm))
+    # Colonne Droite : Livraison
+    shipping_content = [
+        Paragraph("ADRESSE DE LIVRAISON", header_addr_style),
+        Spacer(1, 3),
+        Paragraph(f"<b>{order.first_name} {order.last_name}</b>", addr_style),
+        Paragraph(order.address, addr_style),
+        Paragraph(f"Zone: {order.zone}", addr_style),
+    ]
 
-    # --- TABLEAU DES ARTICLES ---
-    table_data = [["Description", "Qté", "Prix Unitaire", "Total"]]
+    addr_table = Table([[billing_content, shipping_content]], colWidths=[9*cm, 9*cm])
+    addr_table.setStyle(TableStyle([
+        ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+        ('LEFTPADDING', (0, 0), (-1, -1), 0),
+        # Bordures gauches colorées pour identifier les blocs
+        ('LINEBEFORE', (0, 0), (0, -1), 3, COLOR_GREEN), # Barre verte gauche
+        ('LEFTPADDING', (0, 0), (0, -1), 10),
+        ('LINEBEFORE', (1, 0), (1, -1), 3, COLOR_ORANGE), # Barre orange gauche
+        ('LEFTPADDING', (1, 0), (1, -1), 10),
+    ]))
+    elements.append(addr_table)
+    elements.append(Spacer(1, 1.5*cm))
+
+    # --- 3. TABLEAU DES ARTICLES ---
+    # En-têtes
+    table_header = [
+        Paragraph("<b>Produit</b>", ParagraphStyle('th', textColor=colors.white, fontName='Helvetica-Bold')),
+        Paragraph("<b>Qté</b>", ParagraphStyle('th', textColor=colors.white, alignment=TA_CENTER, fontName='Helvetica-Bold')),
+        Paragraph("<b>Prix Unit.</b>", ParagraphStyle('th', textColor=colors.white, alignment=TA_RIGHT, fontName='Helvetica-Bold')),
+        Paragraph("<b>Total</b>", ParagraphStyle('th', textColor=colors.white, alignment=TA_RIGHT, fontName='Helvetica-Bold')),
+    ]
+    table_data = [table_header]
+
+    # Contenu
     for item in order.items.all():
         table_data.append([
-            item.product_name,
+            Paragraph(item.product_name, ParagraphStyle('cell', fontSize=10)),
             str(item.quantity),
-            f"{item.price} FCFA",
-            f"{item.total_price} FCFA"
+            f"{item.price:,.0f} FCFA".replace(',', ' '),
+            f"{item.total_price:,.0f} FCFA".replace(',', ' ')
         ])
 
-    art_table = Table(table_data, colWidths=[8*cm, 2.5*cm, 4*cm, 4*cm])
-    art_table.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#014215')),
+    art_table = Table(table_data, colWidths=[8*cm, 2.5*cm, 3.5*cm, 4*cm])
+    
+    art_style = TableStyle([
+        # Header Style
+        ('BACKGROUND', (0, 0), (-1, 0), COLOR_GREEN),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
         ('ALIGN', (0, 0), (-1, 0), 'CENTER'),
         ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('FONTSIZE', (0, 0), (-1, 0), 10),
-        ('ALIGN', (1, 1), (-1, -1), 'RIGHT'),
-        ('ALIGN', (0, 1), (0, -1), 'LEFT'),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('TOPPADDING', (0, 0), (-1, 0), 12),
+        
+        # Body Style
         ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
         ('FONTSIZE', (0, 1), (-1, -1), 10),
-        ('GRID', (0, 0), (-1, -1), 0.5, colors.lightgrey),
-        ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor('#f9f9f9')]),
-    ]))
+        ('ALIGN', (1, 1), (-1, -1), 'RIGHT'), # Aligner les chiffres à droite
+        ('ALIGN', (1, 1), (1, -1), 'CENTER'), # Quantité au centre
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        
+        # Padding du corps
+        ('TOPPADDING', (0, 1), (-1, -1), 10),
+        ('BOTTOMPADDING', (0, 1), (-1, -1), 10),
+        ('LEFTPADDING', (0, 0), (0, -1), 10),
+        ('RIGHTPADDING', (-1, 0), (-1, -1), 10),
+
+        # Grille / Lignes
+        # Pas de grille complète, juste des lignes horizontales légères
+        ('LINEBELOW', (0, 0), (-1, 0), 1, COLOR_GREEN), # Ligne sous le header
+        ('LINEBELOW', (0, 1), (-1, -1), 0.5, COLOR_BORDER), # Lignes légères entre les rows
+        
+        # Zebra striping (Alternance de couleurs)
+        ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, COLOR_LIGHT_GREY]),
+    ])
+    art_table.setStyle(art_style)
     elements.append(art_table)
-    elements.append(Spacer(1, 1*cm))
+    elements.append(Spacer(1, 1.5*cm))
 
-    # --- TOTAUX ---
-    totals_data = [["Sous-total HT", f"{order.subtotal} FCFA"]]
+    # --- 4. TOTAUX ---
+    totals_data = [
+        ["Sous-total HT", f"{order.subtotal:,.0f} FCFA".replace(',', ' ')],
+    ]
     if order.discount_amount > 0:
-        totals_data.append(["Remise", f"- {order.discount_amount} FCFA"])
-    totals_data.append(["Livraison", f"{order.shipping_cost} FCFA" if order.shipping_cost > 0 else "Gratuite"])
-    totals_data.append(["", ""])
-    totals_data.append(["Total TTC", f"{order.total_price} FCFA"])
+        totals_data.append(["Remise", f"- {order.discount_amount:,.0f} FCFA".replace(',', ' ')])
+    
+    totals_data.append(["Livraison", f"{order.shipping_cost:,.0f} FCFA".replace(',', ' ') if order.shipping_cost > 0 else "Gratuite"])
+    
+    # Ligne finale du Total
+    totals_data.append([
+        Paragraph("<b>TOTAL TTC</b>", ParagraphStyle('TotalLabel', fontSize=14, textColor=colors.white, alignment=TA_RIGHT)),
+        Paragraph(f"<b>{order.total_price:,.0f} FCFA</b>".replace(',', ' '), ParagraphStyle('TotalValue', fontSize=14, textColor=colors.white, alignment=TA_RIGHT))
+    ])
 
-    tot_table = Table(totals_data, colWidths=[10*cm, 6*cm])
-    tot_table.setStyle(TableStyle([
-        ('ALIGN', (0, 0), (0, -1), 'RIGHT'),
-        ('ALIGN', (1, 0), (1, -1), 'RIGHT'),
-        ('FONTNAME', (0, -1), (-1, -1), 'Helvetica-Bold'),
-        ('FONTSIZE', (0, -1), (-1, -1), 14),
-        ('TEXTCOLOR', (1, -1), (1, -1), colors.HexColor('#014215')),
-        ('LINEABOVE', (0, -1), (-1, -1), 2, colors.HexColor('#014215')),
-    ]))
+    tot_table = Table(totals_data, colWidths=[11*cm, 7*cm])
+    
+    tot_style = TableStyle([
+        # Style standard pour les lignes du haut
+        ('ALIGN', (0, 0), (-1, -2), 'RIGHT'), # Tout à droite sauf la dernière ligne qu'on va customiser
+        ('FONTNAME', (0, 0), (-1, -2), 'Helvetica'),
+        ('FONTSIZE', (0, 0), (-1, -2), 11),
+        ('TEXTCOLOR', (0, 0), (-1, -2), COLOR_TEXT),
+        ('TOPPADDING', (0, 0), (-1, -2), 5),
+        ('BOTTOMPADDING', (0, 0), (-1, -2), 5),
+
+        # Style spécial pour la ligne TOTAL (dernière ligne = index -1)
+        ('BACKGROUND', (0, -1), (-1, -1), COLOR_GREEN), # Fond vert
+        ('TEXTCOLOR', (0, -1), (-1, -1), colors.white), # Texte blanc
+        ('TOPPADDING', (0, -1), (-1, -1), 12),
+        ('BOTTOMPADDING', (0, -1), (-1, -1), 12),
+        # On enlève l'alignement forcé pour laisser le ParagraphStyle gérer
+    ])
+    tot_table.setStyle(tot_style)
     elements.append(tot_table)
 
-    # --- PIED DE PAGE ---
-    elements.append(Spacer(1, 2*cm))
-    styles.add(ParagraphStyle(name='Footer', fontSize=8, textColor=colors.grey, alignment=TA_CENTER))
+    # --- 5. PIED DE PAGE ---
+    elements.append(Spacer(1, 3*cm))
+    
+    # Ligne séparatrice
+    line_table_footer = Table([['']], colWidths=[18*cm])
+    line_table_footer.setStyle(TableStyle([('LINEABOVE', (0, 0), (-1, 0), 1, colors.lightgrey)]))
+    elements.append(line_table_footer)
+    elements.append(Spacer(1, 0.3*cm))
+
+    footer_style = ParagraphStyle('FooterStyle', fontSize=8, textColor=colors.grey, alignment=TA_CENTER, leading=12)
     elements.append(Paragraph(
         "CINDERA PRODUITS NATURELS - Prenons soin de nous!<br/>"
         "Sacré Coeur 3 Montagne Villa 9678 - Tel: 338425040 / 777431698<br/>"
         "NINEA: 010413946 / RCCM SN.DKR.2023.M.26514",
-        styles['Footer']
+        footer_style
     ))
 
     doc.build(elements)
