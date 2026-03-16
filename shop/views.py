@@ -461,7 +461,7 @@ def generate_invoice_pdf(order):
                               fontName='Helvetica-Bold', alignment=TA_RIGHT))
 
     # --- EN-TÊTE ---
-    logo_path = os.path.join(settings.STATIC_ROOT, "img/logo.png")
+    logo_path = os.path.join(settings.STATIC_ROOT, "img/logo.jpg")
     logo = Image(logo_path, width=4*cm, height=4*cm)
 
     company_info = [
