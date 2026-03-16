@@ -451,19 +451,24 @@ def generate_invoice_pdf(order):
 
     # Styles personnalisés
     styles.add(ParagraphStyle(name='CompanyTitle', fontSize=24, textColor=colors.HexColor('#014215'), fontName='Helvetica-Bold', spaceAfter=10))
-    styles.add(ParagraphStyle(name='InvoiceTitle', fontSize=36, textColor=colors.HexColor('#fd7e14'), fontName='Helvetica-Bold', alignment=TA_RIGHT))
+    styles.add(ParagraphStyle(name='InvoiceTitle', fontSize=30, textColor=colors.HexColor('#fd7e14'), fontName='Helvetica-Bold', alignment=TA_RIGHT))
     styles.add(ParagraphStyle(name='Small', fontSize=9, textColor=colors.grey))
     styles.add(ParagraphStyle(name='Total', fontSize=14, textColor=colors.HexColor('#014215'), fontName='Helvetica-Bold', alignment=TA_RIGHT))
     
     # --- EN-TÊTE ---
     # Gauche : Logo / Nom
+from reportlab.platypus import Image
+
+    logo_path = os.path.join(settings.STATIC_ROOT, "img/logo.png")  # chemin vers ton logo
+    logo = Image(logo_path, width=4*cm, height=4*cm)  # ajuste largeur/hauteur
     company_info = [
-        Paragraph("Cindera 🌿", styles['CompanyTitle']),
-        Paragraph("Produits Naturels 100% Locaux", styles['Small']),
-        Paragraph("Dakar, Sénégal", styles['Small']),
-        Paragraph("Tel: +221 77 743 16 98", styles['Small']),
+        logo,
+        Paragraph("CINDERA PRODUITS NATURELS", styles['CompanyTitle']),
+        Paragraph("Prenons soin de nous!", styles['Small']),
+        Paragraph("Sacré Coeur 3 Montagne Villa 9678", styles['Small']),
+        Paragraph("Tel: 338425040 / 777431698", styles['Small']),
+        Paragraph("NINEA: 010413946 / RCCM SN.DKR.2023.M.26514", styles['Small']),
     ]
-    
     # Droite : Titre Facture
     invoice_info = [
         Paragraph("FACTURE", styles['InvoiceTitle']),
@@ -572,7 +577,9 @@ def generate_invoice_pdf(order):
     # --- PIED DE PAGE ---
     elements.append(Spacer(1, 2*cm))
     styles.add(ParagraphStyle(name='Footer', fontSize=8, textColor=colors.grey, alignment=TA_CENTER))
-    elements.append(Paragraph("Merci pour votre confiance !<br/>Cindera Produits Naturels • Sénégal", styles['Footer']))
+    elements.append(Paragraph("CINDERA PRODUITS NATURELS - Prenons soin de nous!<br/>"
+    "Sacré Coeur 3 Montagne Villa 9678 - Tel: 338425040 / 777431698<br/>"
+    "NINEA: 010413946 / RCCM SN.DKR.2023.M.26514", styles['Footer']))
 
     doc.build(elements)
     return file_path
