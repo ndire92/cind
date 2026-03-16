@@ -29,7 +29,8 @@ from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import cm
 from reportlab.lib.enums import TA_RIGHT, TA_LEFT, TA_CENTER
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Image
+
 
 # Imports locaux
 from .decorators import admin_or_manager_required
@@ -436,31 +437,33 @@ def shipping_cost_ajax(request):
 
 
 
-
-
 def generate_invoice_pdf(order):
     file_name = f"facture_{order.id}.pdf"
     file_path = os.path.join(settings.MEDIA_ROOT, file_name)
     
-    doc = SimpleDocTemplate(file_path, pagesize=A4,
-                            rightMargin=2*cm, leftMargin=2*cm,
-                            topMargin=2*cm, bottomMargin=2*cm)
+    doc = SimpleDocTemplate(
+        file_path,
+        pagesize=A4,
+        rightMargin=2*cm, leftMargin=2*cm,
+        topMargin=2*cm, bottomMargin=2*cm
+    )
 
     elements = []
     styles = getSampleStyleSheet()
 
     # Styles personnalisés
-    styles.add(ParagraphStyle(name='CompanyTitle', fontSize=24, textColor=colors.HexColor('#014215'), fontName='Helvetica-Bold', spaceAfter=10))
-    styles.add(ParagraphStyle(name='InvoiceTitle', fontSize=30, textColor=colors.HexColor('#fd7e14'), fontName='Helvetica-Bold', alignment=TA_RIGHT))
+    styles.add(ParagraphStyle(name='CompanyTitle', fontSize=24, textColor=colors.HexColor('#014215'),
+                              fontName='Helvetica-Bold', spaceAfter=10))
+    styles.add(ParagraphStyle(name='InvoiceTitle', fontSize=30, textColor=colors.HexColor('#fd7e14'),
+                              fontName='Helvetica-Bold', alignment=TA_RIGHT))
     styles.add(ParagraphStyle(name='Small', fontSize=9, textColor=colors.grey))
-    styles.add(ParagraphStyle(name='Total', fontSize=14, textColor=colors.HexColor('#014215'), fontName='Helvetica-Bold', alignment=TA_RIGHT))
-    
-    # --- EN-TÊTE ---
-    # Gauche : Logo / Nom
-from reportlab.platypus import Image
+    styles.add(ParagraphStyle(name='Total', fontSize=14, textColor=colors.HexColor('#014215'),
+                              fontName='Helvetica-Bold', alignment=TA_RIGHT))
 
-    logo_path = os.path.join(settings.STATIC_ROOT, "img/logo.png")  # chemin vers ton logo
-    logo = Image(logo_path, width=4*cm, height=4*cm)  # ajuste largeur/hauteur
+    # --- EN-TÊTE ---
+    logo_path = os.path.join(settings.STATIC_ROOT, "img/logo.png")
+    logo = Image(logo_path, width=4*cm, height=4*cm)
+
     company_info = [
         logo,
         Paragraph("CINDERA PRODUITS NATURELS", styles['CompanyTitle']),
@@ -469,7 +472,7 @@ from reportlab.platypus import Image
         Paragraph("Tel: 338425040 / 777431698", styles['Small']),
         Paragraph("NINEA: 010413946 / RCCM SN.DKR.2023.M.26514", styles['Small']),
     ]
-    # Droite : Titre Facture
+
     invoice_info = [
         Paragraph("FACTURE", styles['InvoiceTitle']),
         Spacer(1, 0.5*cm),
@@ -477,7 +480,6 @@ from reportlab.platypus import Image
         Paragraph(f"Date: {order.created_at.strftime('%d/%m/%Y')}", styles['Normal']),
     ]
 
-    # Tableau pour l'en-tête (Logo à gauche, Infos à droite)
     header_table = Table([[company_info, invoice_info]], colWidths=[10*cm, 6*cm])
     header_table.setStyle(TableStyle([
         ('VALIGN', (0, 0), (-1, -1), 'TOP'),
@@ -493,14 +495,14 @@ from reportlab.platypus import Image
         [order.address, "", order.address, ""],
         [f"{order.postal_code} {order.city}", "", f"Zone: {order.zone}", ""],
     ]
-    
+
     client_table = Table(client_data, colWidths=[6*cm, 3*cm, 6*cm, 3*cm])
     client_table.setStyle(TableStyle([
-        ('BOX', (0, 0), (0, -1), 1, colors.HexColor('#014215')), # Bordure gauche verte
-        ('BOX', (2, 0), (2, -1), 1, colors.HexColor('#fd7e14')), # Bordure gauche orange
+        ('BOX', (0, 0), (0, -1), 1, colors.HexColor('#014215')),
+        ('BOX', (2, 0), (2, -1), 1, colors.HexColor('#fd7e14')),
         ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#f8f9fa')),
         ('INNERGRID', (0, 0), (-1, -1), 0.5, colors.lightgrey),
-        ('SPAN', (0, 1), (1, -1)), # Fusionne les cellules pour l'adresse
+        ('SPAN', (0, 1), (1, -1)),
         ('SPAN', (2, 1), (3, -1)),
         ('VALIGN', (0, 0), (-1, -1), 'TOP'),
         ('LEFTPADDING', (0, 0), (-1, -1), 10),
@@ -513,7 +515,6 @@ from reportlab.platypus import Image
 
     # --- TABLEAU DES ARTICLES ---
     table_data = [["Description", "Qté", "Prix Unitaire", "Total"]]
-    
     for item in order.items.all():
         table_data.append([
             item.product_name,
@@ -524,38 +525,25 @@ from reportlab.platypus import Image
 
     art_table = Table(table_data, colWidths=[8*cm, 2.5*cm, 4*cm, 4*cm])
     art_table.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#014215')), # Header vert
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#014215')),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
         ('ALIGN', (0, 0), (-1, 0), 'CENTER'),
         ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
         ('FONTSIZE', (0, 0), (-1, 0), 10),
-        
-        ('BACKGROUND', (0, 1), (-1, -1), colors.white),
-        ('TEXTCOLOR', (0, 1), (-1, -1), colors.black),
-        ('ALIGN', (1, 1), (-1, -1), 'RIGHT'), # Chiffres à droite
-        ('ALIGN', (0, 1), (0, -1), 'LEFT'),   # Texte à gauche
+        ('ALIGN', (1, 1), (-1, -1), 'RIGHT'),
+        ('ALIGN', (0, 1), (0, -1), 'LEFT'),
         ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
         ('FONTSIZE', (0, 1), (-1, -1), 10),
-        
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-        ('TOPPADDING', (0, 0), (-1, 0), 12),
-        ('BOTTOMPADDING', (0, 1), (-1, -1), 8),
-        ('TOPPADDING', (0, 1), (-1, -1), 8),
-        
         ('GRID', (0, 0), (-1, -1), 0.5, colors.lightgrey),
-        ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor('#f9f9f9')]), # Lignes alternées
+        ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor('#f9f9f9')]),
     ]))
     elements.append(art_table)
     elements.append(Spacer(1, 1*cm))
 
     # --- TOTAUX ---
-    totals_data = [
-        ["Sous-total HT", f"{order.subtotal} FCFA"],
-    ]
-    
+    totals_data = [["Sous-total HT", f"{order.subtotal} FCFA"]]
     if order.discount_amount > 0:
         totals_data.append(["Remise", f"- {order.discount_amount} FCFA"])
-        
     totals_data.append(["Livraison", f"{order.shipping_cost} FCFA" if order.shipping_cost > 0 else "Gratuite"])
     totals_data.append(["", ""])
     totals_data.append(["Total TTC", f"{order.total_price} FCFA"])
@@ -564,26 +552,26 @@ from reportlab.platypus import Image
     tot_table.setStyle(TableStyle([
         ('ALIGN', (0, 0), (0, -1), 'RIGHT'),
         ('ALIGN', (1, 0), (1, -1), 'RIGHT'),
-        ('FONTNAME', (0, 0), (-1, -2), 'Helvetica'),
         ('FONTNAME', (0, -1), (-1, -1), 'Helvetica-Bold'),
         ('FONTSIZE', (0, -1), (-1, -1), 14),
-        ('TEXTCOLOR', (1, -1), (1, -1), colors.HexColor('#014215')), # Total en vert
-        ('LINEABOVE', (0, -1), (-1, -1), 2, colors.HexColor('#014215')), # Ligne au-dessus du total
-        ('TOPPADDING', (0, -1), (-1, -1), 10),
-        ('BOTTOMPADDING', (0, -1), (-1, -1), 10),
+        ('TEXTCOLOR', (1, -1), (1, -1), colors.HexColor('#014215')),
+        ('LINEABOVE', (0, -1), (-1, -1), 2, colors.HexColor('#014215')),
     ]))
     elements.append(tot_table)
 
     # --- PIED DE PAGE ---
     elements.append(Spacer(1, 2*cm))
     styles.add(ParagraphStyle(name='Footer', fontSize=8, textColor=colors.grey, alignment=TA_CENTER))
-    elements.append(Paragraph("CINDERA PRODUITS NATURELS - Prenons soin de nous!<br/>"
-    "Sacré Coeur 3 Montagne Villa 9678 - Tel: 338425040 / 777431698<br/>"
-    "NINEA: 010413946 / RCCM SN.DKR.2023.M.26514", styles['Footer']))
+    elements.append(Paragraph(
+        "CINDERA PRODUITS NATURELS - Prenons soin de nous!<br/>"
+        "Sacré Coeur 3 Montagne Villa 9678 - Tel: 338425040 / 777431698<br/>"
+        "NINEA: 010413946 / RCCM SN.DKR.2023.M.26514",
+        styles['Footer']
+    ))
 
     doc.build(elements)
     return file_path
-
+    
 def invoice_download(request, order_id):
     order = get_object_or_404(Order, id=order_id)
     
