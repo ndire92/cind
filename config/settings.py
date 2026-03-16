@@ -166,10 +166,10 @@ STATIC_URL = 'static/'
 
 
 # Clés PayDunya Live
-PAYDUNYA_MASTER_KEY = "IZ1pSWiK-ccuu-AlCs-OlZq-tGbJQCUfvZ4T"  # Master Key Live
-PAYDUNYA_PUBLIC_KEY = "live_public_Hc60iR3lK6rDTclOQ15nATFNzUf"
-PAYDUNYA_PRIVATE_KEY = "live_private_vp02fb24B4Ig6YkzgZFNLqUJt8S"
-PAYDUNYA_TOKEN = "tyHUazVzYSPjW91wSATI"  # facultatif, généré dynamiquement pour chaque facture
+PAYDUNYA_MASTER_KEY = os.getenv("PAYDUNYA_MASTER_KEY")
+PAYDUNYA_PUBLIC_KEY = os.getenv("PAYDUNYA_PUBLIC_KEY")
+PAYDUNYA_PRIVATE_KEY = os.getenv("PAYDUNYA_PRIVATE_KEY")
+PAYDUNYA_TOKEN = os.getenv("PAYDUNYA_TOKEN")
 
 
 DEXPAY_PUBLIC_KEY = os.getenv("DEXPAY_PUBLIC_KEY")
