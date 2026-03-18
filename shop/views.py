@@ -516,24 +516,20 @@ def generate_invoice_pdf(order):
     # Bloc droit: Titre Facture + Numéro + Date
 # --- 1. EN-TÊTE (LOGO + TITRE FACTURE) ---
 
-    # ✅ Calcul AVANT
+# --- EN-TÊTE FACTURE ---
     if order.payment_method:
         payment_text = str(order.payment_method)
     else:
-    payment_text = "Non défini"
+        payment_text = "Non défini"
     
-    # ✅ Ensuite affichage
     invoice_info = [
         Paragraph(f"FACTURE N° {order.id}", styles['InvoiceTitle']),
         Spacer(1, 15),
-    
         Paragraph(
             f"Date: {order.created_at.strftime('%d/%m/%Y')}",
             ParagraphStyle('DateStyle', alignment=TA_RIGHT, textColor=colors.grey)
         ),
-    
         Spacer(1, 5),
-    
         Paragraph(
             f"Statut: {payment_text}",
             ParagraphStyle(
@@ -544,7 +540,6 @@ def generate_invoice_pdf(order):
             )
         )
     ]
-    
     header_table = Table([[company_info, invoice_info]], colWidths=[11*cm, 7*cm])
     header_table.setStyle(TableStyle([
         ('VALIGN', (0, 0), (-1, -1), 'TOP'),
