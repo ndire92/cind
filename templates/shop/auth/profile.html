@@ -3,8 +3,9 @@
 {% block content %}
 <div class="container mt-5">
     <div class="row">
-        <div class="col-md-4">
-            <div class="card">
+        <!-- Profil utilisateur -->
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm">
                 <div class="card-body text-center">
                     <h3>{{ user.username }}</h3>
                     <p class="text-muted">{{ user.email }}</p>
@@ -12,30 +13,68 @@
                 </div>
             </div>
         </div>
+
+        <!-- Commandes -->
         <div class="col-md-8">
-            <h4>Mes dernières commandes</h4>
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Date</th>
-                        <th>Total</th>
-                        <th>Statut</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for order in orders %}
-                    <tr>
-                        <td>#{{ order.id }}</td>
-                        <td>{{ order.created_at|date:"d M Y" }}</td>
-                        <td>{{ order.total_price }} €</td>
-                        <td>{{ order.get_payment_status_display }}</td>
-                    </tr>
-                    {% empty %}
-                    <tr><td colspan="4">Aucune commande passée.</td></tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+            <h4 class="mb-4">Mes dernières commandes</h4>
+            <div class="table-responsive">
+                <table class="table table-striped table-hover align-middle">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Date</th>
+                            <th>Produits</th>
+                            <th class="text-end">Total à payer</th>
+                            <th>Statut</th>
+                            <th>Détails</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in orders %}
+                        <tr>
+                            <td>#{{ order.id }}</td>
+                            <td>{{ order.created_at|date:"d M Y" }}</td>
+
+                            <!-- Liste des produits -->
+                            <td>
+                                <ul class="list-unstyled mb-0">
+                                    {% for item in order.items.all %}
+                                        <li>{{ item.product_name }} x{{ item.quantity }} - {{ item.total_price|intcomma }} FCFA</li>
+                                    {% endfor %}
+                                </ul>
+                            </td>
+
+                            <!-- Total à payer -->
+                            <td class="text-end">{{ order.total_price|intcomma }} FCFA</td>
+
+                            <!-- Statut -->
+                            <td>
+                                {% if order.get_payment_status_display == "Payé" %}
+                                    <span class="badge bg-success">{{ order.get_payment_status_display }}</span>
+                                {% elif order.get_payment_status_display == "En attente" %}
+                                    <span class="badge bg-warning text-dark">{{ order.get_payment_status_display }}</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">{{ order.get_payment_status_display }}</span>
+                                {% endif %}
+                            </td>
+
+                            <!-- Bouton détails -->
+                            <td>
+                                <a href="{% url 'order_detail' order.id %}" class="btn btn-sm btn-outline-primary">
+                                    Voir détails
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center text-muted">
+                                Vous n’avez encore passé aucune commande.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
