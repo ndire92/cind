@@ -435,14 +435,6 @@ def shipping_cost_ajax(request):
     cost = Order.get_shipping_cost_by_zone(zone_code)
     return JsonResponse({'cost': str(cost)})
 
-PAYMENT_LABELS = {
-    "cash_on_delivery": "Paiement à la livraison",
-    "paydunya": "Paiement via PayDunya",
-    "dexpay": "Paiement via DexPay",
-    "orange_money": "Paiement via Orange Money",
-    "wave": "Paiement via Wave",
-}
-
 
 def generate_invoice_pdf(order):
     file_name = f"facture_{order.id}.pdf"
@@ -525,8 +517,10 @@ def generate_invoice_pdf(order):
 # --- 1. EN-TÊTE (LOGO + TITRE FACTURE) ---
 
     # ✅ Calcul AVANT
-    pm_slug = getattr(order.payment_method, "slug", None)
-    payment_text = PAYMENT_LABELS.get(pm_slug, "Payé")
+    if order.payment_method:
+        payment_text = str(order.payment_method)
+    else:
+    payment_text = "Non défini"
     
     # ✅ Ensuite affichage
     invoice_info = [
