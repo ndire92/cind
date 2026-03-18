@@ -515,20 +515,35 @@ def generate_invoice_pdf(order):
 
     # Bloc droit: Titre Facture + Numéro + Date
     # Bloc droit: Titre Facture + Numéro + Date
-    invoice_info = [
-        # 1. Titre et Numéro sur la même ligne
-        Paragraph(f"FACTURE N° {order.id}", styles['InvoiceTitle']),
-        
-        # 2. Espace entre le titre et la date
-        Spacer(1, 15), 
-        
-        # 3. Date
-        Paragraph(f"Date: {order.created_at.strftime('%d/%m/%Y')}", ParagraphStyle('DateStyle', alignment=TA_RIGHT, textColor=colors.grey)),
-        
-        # 4. Statut
-        Paragraph(f"Statut: Payé", ParagraphStyle('StatusStyle', alignment=TA_RIGHT, textColor=COLOR_GREEN, fontName='Helvetica-Bold')),
-    ]
+# --- 1. EN-TÊTE (LOGO + TITRE FACTURE) ---
 
+    # ✅ Calcul AVANT
+    pm_slug = getattr(order.payment_method, "slug", None)
+    payment_text = PAYMENT_LABELS.get(pm_slug, "Payé")
+    
+    # ✅ Ensuite affichage
+    invoice_info = [
+        Paragraph(f"FACTURE N° {order.id}", styles['InvoiceTitle']),
+        Spacer(1, 15),
+    
+        Paragraph(
+            f"Date: {order.created_at.strftime('%d/%m/%Y')}",
+            ParagraphStyle('DateStyle', alignment=TA_RIGHT, textColor=colors.grey)
+        ),
+    
+        Spacer(1, 5),
+    
+        Paragraph(
+            f"Statut: {payment_text}",
+            ParagraphStyle(
+                'StatusStyle',
+                alignment=TA_RIGHT,
+                textColor=COLOR_GREEN,
+                fontName='Helvetica-Bold'
+            )
+        )
+    ]
+    
     header_table = Table([[company_info, invoice_info]], colWidths=[11*cm, 7*cm])
     header_table.setStyle(TableStyle([
         ('VALIGN', (0, 0), (-1, -1), 'TOP'),
