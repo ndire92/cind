@@ -206,11 +206,7 @@
         <div class="totals-row" style="display:flex; justify-content:space-between; padding:5px 0;">
             <span>Livraison</span>
             <span>
-                {% if order.shipping_cost == 0 %}
-                    <span style="color:green;">Livraison à la charge du client</span>
-                {% else %}
-                    {{ order.shipping_cost|floatformat:0 }} FCFA
-                {% endif %}
+ 
             </span>
         </div>
 
