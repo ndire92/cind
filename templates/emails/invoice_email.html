@@ -210,18 +210,18 @@
 
         <div class="totals-row">
             <span>Livraison</span>
-            <span>
-                {% if order.shipping_cost == 0 %}
-                    Gratuite
-                {% else %}
-                    {{ order.shipping_cost }} FCFA
-                {% endif %}
-            </span>
+          <span>
+        {% if order.shipping_cost == 0 %}
+            <span class="text-success">Livraison à la charge du client</span>
+        {% else %}
+            {{ order.shipping_cost }} FCFA
+        {% endif %}
+    </span>
         </div>
 
         <div class="totals-row grand-total">
             <span>Total TTC</span>
-            <span>{{ order.total_price }} FCFA</span>
+            <span>{{ order.total_price|floatformat:0 }} FCFA</span>
         </div>
     </div>
 
