@@ -641,7 +641,11 @@ def generate_invoice_pdf(order):
     if order.discount_amount > 0:
         totals_data.append(["Remise", f"- {order.discount_amount:,.0f} FCFA".replace(',', ' ')])
     
-    totals_data.append(["Livraison", f"{order.shipping_cost:,.0f} FCFA".replace(',', ' ') if order.shipping_cost > 0 else "Gratuite"])
+    totals_data.append([
+    "Livraison",
+    f"{order.shipping_cost:,.0f} FCFA".replace(',', ' ')
+    if order.shipping_cost > 0 else "Livraison à la charge du client"
+])
     
     # Ligne finale du Total
     totals_data.append([
