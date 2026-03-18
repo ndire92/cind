@@ -138,21 +138,20 @@
 
     <!-- En-tête -->
     <div class="header">
-        <div class="company-info">
-            <h1 class="company-name">Cindera 🌿</h1>
-            <div class="company-details">
-                Produits Naturels 100% Locaux<br>
-                Dakar, Sénégal<br>
-                Tél : +221 77 743 16 98<br>
-                Email : cinderaaffairs@gmail.com
-            </div>
-        </div>
-        <div class="invoice-info">
-            <h2 class="invoice-title">Facture</h2>
-            <div class="invoice-number">
-                N° {{ order.id }}<br>
-                Date : {{ order.created_at|date:"d/m/Y" }}
-            </div>
+       <div class="company-info">
+    <h1 class="company-name">
+        <img src="{% static 'img/logo.jpg' %}" alt="Cindera">
+    </h1>
+</div>
+        <div class="invoice-number">
+            N° {{ order.id }}<br>
+            Date : {{ order.created_at|date:"d/m/Y" }}<br>
+            Statut : 
+            {% if order.payment_method %}
+                {{ order.payment_method }}
+            {% else %}
+                Non défini
+            {% endif %}
         </div>
     </div>
 
@@ -228,8 +227,9 @@
 
     <!-- Pied de page -->
     <div class="footer">
-        Merci pour votre confiance !<br>
-        Cindera Produits Naturels • Sénégal
+        "CINDERA PRODUITS NATURELS - Prenons soin de nous!<br/>"
+        "Sacré Coeur 3 Montagne Villa 9678 - Tel: 338425040 / 777431698<br/>"
+        "NINEA: 010413946 / RCCM SN.DKR.2023.M.26514",
     </div>
 
 </body>
