@@ -135,20 +135,33 @@
     </style>
 </head>
 <body>
-
     <!-- En-tête -->
-    <div class="header">
-       <div class="company-info">
-    <h1 class="company-name">
-        <img src="{% static 'img/logo.jpg' %}" alt="Cindera">
-    </h1>
-</div>
-        <div class="invoice-number">
-            N° {{ order.id }}<br>
+    <div class="header" style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:30px;">
+        <div class="company-info">
+            <h1 class="company-name">
+                <img src="{% static 'img/logo.jpg' %}" alt="Cindera" style="height:60px;">
+            </h1>
+        </div>
+        <div class="invoice-number" style="text-align:right;">
+            <strong>N° {{ order.id }}</strong><br>
             Date : {{ order.created_at|date:"d/m/Y" }}<br>
             Statut : 
             {% if order.payment_method %}
-                {{ order.payment_method }}
+                {% with pm_slug=order.payment_method.slug %}
+                    {% if pm_slug == "cash_on_delivery" %}
+                        Paiement à la livraison
+                    {% elif pm_slug == "paydunya" %}
+                        Paiement via PayDunya
+                    {% elif pm_slug == "dexpay" %}
+                        Paiement via DexPay
+                    {% elif pm_slug == "orange_money" %}
+                        Paiement via Orange Money
+                    {% elif pm_slug == "wave" %}
+                        Paiement via Wave
+                    {% else %}
+                        Payé
+                    {% endif %}
+                {% endwith %}
             {% else %}
                 Non défini
             {% endif %}
@@ -156,16 +169,16 @@
     </div>
 
     <!-- Client & Livraison -->
-    <div class="info-grid">
-        <div class="client-box">
-            <div class="section-title">Facturer à :</div>
+    <div class="info-grid" style="display:flex; justify-content:space-between; margin-bottom:30px;">
+        <div class="client-box" style="width:45%; background:#f8f9fa; padding:15px; border-left:4px solid #014215;">
+            <div class="section-title" style="font-weight:bold; color:#888;">Facturer à :</div>
             <strong>{{ order.first_name }} {{ order.last_name }}</strong><br>
             {{ order.address }}<br>
             {{ order.postal_code }} {{ order.city }}<br>
             {{ order.email }}
         </div>
-        <div class="client-box" style="border-left-color: #fd7e14;">
-            <div class="section-title">Livrer à :</div>
+        <div class="client-box" style="width:45%; background:#f8f9fa; padding:15px; border-left:4px solid #fd7e14;">
+            <div class="section-title" style="font-weight:bold; color:#888;">Livrer à :</div>
             <strong>{{ order.first_name }} {{ order.last_name }}</strong><br>
             {{ order.address }}<br>
             Zone : <strong>{{ order.zone }}</strong>
@@ -173,63 +186,67 @@
     </div>
 
     <!-- Tableau des articles -->
-    <table>
-        <thead>
+    <table style="width:100%; border-collapse:collapse; margin-bottom:30px;">
+        <thead style="background:#014215; color:white;">
             <tr>
-                <th>Description</th>
-                <th class="text-right">Qté</th>
-                <th class="text-right">Prix Unitaire</th>
-                <th class="text-right">Total</th>
+                <th style="padding:10px; text-align:left;">Description</th>
+                <th style="padding:10px; text-align:center;">Qté</th>
+                <th style="padding:10px; text-align:right;">Prix Unitaire</th>
+                <th style="padding:10px; text-align:right;">Total</th>
             </tr>
         </thead>
         <tbody>
             {% for item in order.items.all %}
-            <tr>
+            <tr style="border-bottom:1px solid #ddd;">
                 <td>{{ item.product_name }}</td>
-                <td class="text-right">{{ item.quantity }}</td>
-                <td class="text-right">{{ item.price }} FCFA</td>
-                <td class="text-right">{{ item.total_price }} FCFA</td>
+                <td style="text-align:center;">{{ item.quantity }}</td>
+                <td style="text-align:right;">{{ item.price|floatformat:0 }} FCFA</td>
+                <td style="text-align:right;">{{ item.total_price|floatformat:0 }} FCFA</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" style="text-align:center; color:#888;">Aucun produit trouvé.</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
 
     <!-- Totaux -->
-    <div class="totals">
-        <div class="totals-row">
+    <div class="totals" style="width:40%; margin-left:auto;">
+        <div class="totals-row" style="display:flex; justify-content:space-between; padding:5px 0;">
             <span>Sous-total HT</span>
-            <span>{{ order.subtotal }} FCFA</span>
+            <span>{{ order.subtotal|floatformat:0 }} FCFA</span>
         </div>
         
         {% if order.discount_amount > 0 %}
-        <div class="totals-row" style="color: #dc3545;">
+        <div class="totals-row" style="display:flex; justify-content:space-between; padding:5px 0; color:#dc3545;">
             <span>Remise</span>
-            <span>- {{ order.discount_amount }} FCFA</span>
+            <span>- {{ order.discount_amount|floatformat:0 }} FCFA</span>
         </div>
         {% endif %}
 
-        <div class="totals-row">
+        <div class="totals-row" style="display:flex; justify-content:space-between; padding:5px 0;">
             <span>Livraison</span>
-          <span>
-        {% if order.shipping_cost == 0 %}
-            <span class="text-success">Livraison à la charge du client</span>
-        {% else %}
-            {{ order.shipping_cost }} FCFA
-        {% endif %}
-    </span>
+            <span>
+                {% if order.shipping_cost == 0 %}
+                    <span style="color:green;">Livraison à la charge du client</span>
+                {% else %}
+                    {{ order.shipping_cost|floatformat:0 }} FCFA
+                {% endif %}
+            </span>
         </div>
 
-        <div class="totals-row grand-total">
+        <div class="totals-row grand-total" style="display:flex; justify-content:space-between; padding:10px 0; border-top:2px solid #014215; font-weight:bold; font-size:14pt; color:#014215;">
             <span>Total TTC</span>
             <span>{{ order.total_price|floatformat:0 }} FCFA</span>
         </div>
     </div>
 
     <!-- Pied de page -->
-    <div class="footer">
-        "CINDERA PRODUITS NATURELS - Prenons soin de nous!<br/>"
-        "Sacré Coeur 3 Montagne Villa 9678 - Tel: 338425040 / 777431698<br/>"
-        "NINEA: 010413946 / RCCM SN.DKR.2023.M.26514",
+    <div class="footer" style="text-align:center; font-size:8pt; color:#888; margin-top:50px; border-top:1px solid #eee; padding-top:10px;">
+        CINDERA PRODUITS NATURELS - Prenons soin de nous!<br>
+        Sacré Coeur 3 Montagne Villa 9678 - Tel: 338425040 / 777431698<br>
+        NINEA: 010413946 / RCCM SN.DKR.2023.M.26514
     </div>
 
 </body>
