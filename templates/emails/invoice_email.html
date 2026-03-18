@@ -143,30 +143,7 @@
                 <img src="{% static 'img/logo.jpg' %}" alt="Cindera" style="height:60px;">
             </h1>
         </div>
-        <div class="invoice-number" style="text-align:right;">
-            <strong>N° {{ order.id }}</strong><br>
-            Date : {{ order.created_at|date:"d/m/Y" }}<br>
-            Statut : 
-            {% if order.payment_method %}
-                {% with pm_slug=order.payment_method.slug %}
-                    {% if pm_slug == "cash_on_delivery" %}
-                        Paiement à la livraison
-                    {% elif pm_slug == "paydunya" %}
-                        Paiement via PayDunya
-                    {% elif pm_slug == "dexpay" %}
-                        Paiement via DexPay
-                    {% elif pm_slug == "orange_money" %}
-                        Paiement via Orange Money
-                    {% elif pm_slug == "wave" %}
-                        Paiement via Wave
-                    {% else %}
-                        Payé
-                    {% endif %}
-                {% endwith %}
-            {% else %}
-                Non défini
-            {% endif %}
-        </div>
+ 
     </div>
 
     <!-- Client & Livraison -->
