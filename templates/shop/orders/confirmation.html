@@ -260,21 +260,15 @@ TOTALS
 <span>{{ order.subtotal }} FCFA</span>
 </div>
 
-
 <div class="d-flex justify-content-between text-muted mb-2">
-
-<span>Livraison</span>
-
-<span>
-
-{% if order.shipping_cost == 0 %}
-<span class="text-success">Gratuite</span>
-{% else %}
-{{ order.shipping_cost }} FCFA
-{% endif %}
-
-</span>
-
+    <span>Livraison</span>
+    <span>
+        {% if order.shipping_cost == 0 %}
+            <span class="text-success">Livraison à la charge du client</span>
+        {% else %}
+            {{ order.shipping_cost }} FCFA
+        {% endif %}
+    </span>
 </div>
 
 
