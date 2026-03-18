@@ -435,6 +435,13 @@ def shipping_cost_ajax(request):
     cost = Order.get_shipping_cost_by_zone(zone_code)
     return JsonResponse({'cost': str(cost)})
 
+PAYMENT_LABELS = {
+    "cash_on_delivery": "Paiement à la livraison",
+    "paydunya": "Paiement via PayDunya",
+    "dexpay": "Paiement via DexPay",
+    "orange_money": "Paiement via Orange Money",
+    "wave": "Paiement via Wave",
+}
 
 
 def generate_invoice_pdf(order):
