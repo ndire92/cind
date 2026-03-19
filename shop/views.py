@@ -62,17 +62,29 @@ def get_cart(request):
 # --- FONCTIONS EMAIL ---
 
 def send_order_confirmation_email(order):
-    """Envoie l'email de confirmation au CLIENT"""
     try:
         subject = f"Confirmation de votre commande #{order.id} 📝"
-        html_content = render_to_string("emails/order_confirmation_email.html", {
-            "order": order,
-            "site_url": getattr(settings, 'SITE_URL', "https://cinderaproduitsnaturels.com")
-        })
+
+        # 🔥 Génération propre du lien
+        base_url = getattr(settings, 'SITE_URL', 'https://cinderaproduitsnaturels.com')
+        order_path = reverse('products:order_detail', args=[order.id])
+        order_url = f"{base_url}{order_path}"
+
+        html_content = render_to_string(
+            "emails/order_confirmation_email.html",
+            {
+                "order": order,
+                "order_url": order_url,
+            }
+        )
+
         email = EmailMessage(subject, html_content, settings.DEFAULT_FROM_EMAIL, [order.email])
         email.content_subtype = "html"
         email.send(fail_silently=False)
+
         print(f"✅ Email confirmation envoyé à {order.email}")
+        print(f"🔗 URL envoyée : {order_url}")
+
     except Exception as e:
         print(f"❌ Erreur envoi email confirmation: {e}")
 
