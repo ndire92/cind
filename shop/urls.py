@@ -30,6 +30,8 @@ urlpatterns = [
     path('checkout/shipping-cost/', views.shipping_cost_ajax, name='shipping_cost_ajax'),
     path('order/confirmation/<int:order_id>/', views.order_confirmation, name='order_confirmation'),
     path('order/invoice/<int:order_id>/', views.invoice_download, name='invoice_download'),
+    path('mes-commandes/', views.my_orders, name='my_orders'),
+    path('commande/<int:order_id>/', views.order_detail, name='order_detail'),
     
 # Passerelles de paiement
    path('paydunya/<int:order_id>/', views.paydunya_init, name='paydunya_init'),
