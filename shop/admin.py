@@ -161,23 +161,75 @@ class PaymentMethodAdmin(admin.ModelAdmin):
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user_link', 'total_price', 'payment_status_colored', 'is_shipped', 'created_at')
-    list_filter = ('payment_status', 'is_shipped', 'created_at', 'payment_method')
-    search_fields = ('id', 'user__username', 'email', 'first_name', 'last_name')
+    list_display = (
+        'id',
+        'user_link',
+        'total_price',
+        'payment_status_colored',
+        'order_status_colored',
+        'is_shipped',
+        'created_at'
+    )
+
+    list_filter = (
+        'payment_status',
+        'order_status',
+        'created_at',
+        'payment_method'
+    )
+
+    search_fields = (
+        'id',
+        'user__username',
+        'email',
+        'first_name',
+        'last_name'
+    )
+
     inlines = [OrderItemInline]
-    readonly_fields = ('subtotal', 'vat_amount', 'shipping_cost', 'discount_amount', 'total_price', 'created_at')
+
+    readonly_fields = (
+        'subtotal',
+        'vat_amount',
+        'shipping_cost',
+        'discount_amount',
+        'total_price',
+        'created_at'
+    )
+
     fieldsets = (
-        (_('Client'), {'fields': ('user', 'first_name', 'last_name', 'email', 'phone')}),
-        (_('Adresse'), {'fields': ('address', 'city', 'country', 'postal_code')}),
-        (_('Options'), {'fields': ('shipping_zone', 'payment_method', 'coupon')}),
-        (_('Montants (Calculés)'), {'fields': ('subtotal', 'vat_amount', 'shipping_cost', 'discount_amount', 'total_price')}),
-        (_('Statuts'), {'fields': ('payment_status', 'is_shipped')}),
-        (_('Dates'), {'fields': ('created_at',)}),
+        (_('Client'), {
+            'fields': ('user', 'first_name', 'last_name', 'email', 'phone')
+        }),
+
+        (_('Adresse'), {
+            'fields': ('address', 'city', 'country', 'postal_code')
+        }),
+
+        (_('Options'), {
+            'fields': ('shipping_zone', 'payment_method', 'coupon')
+        }),
+
+        (_('Montants (Calculés)'), {
+            'fields': ('subtotal', 'vat_amount', 'shipping_cost', 'discount_amount', 'total_price')
+        }),
+
+        (_('Statuts'), {
+            'fields': ('payment_status', 'order_status')
+        }),
+
+        (_('Livraison'), {
+            'fields': ('tracking_number', 'livreur_phone')
+        }),
+
+        (_('Dates'), {
+            'fields': ('created_at',)
+        }),
     )
 
     def user_link(self, obj):
         if obj.user:
-            link = reverse("admin:shop_user_change", args=[obj.user.id]) # Remplacez 'shop' par le nom de votre app
+            link = reverse("admin:shop_user_change", args=[obj.user.id])
             return format_html('<a href="{}">{}</a>', link, obj.user.username)
         return obj.email
     user_link.short_description = "Client"
@@ -196,7 +248,21 @@ class OrderAdmin(admin.ModelAdmin):
         )
     payment_status_colored.short_description = "Statut Paiement"
 
-
+    def order_status_colored(self, obj):
+        colors = {
+            'pending': 'gray',
+            'confirmed': 'blue',
+            'preparing': 'orange',
+            'shipped': 'purple',
+            'delivered': 'green',
+            'cancelled': 'red'
+        }
+        return format_html(
+            '<span style="color: {}; font-weight: bold;">{}</span>',
+            colors.get(obj.order_status, 'black'),
+            obj.get_order_status_display()
+        )
+    order_status_colored.short_description = "Statut Commande"
 # ============================================================================
 # COMPTABILITÉ
 # ============================================================================
