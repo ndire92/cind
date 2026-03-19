@@ -73,35 +73,38 @@
                 </div>
             </div>
 
-            <!-- PROGRESS BAR -->
-            <div class="progress mt-3" style="height: 6px;">
-                <div class="progress-bar 
-                    {% if order.order_status == 'pending' %}bg-warning
-                    {% elif order.order_status == 'confirmed' %}bg-info
-                    {% elif order.order_status == 'preparing' %}bg-primary
-                    {% elif order.order_status == 'shipped' %}bg-dark
-                    {% elif order.order_status == 'delivered' %}bg-success
-                    {% elif order.order_status == 'cancelled' %}bg-danger
-                    {% endif %}"
-                     style="width:
-                     {% if order.order_status == 'pending' %}10%
-                     {% elif order.order_status == 'confirmed' %}30%
-                     {% elif order.order_status == 'preparing' %}60%
-                     {% elif order.order_status == 'shipped' %}80%
-                     {% elif order.order_status == 'delivered' %}100%
-                     {% elif order.order_status == 'cancelled' %}100%
-                     {% endif %}">
-                </div>
+            <!-- PROGRESS STEPS -->
+            <div class="d-flex justify-content-between align-items-center mt-4">
+                {% with steps="pending,confirmed,preparing,shipped,delivered" %}
+                    {% for step in steps|split:"," %}
+                        <div class="text-center" style="flex:1;">
+                            <div class="rounded-circle mx-auto mb-1" 
+                                 style="width:30px; height:30px; line-height:30px;
+                                        background-color: 
+                                        {% if step == order.order_status or steps|index:step < steps|index:order.order_status %}
+                                            #198754
+                                        {% else %}
+                                            #ccc
+                                        {% endif %};
+                                        color:white;">
+                                {{ forloop.counter }}
+                            </div>
+                            <small style="font-size:10px;">{{ step|capfirst }}</small>
+                        </div>
+                    {% endfor %}
+                {% endwith %}
             </div>
 
             <!-- BUTTONS -->
             <div class="text-end mt-3">
+                {% if order.order_status != 'cancelled' %}
                 <a href="{% url 'products:order_detail' order.id %}"  
-                   class="btn btn-success rounded-pill px-4 shadow-sm">
+                   class="btn btn-success rounded-pill px-4 shadow-sm me-2">
                     🚚 Suivre la commande
                 </a>
+                {% endif %}
 
-                {% if order.order_status == 'pending' or order.order_status == 'confirmed' %}
+                {% if order.order_status in 'pending confirmed' %}
                 <form method="post" action="{% url 'products:cancel_order' order.id %}" class="d-inline">
                     {% csrf_token %}
                     <button class="btn btn-danger rounded-pill px-4 shadow-sm">
