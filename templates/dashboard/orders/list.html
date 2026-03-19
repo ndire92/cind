@@ -32,7 +32,7 @@
                     <tr>
 
                         <td>
-                            <a href="{% url 'dashboard:order_detail' order.id %}" class="fw-bold text-decoration-none">
+                            <a href="{" class="fw-bold text-decoration-none">
                                 #{{ order.id }}
                             </a>
                         </td>
@@ -100,17 +100,13 @@
                         </td>
 
                         <!-- Actions -->
-                        <td class="text-center">
-
-                            <a href="{% url 'dashboard:order_detail' order.id %}"
-                               class="btn btn-sm btn-outline-primary"
-                               title="Voir la commande">
-
-                                <i class="bi bi-eye"></i>
-
-                            </a>
-
-                        </td>
+                     <td class="text-center">
+    <a href="{% url 'dashboard:dashboard_order_detail' order.id %}"
+       class="btn btn-sm btn-outline-primary"
+       title="Voir la commande">
+        <i class="bi bi-eye"></i>
+    </a>
+</td>
 
                     </tr>
 
