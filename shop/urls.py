@@ -32,6 +32,7 @@ urlpatterns = [
     path('order/invoice/<int:order_id>/', views.invoice_download, name='invoice_download'),
     path('mes-commandes/', views.my_orders, name='my_orders'),
     path('commande/<int:order_id>/', views.order_detail, name='order_detail'),
+    path('commande/<int:order_id>/annuler/', views.cancel_order, name='cancel_order'),
     
 # Passerelles de paiement
    path('paydunya/<int:order_id>/', views.paydunya_init, name='paydunya_init'),
