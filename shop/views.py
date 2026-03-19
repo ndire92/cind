@@ -1073,6 +1073,7 @@ def delete_product(request, pk):
     return redirect('dashboard:products')
 
 # Orders
+# Orders
 @login_required
 @admin_or_manager_required
 def dashboard_orders(request): 
@@ -1080,20 +1081,36 @@ def dashboard_orders(request):
 
 @login_required
 @admin_or_manager_required
-def order_detail(request, order_id): 
+def dashboard_order_detail(request, order_id): 
     return render(request, 'dashboard/orders/detail.html', {'order': get_object_or_404(Order, id=order_id)})
+
+@login_required
+def my_orders(request):
+    orders = Order.objects.filter(user=request.user)
+    return render(request, 'shop/auth/orders.html', {'orders': orders})
+
+@login_required
+def order_detail(request, order_id):
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+    return render(request, 'shop/auth/order_detail.html', {'order': order})
 
 @login_required
 @admin_or_manager_required
 @transaction.atomic
 def update_order_status(request, order_id):
     order = get_object_or_404(Order, id=order_id)
-    if request.method == "POST" and not order.is_shipped:
-        order.is_shipped = True
+
+    if request.method == "POST" and order.order_status not in ['shipped', 'delivered']:
+        order.order_status = Order.OrderStatus.SHIPPED
         order.save()
+
+        # Envoi de la facture par email
         send_invoice_email(order)
-        messages.success(request, "Commande expédiée et facture envoyée.")
-    return redirect('dashboard:order_detail', order_id=order.id)
+
+        messages.success(request, f"Commande #{order.id} expédiée et facture envoyée.")
+
+    return redirect('dashboard:dashboard_order_detail', order_id=order.id)
+
 
 # Settings (Banner, Promo, Shipping, Payment, etc.)
 
