@@ -363,14 +363,20 @@ class ShippingZone(models.Model):
         return 0
     
 
-    
+
 class Order(models.Model):
     class PaymentStatus(models.TextChoices):
         PENDING = 'pending', 'En attente'
         PAID = 'paid', 'Payé'
         FAILED = 'failed', 'Échoué'
         REFUNDED = 'refunded', 'Remboursé'
-
+    class OrderStatus(models.TextChoices):
+        PENDING = 'pending', 'Commande reçue'
+        CONFIRMED = 'confirmed', 'Confirmée'
+        PREPARING = 'preparing', 'En préparation'
+        SHIPPED = 'shipped', 'Expédiée'
+        DELIVERED = 'delivered', 'Livrée'
+        CANCELLED = 'cancelled', 'Annulée'
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.SET_NULL, null=True, blank=True, related_name='orders'
@@ -420,9 +426,15 @@ class Order(models.Model):
     verbose_name="Passerelle de paiement"
     )
     payment_status = models.CharField(max_length=20, choices=PaymentStatus.choices, default=PaymentStatus.PENDING)
-    is_shipped = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
+    order_status = models.CharField(
+        max_length=20,
+        choices=OrderStatus.choices,
+        default=OrderStatus.PENDING
+    )
 
+    tracking_number = models.CharField(max_length=100, blank=True, null=True)
+    livreur_phone = models.CharField(max_length=20, blank=True, null=True)
     class Meta:
         ordering = ['-created_at']
 
@@ -449,7 +461,6 @@ class Order(models.Model):
         else:
             self.discount_amount = Decimal('0.00')
 
-        # 4. Livraison
         # 4. Livraison
         if self.shipping_zone:
             if self.shipping_zone.free_shipping:
@@ -491,6 +502,20 @@ class Order(models.Model):
 
         return Decimal('0.00')
 
+    @property
+    def is_shipped(self):
+        return self.order_status in ['shipped', 'delivered']
+
+    def get_status_color(self):
+        colors = {
+            'pending': 'gray',
+            'confirmed': 'blue',
+            'preparing': 'orange',
+            'shipped': 'purple',
+            'delivered': 'green',
+            'cancelled': 'red',
+        }
+        return colors.get(self.order_status, 'gray')
 
 
 class OrderItem(models.Model):
