@@ -1123,6 +1123,18 @@ def update_order_status(request, order_id):
 
     return redirect('dashboard:dashboard_order_detail', order_id=order.id)
 
+@login_required
+def cancel_order(request, order_id):
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+
+    if order.order_status in ['pending', 'confirmed']:
+        order.order_status = 'cancelled'
+        order.save()
+        messages.success(request, "Commande annulée avec succès ✅")
+    else:
+        messages.error(request, "Impossible d'annuler cette commande ❌")
+
+    return redirect('products:order_detail', order_id=order.id)
 
 # Settings (Banner, Promo, Shipping, Payment, etc.)
 
