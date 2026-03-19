@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<style>
+.tracking-wrapper {
+    padding: 10px 0;
+    position: relative;
+}
+.progress-line {
+    position: absolute;
+    top: 18px;
+    left: 5%;
+    width: 90%;
+    height: 4px;
+    background: #ddd;
+    z-index: 0;
+}
+.step {
+    position: relative;
+    text-align: center;
+    z-index: 1;
+    width: 20%;
+}
+.circle {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background: #ccc;
+    color: white;
+    line-height: 35px;
+    margin: auto;
+    font-size: 14px;
+}
+.step.active .circle {
+    background: #198754;
+}
+.step small {
+    display: block;
+    margin-top: 5px;
+    font-size: 12px;
+}
+</style>
+
+<div class="container my-5">
+
+    <h2 class="mb-3">Commande #{{ order.id }}</h2>
+    <p class="text-muted">Passée le {{ order.created_at|date:"d M Y à H:i" }}</p>
+
+    <!-- Suivi de commande -->
+    <div class="card mb-4 p-3 shadow-sm">
+        <h5 class="mb-3">Suivi de votre commande</h5>
+        <div class="tracking-wrapper mb-3">
+            <div class="d-flex justify-content-between position-relative">
+                <div class="progress-line"></div>
+
+                <div class="step {% if order.order_status != 'pending' %}active{% endif %}">
+                    <div class="circle">1</div>
+                    <small>Commande</small>
+                </div>
+<div class="step{% if order.order_status == 'confirmed' or order.order_status == 'preparing' or order.order_status == 'shipped' or order.order_status == 'delivered' %}active{% endif %}">
+                    <div class="circle">2</div>
+                    <small>Confirmée</small>
+                </div>
+
+                <div class="step {% if order.order_status == 'preparing' or order.order_status == 'shipped' or order.order_status == 'delivered' %}active{% endif %}">
+    <div class="circle">3</div>
+    <small>Préparation</small>
+</div>
+
+<div class="step {% if order.order_status == 'shipped' or order.order_status == 'delivered' %}active{% endif %}">
+    <div class="circle">4</div>
+    <small>Expédition</small>
+</div>
+
+<div class="step {% if order.order_status == 'delivered' %}active{% endif %}">
+            </div>
+        </div>
+        <p class="text-center fw-bold" style="color: {{ order.get_status_color }}">
+            {{ order.get_order_status_display }}
+        </p>
+    </div>
+
+    <!-- Informations client -->
+    <div class="card mb-4 p-3 shadow-sm">
+        <h5 class="mb-3">Informations client</h5>
+        <p><strong>Nom :</strong> {{ order.first_name }} {{ order.last_name }}</p>
+        <p><strong>Email :</strong> {{ order.email }}</p>
+        <p><strong>Téléphone :</strong> {{ order.phone|default:"-" }}</p>
+        <p><strong>Adresse :</strong> {{ order.address }}, {{ order.city }}, {{ order.postal_code }}</p>
+        <p><strong>Zone :</strong> {{ order.zone }}</p>
+    </div>
+
+    <!-- Statut paiement -->
+    <div class="card mb-4 p-3 shadow-sm">
+        <h5 class="mb-3">Statut de paiement</h5>
+        <p>
+            <strong>Paiement :</strong>
+            {% if order.payment_status == "paid" %}
+                <span class="badge bg-success">Payé</span>
+            {% elif order.payment_status == "pending" %}
+                <span class="badge bg-warning text-dark">En attente</span>
+            {% elif order.payment_status == "failed" %}
+                <span class="badge bg-danger">Échoué</span>
+            {% elif order.payment_status == "refunded" %}
+                <span class="badge bg-info">Remboursé</span>
+            {% endif %}
+        </p>
+        <p><strong>Passerelle :</strong> {{ order.gateway|default:"Autre" }}</p>
+        <p><strong>Transaction :</strong> {{ order.transaction_id|default:"-" }}</p>
+    </div>
+
+    <!-- Produits -->
+    <div class="card mb-4 p-3 shadow-sm">
+        <h5 class="mb-3">Produits commandés</h5>
+        <div class="table-responsive">
+            <table class="table table-sm table-striped">
+                <thead>
+                    <tr>
+                        <th>Produit</th>
+                        <th class="text-center">Prix</th>
+                        <th class="text-center">Quantité</th>
+                        <th class="text-end">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in order.items.all %}
+                    <tr>
+                        <td>{{ item.product_name }}</td>
+                        <td class="text-center">{{ item.price|floatformat:0 }} FCFA</td>
+                        <td class="text-center">{{ item.quantity }}</td>
+                        <td class="text-end">{{ item.total_price|floatformat:0 }} FCFA</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center text-muted">Aucun produit dans cette commande.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3" class="text-end fw-bold">Total TTC</td>
+                        <td class="text-end fw-bold text-success">{{ order.total_price|floatformat:0 }} FCFA</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
