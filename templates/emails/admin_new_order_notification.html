@@ -18,7 +18,7 @@
             <div style="background: #f9f9f9; padding: 15px; border-left: 4px solid #014215; margin: 20px 0;">
                 <p style="margin:0;"><strong>Commande #{{ order.id }}</strong></p>
                 <p style="margin:5px 0;">Client : {{ order.first_name }} {{ order.last_name }} ({{ order.email }})</p>
-                <p style="margin:5px 0; font-size: 1.2em; color: #014215;"><strong>Total : {{ order.total_price }} FCFA</strong></p>
+                <p style="margin:5px 0; font-size: 1.2em; color: #014215;"><strong>Total : {{ order.total_price|floatformat:0 }} FCFA</strong></p>
                 <p style="margin:5px 0;">Méthode : {{ order.payment_method.name }}</p>
             </div>
 
