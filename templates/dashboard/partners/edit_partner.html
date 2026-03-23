@@ -1,0 +1,40 @@
+{% extends "dashboard/base_dashboard.html" %}
+
+{% block content %}
+<div class="container py-4">
+    <h2>Modifier le partenaire : {{ partner.name }}</h2>
+
+    <form method="post" enctype="multipart/form-data" class="mt-4">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+
+        <div class="mb-3">
+            <label class="form-label">Nom</label>
+            {{ form.name }}
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Lien</label>
+            {{ form.link }}
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Logo</label>
+            {% if partner.logo %}
+                <div class="mb-2">
+                    <img src="{{ partner.logo.url }}" alt="{{ partner.name }}" height="80">
+                </div>
+            {% endif %}
+            {{ form.logo }}
+        </div>
+
+        <div class="form-check mb-3">
+            {{ form.is_active }}
+            <label class="form-check-label">Actif</label>
+        </div>
+
+        <button type="submit" class="btn btn-success">💾 Enregistrer</button>
+        <a href="{% url 'dashboard:partners' %}" class="btn btn-secondary">Annuler</a>
+    </form>
+</div>
+{% endblock %}

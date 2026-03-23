@@ -1,1 +1,15 @@
+{% extends "dashboard/base_dashboard.html" %}
 
+{% block content %}
+
+<h2 class="mb-4">Ajouter un partenaire</h2>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    
+    {{ form.as_p }}
+
+    <button class="btn btn-success">💾 Enregistrer</button>
+</form>
+
+{% endblock %}

@@ -1,0 +1,26 @@
+
+{% extends "dashboard/base_dashboard.html" %}
+
+
+{% block content %}
+<div class="container py-5">
+
+    <div class="card shadow-sm rounded-4 mx-auto" style="max-width: 500px;">
+        <div class="card-body text-center">
+
+            <h3 class="mb-4 text-danger">⚠️ Supprimer le partenaire</h3>
+
+            <p>Êtes-vous sûr de vouloir supprimer le partenaire :</p>
+
+            <p><strong>{{ partner.name }}</strong> ?</p>
+            <p class="text-muted">Cette action est irréversible.</p>
+
+            <form method="post" class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">🗑️ Supprimer</button>
+                <a href="{% url 'dashboard:partners' %}" class="btn btn-secondary">Annuler</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
