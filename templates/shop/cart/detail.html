@@ -1,78 +1,229 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container mt-5">
-    <h2 class="mb-4">Votre Panier</h2>
+
+<style>
+/* Bouton principal */
+.btn-success {
+    background-color: #014215 !important;
+    border-color: #014215 !important;
+}
+
+.btn-success:hover {
+    background-color: #fd7e14 !important;
+    border-color: #fd7e14 !important;
+}
+
+/* Bouton outline version */
+.btn-outline-success {
+    color: #014215;
+    border-color: #014215;
+}
+
+.btn-outline-success:hover {
+    background-color: #014215;
+    color: #fff;
+}
+
+/* Bouton primaire personnalisé (optionnel) */
+.btn-cindera {
+    background-color: #014215;
+    color: white;
+    border: none;
+}
+
+.btn-cindera:hover {
+    background-color: #fd7e14;
+    color: white;
+}
+.card {
+    border: none;
+    border-radius: 1rem;
+    transition: 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+/* Boutons */
+.btn-outline-success:hover {
+    background-color: #014215;
+    color: #fff;
+    border-color: #014215;
+}
+
+.btn-outline-danger:hover {
+    background-color: #dc3545;
+    color: #fff;
+    border-color: #dc3545;
+}
+
+.btn {
+    transition: all 0.3s ease;
+}
+
+/* Input quantité */
+input[type="number"] {
+    border-radius: 50px;
+    text-align: center;
+}
+
+/* Résumé sticky */
+@media (min-width: 992px) {
+    .sticky-summary {
+        position: sticky;
+        top: 100px;
+    }
+}
+</style>
+
+<div class="container py-5">
+
+    <h2 class="fw-bold mb-4 text-center">🛒 Votre Panier</h2>
 
     {% if items %}
-        <div class="table-responsive bg-white shadow-sm rounded">
-            <table class="table table-hover mb-0">
-                <thead class="thead-light">
-                    <tr>
-                        <th style="width: 100px;">Image</th>
-                        <th>Produit</th>
-                        <th>Prix Unitaire</th>
-                        <th style="width: 150px;">Quantité</th>
-                        <th>Total</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for item in items %}
-                    <tr>
-                        <td>
+
+    <div class="row g-4">
+
+        <!-- PRODUITS -->
+        <div class="col-lg-8">
+
+            {% for item in items %}
+            <div class="card shadow-sm rounded-4 mb-3">
+                <div class="card-body">
+
+                    <div class="row align-items-center">
+
+                        <!-- IMAGE -->
+                        <div class="col-md-2 text-center">
                             {% if item.product.image %}
-                                <img src="{{ item.product.image.url }}" class="img-fluid rounded" style="max-width: 60px;">
+                                <img src="{{ item.product.image.url }}" class="img-fluid rounded-3" style="max-height:80px;">
                             {% else %}
-                                <img src="https://via.placeholder.com/60" class="img-fluid rounded">
+                                <img src="https://via.placeholder.com/80" class="img-fluid rounded-3">
                             {% endif %}
-                        </td>
-                        <td>
-                            <strong>{{ item.product.name }}</strong>
-                        </td>
-                        <td>{{ item.price }} FCFA</td>
-                        <td>
-                            <!-- CORRECTION ICI : Utilisation de cart_update et non cart_add -->
-                            <form action="{% url 'products:cart_update' item.product.id %}" method="post" class="d-flex">
+                        </div>
+
+                        <!-- NOM -->
+                        <div class="col-md-3">
+                            <h6 class="fw-bold mb-1">{{ item.product.name }}</h6>
+                            <small class="text-muted">Produit naturel</small>
+                        </div>
+
+                        <!-- PRIX -->
+                        <div class="col-md-2 text-center">
+                            <small class="text-muted">Prix</small><br>
+                            <strong>{{ item.price|floatformat:0 }} FCFA</strong>
+                        </div>
+
+                        <!-- QUANTITÉ -->
+                        <div class="col-md-3 text-center">
+                            <form action="{% url 'products:cart_update' item.product.id %}" method="post" class="d-flex justify-content-center">
                                 {% csrf_token %}
-                                <input type="number" name="quantity" value="{{ item.quantity }}" min="1" class="form-control form-control-sm me-2">
-                                <button type="submit" class="btn btn-sm btn-outline-secondary">
-                                    <i class="bi bi-arrow-clockwise"></i>
+                                <input type="number" name="quantity"
+                                       value="{{ item.quantity }}"
+                                       min="1"
+                                       class="form-control form-control-sm w-50 me-2">
+                                <button type="submit" class="btn btn-sm btn-outline-success rounded-pill">
+                                    🔄
                                 </button>
                             </form>
-                        </td>
-                        <td><strong>{{ item.total }} FCFA</strong></td>
-                        <td>
-                            <a href="{% url 'products:cart_remove' item.product.id %}" class="btn btn-sm btn-outline-danger">
-                                <i class="bi bi-trash"></i>
+                        </div>
+
+                        <!-- TOTAL -->
+                        <div class="col-md-1 text-end">
+                            <strong class="text-success">
+                                {{ item.total|floatformat:0 }} FCFA
+                            </strong>
+                        </div>
+
+                        <!-- SUPPRIMER -->
+                        <div class="col-md-1 text-end">
+                            <a href="{% url 'products:cart_remove' item.product.id %}"
+                               class="btn btn-sm btn-outline-danger rounded-circle">
+                                🗑️
                             </a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+            {% endfor %}
+
         </div>
 
-        <div class="row mt-4">
-            <div class="col-md-6">
-                <a href="{% url 'products:shop' %}" class="btn btn-outline-secondary">
-                    <i class="bi bi-arrow-left"></i> Continuer les achats
-                </a>
+        <!-- RÉSUMÉ -->
+        <div class="col-lg-4">
+
+            <div class="card shadow rounded-4 sticky-summary">
+                <div class="card-body">
+
+                    <h5 class="fw-bold mb-3">🧾 Résumé</h5>
+
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Articles</span>
+                        <strong>{{ items|length }}</strong>
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Sous-total</span>
+                        <strong>{{ total|floatformat:0 }} FCFA</strong>
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Livraison</span>
+                        <span class="text-muted">Calculée à l'étape suivante</span>
+                    </div>
+
+                    <hr>
+
+                    <div class="d-flex justify-content-between mb-3">
+                        <h5>Total</h5>
+                        <h5 class="text-success fw-bold">
+                            {{ total|floatformat:0 }} FCFA
+                        </h5>
+                    </div>
+
+                    <!-- CHECKOUT -->
+                    <a href="{% url 'products:checkout' %}"
+                       class="btn btn-success w-100 rounded-pill py-2 shadow-sm">
+                        🚀 Passer la commande
+                    </a>
+
+                    <!-- CONTINUER -->
+                    <a href="{% url 'products:shop' %}"
+                       class="btn btn-outline-secondary w-100 mt-2 rounded-pill">
+                        ← Continuer les achats
+                    </a>
+
+                </div>
             </div>
-            <div class="col-md-6 text-end">
-                <h4>Total du panier : <span class="text-primary">{{ total }} FCFA</span></h4>
-                <a href="{% url 'products:checkout' %}" class="btn btn-success btn-lg mt-2">
-                    Passer la commande <i class="bi bi-arrow-right"></i>
-                </a>
-            </div>
+
         </div>
+
+    </div>
 
     {% else %}
-        <div class="alert alert-info text-center py-5">
-            <h4>Votre panier est vide</h4>
-            <p class="mb-3">Il semble que vous n'ayez pas encore ajouté de produits.</p>
-            <a href="{% url 'products:shop' %}" class="btn btn-primary">Découvrir la boutique</a>
-        </div>
+
+    <!-- PANIER VIDE -->
+    <div class="text-center py-5">
+        <div class="mb-4" style="font-size:70px;">🛒</div>
+        <h4 class="fw-bold">Votre panier est vide</h4>
+        <p class="text-muted">Ajoutez des produits pour commencer vos achats</p>
+
+        <a href="{% url 'products:shop' %}"
+           class="btn btn-primary rounded-pill px-4 mt-3">
+            Découvrir la boutique
+        </a>
+    </div>
+
     {% endif %}
+
 </div>
+
 {% endblock %}
