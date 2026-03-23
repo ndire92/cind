@@ -44,7 +44,7 @@ from .forms import (
     WellnessSettingsForm, SiteSettingsForm, ProductForm, ProductImageFormSet, 
     OrderCreateForm, PromoSettingsForm, ShippingZoneForm, UserRegistrationForm, 
     ShopInfoForm, BlogPostForm, CategoryForm, FeatureForm, FeatureForm1, VideoForm, 
-    TeamMemberForm, FeatureaboutForm, StaticPageForm
+    TeamMemberForm, FeatureaboutForm, StaticPageForm,PartnerForm
 )
 
 logger = logging.getLogger(__name__)
