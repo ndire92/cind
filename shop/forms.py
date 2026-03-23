@@ -487,3 +487,12 @@ class StaticPageForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['slug'].required = False
         self.fields['slug'].help_text = "Laissez vide pour une génération automatique."
+
+
+
+from .models import Partner
+
+class PartnerForm(forms.ModelForm):
+    class Meta:
+        model = Partner
+        fields = ['name', 'logo', 'link', 'is_active']
