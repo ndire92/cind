@@ -74,6 +74,7 @@ TEMPLATES = [
                 'shop.context_processors.cart_item_count',
                 'shop.context_processors.categories_context',
                 'shop.context_processors.site_settings',# Ajoutez votre context processor ici
+                'shop.context_processors.partners',
             ],
         },
     },
