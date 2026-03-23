@@ -435,3 +435,54 @@ from .models import NewsletterSubscriber
 class NewsletterSubscriberAdmin(admin.ModelAdmin):
     list_display = ('email', 'subscribed_at')
     search_fields = ('email',)
+
+
+@login_required
+@admin_or_manager_required
+def add_partner(request):
+    form = PartnerForm(request.POST or None, request.FILES or None)
+
+    if form.is_valid():
+        form.save()
+        return redirect('dashboard:partners')
+
+    return render(request, 'dashboard/partners/form.html', {'form': form})
+
+
+
+@login_required
+@admin_or_manager_required
+def dashboard_partners(request):
+    partners = Partner.objects.all()
+    return render(request, 'dashboard/partners/list.html', {'partners': partners})
+
+
+def edit_partner(request, pk):
+    partner = get_object_or_404(Partner, pk=pk)
+
+    if request.method == 'POST':
+        form = PartnerForm(request.POST, request.FILES, instance=partner)
+        if form.is_valid():
+            form.save()
+            messages.success(request, f"Le partenaire '{partner.name}' a été mis à jour avec succès.")
+            return redirect('dashboard:partners')
+    else:
+        form = PartnerForm(instance=partner)
+
+    return render(request, 'dashboard/partners/edit_partner.html', {
+        'form': form,
+        'partner': partner
+    })
+
+def delete_partner(request, pk):
+    partner = get_object_or_404(Partner, pk=pk)
+
+    if request.method == 'POST':
+        partner.delete()
+        messages.success(request, f"Le partenaire '{partner.name}' a été supprimé avec succès.")
+        return redirect('dashboard:partners')
+
+    return render(request, 'dashboard/partners/confirm_delete.html', {
+        'partner': partner
+    })
+
