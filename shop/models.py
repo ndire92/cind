@@ -988,3 +988,17 @@ class NewsletterSubscriber(models.Model):
 
     def __str__(self):
         return self.email
+
+
+class Partner(models.Model):
+    name = models.CharField(max_length=100)
+    logo = models.ImageField(upload_to='partners/')
+    link = models.URLField(blank=True, null=True)
+    is_active = models.BooleanField(default=True)
+    position = models.PositiveIntegerField(default=0)  # Nouveau champ pour ordonner
+
+    class Meta:
+        ordering = ['position']  # Tri automatique dans le dashboard et dans le front
+
+    def __str__(self):
+        return self.name
