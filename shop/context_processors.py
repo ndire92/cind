@@ -1,4 +1,4 @@
-from .models import Category,SiteSettings
+from .models import Category,SiteSettings,Partner
 
 
 def cart_item_count(request):
@@ -17,3 +17,7 @@ def site_settings(request):
     settings = SiteSettings.objects.first()
     return {"settings": settings}
 
+def partners(request):
+    return {
+        'partners': Partner.objects.filter(is_active=True)
+    }
