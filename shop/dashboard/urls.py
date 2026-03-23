@@ -113,6 +113,10 @@ urlpatterns = [
 path('newsletter/subscribers/', views.newsletter_subscribers_list, name='newsletter_subscribers'),
     path('newsletter/send/', views.send_newsletter, name='send_newsletter'),
 
+    path('partners/', views.dashboard_partners, name='partners'),
+    path('partners/add/', views.add_partner, name='add_partner'),  # <- ici
+    path('partners/<int:pk>/edit/', views.edit_partner, name='edit_partner'),
+    path('partners/delete/<int:pk>/', views.delete_partner, name='delete_partner'),
 
     
     
