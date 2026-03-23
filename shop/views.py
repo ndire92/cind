@@ -37,7 +37,7 @@ from .decorators import admin_or_manager_required
 from .models import (
     Banner, Product, Category, Order, OrderItem, ProductImage, ShippingZone,
     NewsletterSubscriber, PaymentMethod, Coupon, ShopInfo, BlogPost, Feature, Feature1, Video,
-    User, Transaction, SiteSettings, Feature_about, TeamMember, StaticPage
+    User, Transaction, SiteSettings, Feature_about, TeamMember, StaticPage,Partner
 )
 from .forms import (
     AboutSettingsForm, BannerForm, NewsletterSettingsForm, PaymentMethodForm, 
