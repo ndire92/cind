@@ -1,0 +1,66 @@
+{% load static %}
+<style>
+.partners-section {
+    padding: 60px 0;
+    background-color: #f8fbf8;
+}
+
+.partners-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 40px;
+    color: #014215;
+}
+
+.partners-slider {
+    overflow: hidden;
+    position: relative;
+}
+
+.partners-track {
+    display: flex;
+    width: calc(200%); /* car on duplique pour effet infini */
+    animation: scrollPartners 20s linear infinite;
+}
+
+.partners-track img {
+    height: 80px;
+    margin: 0 30px;
+    object-fit: contain;
+}
+
+@keyframes scrollPartners {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .partners-track img {
+        height: 60px;
+        margin: 0 15px;
+    }
+}
+</style>
+<section class="partners-section">
+    <div class="container text-center">
+
+        <h5 class="partners-title">🤝 Nos partenaires</h5>
+
+        <div class="partners-slider">
+            <div class="partners-track">
+
+                {% for partner in partners %}
+                    <img src="{{ partner.logo.url }}" alt="{{ partner.name }}">
+                {% endfor %}
+
+                <!-- duplication pour effet infini -->
+                {% for partner in partners %}
+                    <img src="{{ partner.logo.url }}" alt="{{ partner.name }}">
+                {% endfor %}
+
+            </div>
+        </div>
+
+    </div>
+</section>
