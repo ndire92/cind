@@ -971,7 +971,16 @@ def payment_success(request, order_id):
 @csrf_exempt
 def dexpay_callback(request, order_id):
     try:
-        data = json.loads(request.body)
+        # 🔐 Vérification simple webhook (à adapter)
+        WEBHOOK_SECRET = "ton_secret_dexpay"
+        if request.headers.get("X-DEXPAY-SECRET") != WEBHOOK_SECRET:
+            return JsonResponse({"error": "Unauthorized"}, status=403)
+
+        try:
+            data = json.loads(request.body or "{}")
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "JSON invalide"}, status=400)
+
         order = get_object_or_404(Order, id=order_id)
 
         logger.info(f"DexPay webhook reçu: {data}")
@@ -982,17 +991,21 @@ def dexpay_callback(request, order_id):
 
         status = data.get("status")
         reference = data.get("reference")
+        amount = float(data.get("amount", 0))
 
-        # 🔐 Vérification basique
+        # 🔐 Vérification reference
         if reference != order.transaction_id:
             return JsonResponse({"error": "Référence invalide"}, status=400)
+
+        # 🔐 Vérification montant
+        if amount != float(order.total_price):
+            return JsonResponse({"error": "Montant invalide"}, status=400)
 
         if status == "success":
 
             order.payment_status = Order.PaymentStatus.PAID
             order.save()
 
-            # ✅ créer transaction UNE SEULE FOIS
             if not Transaction.objects.filter(external_reference=reference).exists():
                 Transaction.objects.create(
                     order=order,
@@ -1015,7 +1028,8 @@ def dexpay_callback(request, order_id):
     except Exception as e:
         logger.error(f"DexPay webhook error: {e}")
         return JsonResponse({"error": str(e)}, status=400)
-        
+
+
 def order_cancelled(request, order_id):
     order = get_object_or_404(Order, id=order_id)
 
