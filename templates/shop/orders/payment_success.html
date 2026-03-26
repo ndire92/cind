@@ -4,27 +4,44 @@
 <div class="container text-center my-5" style="max-width: 600px;">
     <div class="card shadow border-0">
         <div class="card-body py-5">
-            <!-- Icône de succès -->
             <div class="mb-4">
                 <i class="bi bi-check-circle-fill text-success" style="font-size: 5rem;"></i>
             </div>
             
             <h1 class="h3 mb-3">Paiement réussi !</h1>
+
+            {% if is_paid %}
+                <span class="badge bg-success mb-3">Paiement confirmé</span>
+            {% else %}
+                <span class="badge bg-warning mb-3">En attente de confirmation</span>
+            {% endif %}
+
+            <p class="mb-2"><strong>Numéro de commande :</strong> #{{ order.id }}</p>
+            <p class="mb-4"><strong>Montant payé :</strong> {{ order.total_price|floatformat:0 }} XOF</p>
+
             <p class="text-muted mb-4">
-                Merci pour votre achat. Votre commande a été validée et sera traitée dans les plus brefs délais.
+                Merci pour votre achat. Votre commande sera traitée dans les plus brefs délais.
             </p>
 
-            <p class="small text-muted">
-                Vous recevrez un email de confirmation avec les détails de votre commande.
-            </p>
+            {% if order.items.exists %}
+            <h5 class="mt-4">Produits achetés :</h5>
+            <ul class="list-group mb-4">
+                {% for item in order.items.all %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        {{ item.product.name }} x {{ item.quantity }}
+                        <span>{{ item.total_price|floatformat:0 }} XOF</span>
+                    </li>
+                {% endfor %}
+            </ul>
+            {% endif %}
 
             <hr class="my-4">
 
             <div class="d-flex justify-content-center gap-3">
-                <a href="{% url 'products:shop' %}" class="btn btn-outline-secondary">
+                <a href="{% url 'products:shop' %}" class="btn btn-outline-secondary btn-lg">
                     <i class="bi bi-arrow-left"></i> Retour à la boutique
                 </a>
-                <a href="{% url 'products:profile' %}" class="btn btn-primary">
+                <a href="{% url 'products:profile' %}" class="btn btn-primary btn-lg">
                     <i class="bi bi-person"></i> Voir mes commandes
                 </a>
             </div>
