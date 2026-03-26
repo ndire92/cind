@@ -796,33 +796,6 @@ def paydunya_callback(request, order_id):
     if request.method != "POST":
         return JsonResponse({"message": "Méthode non autorisée"}, status=405)
 
-            if status == "completed":
-                order.payment_status = Order.PaymentStatus.PAID
-                order.save()
-                return JsonResponse({"message": "Paiement confirmé"}, status=200)
-
-            elif status == "cancelled":
-                order.payment_status = Order.PaymentStatus.CANCELLED
-                order.save()
-                return JsonResponse({"message": "Paiement annulé"}, status=200)
-
-            else:
-                return JsonResponse({"message": "Statut inconnu"}, status=400)
-
-        except Exception as e:
-            return JsonResponse({"error": str(e)}, status=500)
-
-    return JsonResponse({"message": "Méthode non autorisée"}, status=405)
-
-
-
-@csrf_exempt
-def paydunya_callback(request, order_id):
-    order = get_object_or_404(Order, id=order_id)
-
-    if request.method != "POST":
-        return JsonResponse({"message": "Méthode non autorisée"}, status=405)
-
     try:
         try:
             # PayDunya peut envoyer JSON ou POST
@@ -877,6 +850,7 @@ def paydunya_callback(request, order_id):
     except Exception as e:
         logger.error(f"Erreur PayDunya callback: {e}")
         return JsonResponse({"error": str(e)}, status=500)
+    
 
 
 def payment_success(request, order_id):
