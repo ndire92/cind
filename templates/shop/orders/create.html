@@ -63,10 +63,15 @@
 
                     <hr class="my-4">
 
-                    <div class="mb-3">
-                        <label class="form-label">Mode de paiement</label>
-                        {{ form.payment_method }}
-                    </div>
+                 <div class="mb-3">
+  <label class="form-label">Mode de paiement</label>
+  {% for radio in form.payment_method %}
+    <div class="form-check form-check-inline">
+      {{ radio.tag }}
+      <label class="form-check-label">{{ radio.choice_label }}</label>
+    </div>
+  {% endfor %}
+</div>
 
                     <button type="submit" id="btn-submit" class="btn btn-success btn-lg w-100 mt-3">
                         <i class="bi bi-check-circle me-2"></i> Confirmer la commande
