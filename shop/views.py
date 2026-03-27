@@ -22,7 +22,15 @@ from django.urls import reverse_lazy
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
-
+import json
+import logging
+import requests
+from django.conf import settings
+from django.shortcuts import get_object_or_404, redirect, render
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from .models import Order, Transaction
+from .emails import send_order_confirmation_email, send_new_order_admin_email
 # ReportLab
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
@@ -739,7 +747,10 @@ def invoice_download(request, order_id):
         return HttpResponse("Erreur serveur", status=500)
 
 # --- PAIEMENT PAYDUNYA ---
-# --- PAIEMENT PAYDUNYA ---
+# views.py
+logger = logging.getLogger(__name__)
+
+# --- INITIATION DU PAIEMENT PAYDUNYA ---
 def paydunya_init(request, order_id):
     order = get_object_or_404(Order, id=order_id)
 
@@ -766,6 +777,7 @@ def paydunya_init(request, order_id):
             "website_url": "https://cinderaproduitsnaturels.com",
         },
         "actions": {
+            # IPN endpoint PayDunya
             "callback_url": f"https://cinderaproduitsnaturels.com/boutique/paydunya_callback/{order.id}/",
             "return_url": f"https://cinderaproduitsnaturels.com/boutique/payment/success/{order.id}/",
             "cancel_url": f"https://cinderaproduitsnaturels.com/boutique/order_cancelled/{order.id}/",
@@ -776,7 +788,7 @@ def paydunya_init(request, order_id):
         resp = requests.post(url, json=data, headers=headers, timeout=30)
         result = resp.json()
     except Exception as e:
-        logger.error(f"Erreur PayDunya : {e}")
+        logger.error(f"Erreur PayDunya init: {e}")
         return redirect("products:checkout")
 
     if result.get("response_code") == "00":
@@ -785,10 +797,11 @@ def paydunya_init(request, order_id):
         order.save()
         return redirect(result.get("response_text"))
 
+    logger.error(f"Erreur PayDunya response: {result}")
     return redirect("products:checkout")
 
 
-    
+# --- CALLBACK / ENDPOINT IPN PAYDUNYA ---
 @csrf_exempt
 def paydunya_callback(request, order_id):
     order = get_object_or_404(Order, id=order_id)
@@ -797,14 +810,11 @@ def paydunya_callback(request, order_id):
         return JsonResponse({"message": "Méthode non autorisée"}, status=405)
 
     try:
-        try:
-            # PayDunya peut envoyer JSON ou POST
-            if request.content_type == "application/json":
-                data = json.loads(request.body or "{}")
-            else:
-                data = request.POST.dict()
-        except Exception:
-            return JsonResponse({"error": "Format invalide"}, status=400)
+        # JSON ou POST
+        if request.content_type == "application/json":
+            data = json.loads(request.body or "{}")
+        else:
+            data = request.POST.dict()
 
         status = data.get("status")
         token = data.get("token")
@@ -820,12 +830,13 @@ def paydunya_callback(request, order_id):
 
         # ✅ éviter double traitement
         if order.payment_status == Order.PaymentStatus.PAID:
-            return JsonResponse({"message": "Déjà traité"})
+            return JsonResponse({"message": "Déjà traité"}, status=200)
 
         if status == "completed":
             order.payment_status = Order.PaymentStatus.PAID
             order.save()
 
+            # Créer transaction si nécessaire
             if not Transaction.objects.filter(external_reference=token).exists():
                 Transaction.objects.create(
                     order=order,
@@ -835,13 +846,13 @@ def paydunya_callback(request, order_id):
                     amount=order.total_price,
                     status=Transaction.StatusChoices.COMPLETED,
                 )
+
                 send_order_confirmation_email(order)
                 send_new_order_admin_email(order)
 
         elif status == "cancelled":
             order.payment_status = Order.PaymentStatus.CANCELLED
             order.save()
-
         else:
             return JsonResponse({"message": "Statut inconnu"}, status=400)
 
@@ -850,9 +861,9 @@ def paydunya_callback(request, order_id):
     except Exception as e:
         logger.error(f"Erreur PayDunya callback: {e}")
         return JsonResponse({"error": str(e)}, status=500)
-    
 
 
+# --- PAGE DE SUCCÈS ---
 def payment_success(request, order_id):
     order = get_object_or_404(Order, id=order_id)
 
@@ -860,12 +871,13 @@ def payment_success(request, order_id):
         logger.warning(f"Commande {order.id} sans transaction_id")
         return redirect("products:checkout")
 
+    is_paid = order.payment_status == Order.PaymentStatus.PAID
+
     return render(request, "shop/orders/payment_success.html", {
         "order": order,
-        "is_paid": order.payment_status == Order.PaymentStatus.PAID,
-        "pending": order.payment_status != Order.PaymentStatus.PAID,
+        "is_paid": is_paid,
+        "pending": not is_paid,
     })
-
 
 @csrf_exempt
 def dexpay_callback(request, order_id):
