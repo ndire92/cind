@@ -417,11 +417,17 @@ def order_create(request):
                     request.session['cart'] = {}
 
                     # Redirections selon paiement
-                    pm_slug = payment_method.slug if payment_method else None
-                    if pm_slug == "paydunya":
+
+                    pm_slug = payment_method.slug.lower() if payment_method else ""
+
+                    # 🔥 PayDunya (Wave, carte, etc.)
+                    if "paydunya" in pm_slug:
                         print("Redirection PayDunya OK")
                         return redirect("products:paydunya_init", order_id=order.id)
-                    if order.payment_method.slug == "dexpay":
+                    
+                    # 🔥 DexPay
+                    elif "dexpay" in pm_slug:
+                        print("Redirection DexPay OK")
                         return redirect("products:dexpay_init", order.id)
 
                     # Paiement hors ligne : envoi emails
