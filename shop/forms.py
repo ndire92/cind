@@ -60,26 +60,56 @@ class OrderCreateForm(forms.ModelForm):
         widget=forms.Select(attrs={'class': 'form-control'})
     )
 
+    # ✅ Correction : ModelChoiceField lié à PaymentMethod
     payment_method = forms.ModelChoiceField(
-        queryset=PaymentMethod.objects.filter(active=True),
+        queryset=PaymentMethod.objects.filter(is_active=True),
         widget=forms.RadioSelect(attrs={'class': 'form-check-input'}),
-        required=True
+        required=True,
+        label="Mode de paiement"
     )
 
     class Meta:
         model = Order
         fields = [
-            'first_name', 'last_name', 'email', 'address', 'phone',
-            'postal_code', 'city', 'zone', 'payment_method',
+            'first_name',
+            'last_name',
+            'email',
+            'address',
+            'phone',
+            'postal_code',
+            'city',
+            'zone',
+            'payment_method',
         ]
         widgets = {
-            'first_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Prénom'}),
-            'last_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nom'}),
-            'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'exemple@email.com'}),
-            'address': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Adresse complète'}),
-            'phone': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Numéro de téléphone'}),
-            'postal_code': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Code postal'}),
-            'city': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ville'}),
+            'first_name': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Prénom'
+            }),
+            'last_name': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Nom'
+            }),
+            'email': forms.EmailInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'exemple@email.com'
+            }),
+            'address': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Adresse complète'
+            }),
+            'phone': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Numéro de téléphone'
+            }),
+            'postal_code': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Code postal'
+            }),
+            'city': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Ville'
+            }),
         }
 
     def __init__(self, *args, **kwargs):
@@ -94,6 +124,8 @@ class OrderCreateForm(forms.ModelForm):
             self.fields['first_name'].initial = user.first_name
             self.fields['last_name'].initial = user.last_name
             self.fields['email'].initial = user.email
+
+
 # ============================================================================
 # GESTION PRODUITS
 # ============================================================================
