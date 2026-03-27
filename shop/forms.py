@@ -54,69 +54,40 @@ class UserRegistrationForm(UserCreationForm):
 
 
 class OrderCreateForm(forms.ModelForm):
-
     zone = forms.ChoiceField(
         label="Zone de livraison",
         required=True,
         widget=forms.Select(attrs={'class': 'form-control'})
     )
 
+    payment_method = forms.ModelChoiceField(
+        queryset=PaymentMethod.objects.filter(active=True),
+        widget=forms.RadioSelect(attrs={'class': 'form-check-input'}),
+        required=True
+    )
+
     class Meta:
         model = Order
         fields = [
-            'first_name',
-            'last_name',
-            'email',
-            'address',
-            'phone',
-            'postal_code',
-            'city',
-            'zone',
-            'payment_method',
+            'first_name', 'last_name', 'email', 'address', 'phone',
+            'postal_code', 'city', 'zone', 'payment_method',
         ]
-
         widgets = {
-            'first_name': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Prénom'
-            }),
-            'last_name': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Nom'
-            }),
-            'email': forms.EmailInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'exemple@email.com'
-            }),
-            'address': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Adresse complète'
-            }),
-            'phone': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Numéro de téléphone'
-            }),
-            'postal_code': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Code postal'
-            }),
-            'city': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Ville'
-            }),
-            'payment_method': forms.Select(attrs={
-                'class': 'form-control'
-            }),
+            'first_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Prénom'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nom'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'exemple@email.com'}),
+            'address': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Adresse complète'}),
+            'phone': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Numéro de téléphone'}),
+            'postal_code': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Code postal'}),
+            'city': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ville'}),
         }
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
 
-        # Mise à jour dynamique des zones
-        # On charge les zones définies dans ShippingZone
+        # Zones dynamiques
         self.fields['zone'].choices = ShippingZone.get_zone_choices()
-
 
         # Pré-remplissage utilisateur connecté
         if user and user.is_authenticated:
