@@ -182,6 +182,7 @@ DEXPAY_API_KEY = DEXPAY_PUBLIC_KEY
 DEXPAY_BASE_URL = "https://api.dexpay.africa/api/v1"
 
 
+ADMIN_EMAIL = "info@cinderaproduitsnaturels.com"
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = os.getenv("EMAIL_HOST")
