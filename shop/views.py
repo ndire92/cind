@@ -432,7 +432,8 @@ def order_create(request):
 
             except Exception as e:
                 logger.error(f"Erreur création commande: {e}")
-                messages.error(request, "Erreur lors de la création de la commande.")
+                print("ERREUR ===>", e)
+                raise e
                 return render(request, 'shop/orders/create.html', {'form': form, 'total': cart_total})
 
     else:
