@@ -63,7 +63,7 @@ class OrderCreateForm(forms.ModelForm):
     # ✅ Correction : ModelChoiceField lié à PaymentMethod
     payment_method = forms.ModelChoiceField(
         queryset=PaymentMethod.objects.filter(is_active=True),
-        widget=forms.RadioSelect(attrs={'class': 'form-check-input'}),
+        widget=forms.RadioSelect(attrs={'class': 'form-check-input form-check-inline'})
         required=True,
         label="Mode de paiement"
     )
