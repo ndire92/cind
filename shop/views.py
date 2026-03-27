@@ -767,6 +767,7 @@ from .emails import send_order_confirmation_email, send_new_order_admin_email
 
 logger = logging.getLogger(__name__)
 
+# --- PAIEMENT PAYDUNYA ---
 def paydunya_init(request, order_id):
     order = get_object_or_404(Order, id=order_id)
 
@@ -774,14 +775,26 @@ def paydunya_init(request, order_id):
     if order.payment_status == Order.PaymentStatus.PAID:
         return redirect("products:order_confirmation", order_id=order.id)
 
-    url = "https://app.paydunya.com/api/v1/checkout-invoice/create"
+    # Choix URL et clés selon mode test/live
+    if getattr(settings, "PAYDUNYA_MODE", "test") == "live":
+        url = "https://app.paydunya.com/api/v1/checkout-invoice/create"
+        master_key = settings.PAYDUNYA_MASTER_KEY
+        public_key = settings.PAYDUNYA_PUBLIC_KEY
+        private_key = settings.PAYDUNYA_PRIVATE_KEY
+        token = settings.PAYDUNYA_TOKEN
+    else:  # test mode
+        url = "https://app.paydunya.com/api/v1/checkout-invoice/create"
+        master_key = settings.PAYDUNYA_MASTER_KEY_TEST
+        public_key = settings.PAYDUNYA_PUBLIC_KEY_TEST
+        private_key = settings.PAYDUNYA_PRIVATE_KEY_TEST
+        token = settings.PAYDUNYA_TOKEN_TEST
 
     headers = {
         "Content-Type": "application/json",
-        "PAYDUNYA-MASTER-KEY": settings.PAYDUNYA_MASTER_KEY,
-        "PAYDUNYA-PUBLIC-KEY": settings.PAYDUNYA_PUBLIC_KEY,
-        "PAYDUNYA-PRIVATE-KEY": settings.PAYDUNYA_PRIVATE_KEY,
-        "PAYDUNYA-TOKEN": settings.PAYDUNYA_TOKEN,
+        "PAYDUNYA-MASTER-KEY": master_key,
+        "PAYDUNYA-PUBLIC-KEY": public_key,
+        "PAYDUNYA-PRIVATE-KEY": private_key,
+        "PAYDUNYA-TOKEN": token,
     }
 
     data = {
@@ -808,17 +821,17 @@ def paydunya_init(request, order_id):
         logger.error(f"Erreur PayDunya init: {e}")
         return redirect("products:checkout")
 
-    # Si création OK
-    if result.get("response_code") == "00":
+    # Vérification de la réponse
+    if result.get("response_code") == "00" and "response_text" in result:
         order.transaction_id = result.get("token")
         order.gateway = "paydunya"
         order.save()
-        return redirect(result.get("response_text"))  # Redirection vers page de paiement PayDunya
+        # Redirection vers PayDunya pour paiement
+        return redirect(result["response_text"])
 
     logger.error(f"Erreur PayDunya response: {result}")
+    messages.error(request, "Impossible de créer la commande PayDunya. Vérifiez vos clés et votre mode (test/live).")
     return redirect("products:checkout")
-
-
 # --- CALLBACK IPN LIVE ---
 @csrf_exempt
 def paydunya_callback(request, order_id):
