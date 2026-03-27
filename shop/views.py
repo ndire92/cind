@@ -777,7 +777,6 @@ def paydunya_init(request, order_id):
             "website_url": "https://cinderaproduitsnaturels.com",
         },
         "actions": {
-            # IPN endpoint PayDunya
             "callback_url": f"https://cinderaproduitsnaturels.com/boutique/paydunya_callback/{order.id}/",
             "return_url": f"https://cinderaproduitsnaturels.com/boutique/payment/success/{order.id}/",
             "cancel_url": f"https://cinderaproduitsnaturels.com/boutique/order_cancelled/{order.id}/",
@@ -787,15 +786,18 @@ def paydunya_init(request, order_id):
     try:
         resp = requests.post(url, json=data, headers=headers, timeout=30)
         result = resp.json()
+        logger.info(f"PayDunya init response: {result}")
+
     except Exception as e:
         logger.error(f"Erreur PayDunya init: {e}")
         return redirect("products:checkout")
 
-    if result.get("response_code") == "00":
+    # Vérification du code de réponse et existence du lien de paiement
+    if result.get("response_code") == "00" and result.get("response_text"):
         order.transaction_id = result.get("token")
         order.gateway = "paydunya"
         order.save()
-        return redirect(result.get("response_text"))
+        return redirect(result["response_text"])  # redirection vers PayDunya
 
     logger.error(f"Erreur PayDunya response: {result}")
     return redirect("products:checkout")
