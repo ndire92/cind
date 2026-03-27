@@ -772,11 +772,16 @@ logger = logging.getLogger(__name__)
 def paydunya_init(request, order_id):
     order = get_object_or_404(Order, id=order_id)
 
-    # Si déjà payé, redirection vers confirmation
+    # ✅ Déjà payé
     if order.payment_status == Order.PaymentStatus.PAID:
         return redirect("products:order_confirmation", order_id=order.id)
 
-    # Sélection des clés selon mode
+    # ✅ Vérification montant minimum PayDunya
+    if float(order.total_price or 0) < 200:
+        messages.error(request, "Le montant minimum pour PayDunya est 200 FCFA.")
+        return redirect("products:checkout")
+
+    # ✅ Sélection des clés
     if getattr(settings, "PAYDUNYA_MODE", "test") == "live":
         master_key = settings.PAYDUNYA_MASTER_KEY
         public_key = settings.PAYDUNYA_PUBLIC_KEY
@@ -788,6 +793,12 @@ def paydunya_init(request, order_id):
         private_key = settings.PAYDUNYA_PRIVATE_KEY_TEST
         token = settings.PAYDUNYA_TOKEN_TEST
 
+    # ❗ Vérification clés (très important)
+    if not all([master_key, public_key, private_key, token]):
+        logger.error("Clés PayDunya manquantes")
+        messages.error(request, "Configuration PayDunya incorrecte.")
+        return redirect("products:checkout")
+
     headers = {
         "Content-Type": "application/json",
         "PAYDUNYA-MASTER-KEY": master_key,
@@ -798,7 +809,7 @@ def paydunya_init(request, order_id):
 
     data = {
         "invoice": {
-            "total_amount": float(order.total_price or 0),
+            "total_amount": float(order.total_price),
             "description": f"Commande #{order.id}",
         },
         "store": {
@@ -813,23 +824,36 @@ def paydunya_init(request, order_id):
     }
 
     try:
-        resp = requests.post("https://app.paydunya.com/api/v1/checkout-invoice/create",
-                             json=data, headers=headers, timeout=30)
+        resp = requests.post(
+            "https://app.paydunya.com/api/v1/checkout-invoice/create",
+            json=data,
+            headers=headers,
+            timeout=30
+        )
+
         logger.info(f"PayDunya raw response: {resp.text}")
         result = resp.json()
+
     except Exception as e:
         logger.error(f"Erreur PayDunya init: {e}")
         messages.error(request, "Erreur de communication avec PayDunya.")
         return redirect("products:checkout")
 
-    if result.get("response_code") == "00" and "response_text" in result:
+    # ✅ Succès
+    if result.get("response_code") == "00" and result.get("response_text"):
         order.transaction_id = result.get("token")
         order.gateway = "paydunya"
         order.save()
+
         return redirect(result["response_text"])
 
+    # ❌ Erreur API
     logger.error(f"Erreur PayDunya response: {result}")
-    messages.error(request, "Impossible de créer la commande PayDunya. Vérifiez vos clés et votre mode (test/live).")
+
+    # Message précis
+    error_msg = result.get("response_text", "Erreur inconnue PayDunya")
+    messages.error(request, f"Erreur PayDunya: {error_msg}")
+
     return redirect("products:checkout")
 
 
