@@ -68,6 +68,8 @@ class OrderCreateForm(forms.ModelForm):
         label="Mode de paiement"
     )
 
+
+
     class Meta:
         model = Order
         fields = [
