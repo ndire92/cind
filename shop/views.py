@@ -747,13 +747,23 @@ def invoice_download(request, order_id):
         return HttpResponse("Erreur serveur", status=500)
 
 # --- PAIEMENT PAYDUNYA ---
-# views.py
+# --- PAIEMENT PAYDUNYA LIVE ---
+import json
+import logging
+import requests
+from django.shortcuts import get_object_or_404, redirect, render
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+from django.conf import settings
+from .models import Order, Transaction
+from .emails import send_order_confirmation_email, send_new_order_admin_email
+
 logger = logging.getLogger(__name__)
 
-# --- INITIATION DU PAIEMENT PAYDUNYA ---
 def paydunya_init(request, order_id):
     order = get_object_or_404(Order, id=order_id)
 
+    # Si déjà payé, redirection vers page confirmation
     if order.payment_status == Order.PaymentStatus.PAID:
         return redirect("products:order_confirmation", order_id=order.id)
 
@@ -787,23 +797,22 @@ def paydunya_init(request, order_id):
         resp = requests.post(url, json=data, headers=headers, timeout=30)
         result = resp.json()
         logger.info(f"PayDunya init response: {result}")
-
     except Exception as e:
         logger.error(f"Erreur PayDunya init: {e}")
         return redirect("products:checkout")
 
-    # Vérification du code de réponse et existence du lien de paiement
-    if result.get("response_code") == "00" and result.get("response_text"):
+    # Si création OK
+    if result.get("response_code") == "00":
         order.transaction_id = result.get("token")
         order.gateway = "paydunya"
         order.save()
-        return redirect(result["response_text"])  # redirection vers PayDunya
+        return redirect(result.get("response_text"))  # Redirection vers page de paiement PayDunya
 
     logger.error(f"Erreur PayDunya response: {result}")
     return redirect("products:checkout")
 
 
-# --- CALLBACK / ENDPOINT IPN PAYDUNYA ---
+# --- CALLBACK IPN LIVE ---
 @csrf_exempt
 def paydunya_callback(request, order_id):
     order = get_object_or_404(Order, id=order_id)
@@ -812,7 +821,7 @@ def paydunya_callback(request, order_id):
         return JsonResponse({"message": "Méthode non autorisée"}, status=405)
 
     try:
-        # JSON ou POST
+        # PayDunya peut envoyer JSON ou POST
         if request.content_type == "application/json":
             data = json.loads(request.body or "{}")
         else:
@@ -822,23 +831,21 @@ def paydunya_callback(request, order_id):
         token = data.get("token")
         amount = float(data.get("total_amount", 0))
 
-        # 🔐 Vérification token
+        # Vérifications sécurisées
         if token != order.transaction_id:
             return JsonResponse({"error": "Token invalide"}, status=400)
-
-        # 🔐 Vérification montant
         if amount != float(order.total_price):
             return JsonResponse({"error": "Montant invalide"}, status=400)
 
-        # ✅ éviter double traitement
+        # Éviter double traitement
         if order.payment_status == Order.PaymentStatus.PAID:
-            return JsonResponse({"message": "Déjà traité"}, status=200)
+            return JsonResponse({"message": "Déjà traité"})
 
         if status == "completed":
             order.payment_status = Order.PaymentStatus.PAID
             order.save()
 
-            # Créer transaction si nécessaire
+            # Création unique de la transaction
             if not Transaction.objects.filter(external_reference=token).exists():
                 Transaction.objects.create(
                     order=order,
@@ -848,7 +855,7 @@ def paydunya_callback(request, order_id):
                     amount=order.total_price,
                     status=Transaction.StatusChoices.COMPLETED,
                 )
-
+                # Notifications
                 send_order_confirmation_email(order)
                 send_new_order_admin_email(order)
 
@@ -865,7 +872,7 @@ def paydunya_callback(request, order_id):
         return JsonResponse({"error": str(e)}, status=500)
 
 
-# --- PAGE DE SUCCÈS ---
+# --- PAGE SUCCESS ---
 def payment_success(request, order_id):
     order = get_object_or_404(Order, id=order_id)
 
@@ -873,14 +880,11 @@ def payment_success(request, order_id):
         logger.warning(f"Commande {order.id} sans transaction_id")
         return redirect("products:checkout")
 
-    is_paid = order.payment_status == Order.PaymentStatus.PAID
-
     return render(request, "shop/orders/payment_success.html", {
         "order": order,
-        "is_paid": is_paid,
-        "pending": not is_paid,
+        "is_paid": order.payment_status == Order.PaymentStatus.PAID,
+        "pending": order.payment_status != Order.PaymentStatus.PAID,
     })
-
 @csrf_exempt
 def dexpay_callback(request, order_id):
     """
