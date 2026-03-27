@@ -167,11 +167,18 @@ STATIC_URL = 'static/'
 
 
 # Clés PayDunya Live
-PAYDUNYA_MASTER_KEY = os.getenv("PAYDUNYA_MASTER_KEY")
-PAYDUNYA_PUBLIC_KEY = os.getenv("PAYDUNYA_PUBLIC_KEY")
-PAYDUNYA_PRIVATE_KEY = os.getenv("PAYDUNYA_PRIVATE_KEY")
-PAYDUNYA_TOKEN = os.getenv("PAYDUNYA_TOKEN")
-
+if os.getenv("PAYDUNYA_MODE", "test") == "live":
+    PAYDUNYA_MASTER_KEY = os.getenv("PAYDUNYA_MASTER_KEY")
+    PAYDUNYA_PUBLIC_KEY = os.getenv("PAYDUNYA_PUBLIC_KEY")
+    PAYDUNYA_PRIVATE_KEY = os.getenv("PAYDUNYA_PRIVATE_KEY")
+    PAYDUNYA_TOKEN = os.getenv("PAYDUNYA_TOKEN")
+    PAYDUNYA_URL = "https://app.paydunya.com/api/v1/checkout-invoice/create"
+else:  # test mode
+    PAYDUNYA_MASTER_KEY = os.getenv("PAYDUNYA_MASTER_KEY_TEST")
+    PAYDUNYA_PUBLIC_KEY = os.getenv("PAYDUNYA_PUBLIC_KEY_TEST")
+    PAYDUNYA_PRIVATE_KEY = os.getenv("PAYDUNYA_PRIVATE_KEY_TEST")
+    PAYDUNYA_TOKEN = os.getenv("PAYDUNYA_TOKEN_TEST")
+    PAYDUNYA_URL = "https://app.paydunya.com/api/v1/checkout-invoice/create"
 
 DEXPAY_PUBLIC_KEY = os.getenv("DEXPAY_PUBLIC_KEY")
 DEXPAY_SECRET_KEY = os.getenv("DEXPAY_SECRET_KEY")
