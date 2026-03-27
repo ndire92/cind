@@ -841,25 +841,39 @@ def paydunya_callback(request, order_id):
         return JsonResponse({"message": "Méthode non autorisée"}, status=405)
 
     try:
+        # Log brut pour debug
+        logger.info(f"Callback headers: {request.headers}")
+        logger.info(f"Callback body: {request.body}")
+
+        # PayDunya peut envoyer JSON ou POST form
         if request.content_type == "application/json":
-            data = json.loads(request.body or "{}")
+            try:
+                data = json.loads(request.body.decode("utf-8") or "{}")
+            except Exception as e:
+                logger.error(f"Erreur parsing JSON: {e}")
+                return JsonResponse({"error": "Payload JSON invalide"}, status=400)
         else:
             data = request.POST.dict()
 
+        logger.info(f"Callback data parsed: {data}")
+
         status = data.get("status")
         token = data.get("token")
+
         try:
             amount = float(data.get("total_amount", "0") or "0")
-        except ValueError:
+        except (ValueError, TypeError):
             amount = 0
 
-        if token != order.transaction_id:
+        # Vérifications sécurisées
+        if not token or token != order.transaction_id:
             return JsonResponse({"error": "Token invalide"}, status=400)
         if amount != float(order.total_price or 0):
             return JsonResponse({"error": "Montant invalide"}, status=400)
 
+        # Éviter double traitement
         if order.payment_status == Order.PaymentStatus.PAID:
-            return JsonResponse({"message": "Déjà traité"})
+            return JsonResponse({"message": "Déjà traité"}, status=200)
 
         if status == "completed":
             order.payment_status = Order.PaymentStatus.PAID
@@ -881,13 +895,14 @@ def paydunya_callback(request, order_id):
             order.payment_status = Order.PaymentStatus.CANCELLED
             order.save()
         else:
-            return JsonResponse({"message": "Statut inconnu"}, status=400)
+            return JsonResponse({"message": f"Statut inconnu: {status}"}, status=400)
 
         return JsonResponse({"message": "OK"}, status=200)
 
     except Exception as e:
-        logger.error(f"Erreur PayDunya callback: {e}")
+        logger.error(f"Erreur PayDunya callback: {e}", exc_info=True)
         return JsonResponse({"error": str(e)}, status=500)
+
 
 
 def payment_success(request, order_id):
