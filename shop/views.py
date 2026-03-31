@@ -836,109 +836,138 @@ def paydunya_init(request, order_id):
 
     return redirect("products:checkout")
 
+# =====================================================
+# ✅ Fonction utilitaire centralisée
+# =====================================================
+@transaction.atomic
+def finalize_payment(order, gateway, token):
+    """Finalise un paiement validé : statut, transaction, emails."""
+    order.payment_status = Order.PaymentStatus.PAID
+    order.save()
 
-@csrf_exempt
-def paydunya_callback(request, order_id):
-    """
-    Callback IPN PayDunya : met à jour le statut de la commande
-    """
-    order = get_object_or_404(Order, id=order_id)
-
-    if request.method == "POST":
-        try:
-            data = request.POST.dict()  # ou json.loads(request.body) si PayDunya envoie du JSON
-            # Exemple : vérifier le statut renvoyé
-            status = data.get("status")
-
-            if status == "completed":
-                order.payment_status = Order.PaymentStatus.PAID
-                order.save()
-                return JsonResponse({"message": "Paiement confirmé"}, status=200)
-
-            elif status == "cancelled":
-                order.payment_status = Order.PaymentStatus.CANCELLED
-                order.save()
-                return JsonResponse({"message": "Paiement annulé"}, status=200)
-
-            else:
-                return JsonResponse({"message": "Statut inconnu"}, status=400)
-
-        except Exception as e:
-            return JsonResponse({"error": str(e)}, status=500)
-
-    return JsonResponse({"message": "Méthode non autorisée"}, status=405)
-
-
-
-
-def payment_success(request, order_id):
-    """
-    Page affichée après paiement réussi.
-    Met à jour le statut de la commande et crée la transaction si nécessaire.
-    """
-    order = get_object_or_404(Order, id=order_id)
-
-    # Si pas de transaction, retourne au checkout
-    if not order.transaction_id:
-        logger.warning(f"Commande {order.id} sans transaction_id")
-        return redirect("products:checkout")
-
-    # Si la commande est déjà payée, afficher directement le template succès
-    if order.payment_status == Order.PaymentStatus.PAID:
-        return render(request, "shop/orders/payment_success.html", {"order": order})
-
-    # Vérification selon la passerelle
-    if hasattr(order, "gateway"):
-        if order.gateway == "paydunya":
-            # Vérification PayDunya via API
-            try:
-                headers = {
-                    "Content-Type": "application/json",
-                    "PAYDUNYA-MASTER-KEY": settings.PAYDUNYA_MASTER_KEY,
-                    "PAYDUNYA-PRIVATE-KEY": settings.PAYDUNYA_PRIVATE_KEY,
-                    "PAYDUNYA-TOKEN": settings.PAYDUNYA_TOKEN,
-                }
-                resp = requests.post(
-                    "https://app.paydunya.com/api/v1/checkout-invoice/confirm/",
-                    json={"token": order.transaction_id},
-                    headers=headers,
-                    timeout=30
-                )
-                result = resp.json()
-                if result.get("invoice_status") == "completed":
-                    order.payment_status = Order.PaymentStatus.PAID
-                    order.save()
-            except Exception as e:
-                logger.error(f"Erreur vérification PayDunya : {e}")
-
-        elif order.gateway == "dexpay":
-            # Pour DexPay, considérer payé si transaction existante
-            if order.transaction_id:
-                order.payment_status = Order.PaymentStatus.PAID
-                order.save()
-
-    else:
-        # Si gateway non définie, considérer comme payé
-        order.payment_status = Order.PaymentStatus.PAID
-        order.save()
-
-    # Créer la transaction si elle n’existe pas
-    if not Transaction.objects.filter(external_reference=order.transaction_id).exists():
+    # Créer transaction si inexistante
+    if not Transaction.objects.filter(external_reference=token).exists():
         Transaction.objects.create(
             order=order,
-            external_reference=order.transaction_id,
-            description=f"Paiement {getattr(order, 'gateway', 'Autre').capitalize()} #{order.id}",
+            external_reference=token,
+            description=f"Paiement {gateway.capitalize()} #{order.id}",
             type=Transaction.TypeChoices.INCOME,
             amount=order.total_price,
             status=Transaction.StatusChoices.COMPLETED,
         )
 
-    # Notifications
-    send_order_confirmation_email(order)
-    send_new_order_admin_email(order)
+    # Emails (client + admin)
+    try:
+        send_order_confirmation_email(order)
+        send_new_order_admin_email(order)
+    except Exception as e:
+        logger.error(f"Erreur envoi email: {e}", exc_info=True)
 
-    # Afficher la page de succès
+
+# =====================================================
+# ✅ Callback PayDunya
+# =====================================================
+@csrf_exempt
+def paydunya_callback(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+
+    if request.method != "POST":
+        return JsonResponse({"message": "Méthode non autorisée"}, status=405)
+
+    try:
+        logger.info(f"Callback headers: {request.headers}")
+        logger.info(f"Callback body: {request.body}")
+
+        # Parsing JSON ou form-data
+        if request.content_type == "application/json":
+            try:
+                data = json.loads(request.body.decode("utf-8") or "{}")
+            except Exception as e:
+                logger.error(f"Erreur parsing JSON: {e}")
+                return JsonResponse({"error": "Payload JSON invalide"}, status=400)
+        else:
+            data = request.POST.dict()
+
+        logger.info(f"Callback data parsed: {data}")
+
+        status = data.get("status")
+        token = data.get("token")
+        try:
+            amount = float(data.get("total_amount", "0") or "0")
+        except (ValueError, TypeError):
+            amount = 0
+
+        # Sécurité
+        if not token or token != order.transaction_id:
+            return JsonResponse({"error": "Token invalide"}, status=400)
+        if amount != float(order.total_price or 0):
+            return JsonResponse({"error": "Montant invalide"}, status=400)
+        if order.payment_status == Order.PaymentStatus.PAID:
+            return JsonResponse({"message": "Déjà traité"}, status=200)
+
+        # Paiement validé
+        if status == "completed":
+            finalize_payment(order, "paydunya", token)
+
+        # Paiement annulé
+        elif status == "cancelled":
+            order.payment_status = Order.PaymentStatus.CANCELLED
+            order.save()
+
+        else:
+            return JsonResponse({"message": f"Statut inconnu: {status}"}, status=400)
+
+        return JsonResponse({"message": "OK"}, status=200)
+
+    except Exception as e:
+        logger.error(f"Erreur PayDunya callback: {e}", exc_info=True)
+        return JsonResponse({"error": str(e)}, status=500)
+
+
+# =====================================================
+# ✅ Page succès
+# =====================================================
+def payment_success(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+
+    if not order.transaction_id:
+        logger.warning(f"Commande {order.id} sans transaction_id")
+        return redirect("products:checkout")
+
+    if order.payment_status == Order.PaymentStatus.PAID:
+        return render(request, "shop/orders/payment_success.html", {"order": order})
+
+    # Vérification passerelle
+    if getattr(order, "gateway", None) == "paydunya":
+        try:
+            headers = {
+                "Content-Type": "application/json",
+                "PAYDUNYA-MASTER-KEY": settings.PAYDUNYA_MASTER_KEY,
+                "PAYDUNYA-PRIVATE-KEY": settings.PAYDUNYA_PRIVATE_KEY,
+                "PAYDUNYA-TOKEN": settings.PAYDUNYA_TOKEN,
+            }
+            resp = requests.post(
+                "https://app.paydunya.com/api/v1/checkout-invoice/confirm/",
+                json={"token": order.transaction_id},
+                headers=headers,
+                timeout=30
+            )
+            result = resp.json()
+            if result.get("invoice_status") == "completed":
+                finalize_payment(order, "paydunya", order.transaction_id)
+        except Exception as e:
+            logger.error(f"Erreur vérification PayDunya : {e}", exc_info=True)
+
+    elif order.gateway == "dexpay":
+        if order.transaction_id:
+            finalize_payment(order, "dexpay", order.transaction_id)
+
+    else:
+        finalize_payment(order, getattr(order, "gateway", "autre"), order.transaction_id)
+
     return render(request, "shop/orders/payment_success.html", {"order": order})
+
+
 @csrf_exempt
 def dexpay_callback(request, order_id):
     """
