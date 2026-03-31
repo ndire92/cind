@@ -841,15 +841,16 @@ def paydunya_init(request, order_id):
 def paydunya_callback(request, order_id):
     order = get_object_or_404(Order, id=order_id)
 
+    # ✅ Méthode autorisée
     if request.method != "POST":
         return JsonResponse({"message": "Méthode non autorisée"}, status=405)
 
     try:
-        # Log brut pour debug
+        # ✅ Logs (important en production)
         logger.info(f"Callback headers: {request.headers}")
         logger.info(f"Callback body: {request.body}")
 
-        # PayDunya peut envoyer JSON ou POST form
+        # ✅ Gestion JSON ou form-data
         if request.content_type == "application/json":
             try:
                 data = json.loads(request.body.decode("utf-8") or "{}")
@@ -861,6 +862,7 @@ def paydunya_callback(request, order_id):
 
         logger.info(f"Callback data parsed: {data}")
 
+        # ✅ Récupération données
         status = data.get("status")
         token = data.get("token")
 
@@ -869,20 +871,27 @@ def paydunya_callback(request, order_id):
         except (ValueError, TypeError):
             amount = 0
 
-        # Vérifications sécurisées
+        # ✅ Sécurité
         if not token or token != order.transaction_id:
+            logger.warning("Token invalide")
             return JsonResponse({"error": "Token invalide"}, status=400)
+
         if amount != float(order.total_price or 0):
+            logger.warning("Montant invalide")
             return JsonResponse({"error": "Montant invalide"}, status=400)
 
-        # Éviter double traitement
+        # ✅ Anti double paiement
         if order.payment_status == Order.PaymentStatus.PAID:
             return JsonResponse({"message": "Déjà traité"}, status=200)
 
+        # =====================================================
+        # ✅ PAIEMENT VALIDÉ
+        # =====================================================
         if status == "completed":
             order.payment_status = Order.PaymentStatus.PAID
             order.save()
 
+            # ✅ Créer transaction si elle n'existe pas
             if not Transaction.objects.filter(external_reference=token).exists():
                 Transaction.objects.create(
                     order=order,
@@ -892,13 +901,23 @@ def paydunya_callback(request, order_id):
                     amount=order.total_price,
                     status=Transaction.StatusChoices.COMPLETED,
                 )
-                send_order_confirmation_email(order)
-                send_new_order_admin_email(order)
 
+                # ✅ EMAILS (CLIENT + FACTURE + ADMIN)
+                try:
+                    send_order_confirmation_email(order)  # 📩 client + facture PDF
+                    send_new_order_admin_email(order)     # 📩 admin
+                except Exception as e:
+                    logger.error(f"Erreur envoi email: {e}")
+
+        # =====================================================
+        # ❌ PAIEMENT ANNULÉ
+        # =====================================================
         elif status == "cancelled":
             order.payment_status = Order.PaymentStatus.CANCELLED
             order.save()
+
         else:
+            logger.warning(f"Statut inconnu: {status}")
             return JsonResponse({"message": f"Statut inconnu: {status}"}, status=400)
 
         return JsonResponse({"message": "OK"}, status=200)
@@ -906,7 +925,6 @@ def paydunya_callback(request, order_id):
     except Exception as e:
         logger.error(f"Erreur PayDunya callback: {e}", exc_info=True)
         return JsonResponse({"error": str(e)}, status=500)
-
 
 
 def payment_success(request, order_id):
