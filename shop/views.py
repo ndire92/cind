@@ -123,26 +123,6 @@ def send_invoice_email(order):
         email.attach_file(pdf_path)
     email.send(fail_silently=False)
 
-def generate_invoice_pdf(order):
-    file_path = os.path.join(settings.MEDIA_ROOT, f"invoice_{order.id}.pdf")
-    doc = SimpleDocTemplate(file_path)
-    elements = []
-    styles = getSampleStyleSheet()
-    elements.append(Paragraph(f"Facture #{order.id}", styles["Title"]))
-    elements.append(Spacer(1, 12))
-    data = [["Produit", "Quantité", "Prix"]]
-    for item in order.items.all():
-        data.append([item.product_name, str(item.quantity), f"{item.price} FCFA"])
-    table = Table(data)
-    table.setStyle(TableStyle([
-        ('BACKGROUND', (0,0), (-1,0), colors.grey),
-        ('GRID', (0,0), (-1,-1), 1, colors.black),
-    ]))
-    elements.append(table)
-    doc.build(elements)
-    return file_path
-
-
 # ============================================================================
 # VUES PUBLIQUES (Frontend)
 # ============================================================================
