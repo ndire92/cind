@@ -797,7 +797,7 @@ def paydunya_init(request, order_id):
             "website_url": "https://cinderaproduitsnaturels.com",
         },
         "actions": {
-            "callback_url": f"https://cinderaproduitsnaturels.com/boutique/paydunya_callback/{order.id}/",
+            "callback_url": f"https://cinderaproduitsnaturels.com/boutique/paydunya_callback/",
             "return_url": f"https://cinderaproduitsnaturels.com/boutique/payment/success/{order.id}/",
             "cancel_url": f"https://cinderaproduitsnaturels.com/boutique/order_cancelled/{order.id}/",
         },
