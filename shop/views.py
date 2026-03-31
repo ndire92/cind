@@ -30,7 +30,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from .models import Order, Transaction
-from .emails import send_order_confirmation_email, send_new_order_admin_email
+#from .emails import send_order_confirmation_email, send_new_order_admin_email
 # ReportLab
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
