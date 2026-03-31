@@ -842,10 +842,17 @@ def paydunya_init(request, order_id):
 @transaction.atomic
 def finalize_payment(order, gateway, token):
     """Finalise un paiement validé : statut, transaction, emails."""
-    order.payment_status = Order.PaymentStatus.PAID
-    order.save()
 
-    # Créer transaction si inexistante
+    # 🔒 Sécurité double traitement
+    if order.payment_status == Order.PaymentStatus.PAID:
+        logger.info(f"Commande {order.id} déjà payée, skipping finalize_payment.")
+        return
+
+    # ✅ Mise à jour statut
+    order.payment_status = Order.PaymentStatus.PAID
+    order.save(update_fields=['payment_status'])
+
+    # ✅ Créer transaction si inexistante
     if not Transaction.objects.filter(external_reference=token).exists():
         Transaction.objects.create(
             order=order,
@@ -856,14 +863,15 @@ def finalize_payment(order, gateway, token):
             status=Transaction.StatusChoices.COMPLETED,
         )
 
-    # Emails (client + admin)
-    try:
-        send_order_confirmation_email(order)
-        send_new_order_admin_email(order)
-    except Exception as e:
-        logger.error(f"Erreur envoi email: {e}", exc_info=True)
-
-
+    # ✅ Envoi emails client + admin
+    if not getattr(order, 'email_sent', False):
+        try:
+            send_order_confirmation_email(order)
+            send_new_order_admin_email(order)
+            order.email_sent = True
+            order.save(update_fields=['email_sent'])
+        except Exception as e:
+            logger.error(f"Erreur envoi email: {e}", exc_info=True)
 # =====================================================
 # ✅ Callback PayDunya
 # =====================================================
@@ -921,37 +929,8 @@ def payment_success(request, order_id):
         logger.warning(f"Commande {order.id} sans transaction_id")
         return redirect("products:checkout")
 
-    if order.payment_status == Order.PaymentStatus.PAID:
-        return render(request, "shop/orders/payment_success.html", {"order": order})
-
-    # Vérification passerelle
-    if getattr(order, "gateway", None) == "paydunya":
-        try:
-            headers = {
-                "Content-Type": "application/json",
-                "PAYDUNYA-MASTER-KEY": settings.PAYDUNYA_MASTER_KEY,
-                "PAYDUNYA-PRIVATE-KEY": settings.PAYDUNYA_PRIVATE_KEY,
-                "PAYDUNYA-TOKEN": settings.PAYDUNYA_TOKEN,
-            }
-            resp = requests.post(
-                "https://app.paydunya.com/api/v1/checkout-invoice/confirm/",
-                json={"token": order.transaction_id},
-                headers=headers,
-                timeout=30
-            )
-            result = resp.json()
-            if result.get("invoice_status") == "completed":
-                finalize_payment(order, "paydunya", order.transaction_id)
-        except Exception as e:
-            logger.error(f"Erreur vérification PayDunya : {e}", exc_info=True)
-
-    elif order.gateway == "dexpay":
-        if order.transaction_id:
-            finalize_payment(order, "dexpay", order.transaction_id)
-
-    else:
-        finalize_payment(order, getattr(order, "gateway", "autre"), order.transaction_id)
-
+    # Ici on n'appelle plus finalize_payment pour PayDunya
+    # On se contente d'afficher la page
     return render(request, "shop/orders/payment_success.html", {"order": order})
 
 
