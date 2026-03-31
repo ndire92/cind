@@ -839,92 +839,36 @@ def paydunya_init(request, order_id):
 
 @csrf_exempt
 def paydunya_callback(request, order_id):
+    """
+    Callback IPN PayDunya : met à jour le statut de la commande
+    """
     order = get_object_or_404(Order, id=order_id)
 
-    # ✅ Méthode autorisée
-    if request.method != "POST":
-        return JsonResponse({"message": "Méthode non autorisée"}, status=405)
-
-    try:
-        # ✅ Logs (important en production)
-        logger.info(f"Callback headers: {request.headers}")
-        logger.info(f"Callback body: {request.body}")
-
-        # ✅ Gestion JSON ou form-data
-        if request.content_type == "application/json":
-            try:
-                data = json.loads(request.body.decode("utf-8") or "{}")
-            except Exception as e:
-                logger.error(f"Erreur parsing JSON: {e}")
-                return JsonResponse({"error": "Payload JSON invalide"}, status=400)
-        else:
-            data = request.POST.dict()
-
-        logger.info(f"Callback data parsed: {data}")
-
-        # ✅ Récupération données
-        status = data.get("status")
-        token = data.get("token")
-
+    if request.method == "POST":
         try:
-            amount = float(data.get("total_amount", "0") or "0")
-        except (ValueError, TypeError):
-            amount = 0
+            data = request.POST.dict()  # ou json.loads(request.body) si PayDunya envoie du JSON
+            # Exemple : vérifier le statut renvoyé
+            status = data.get("status")
 
-        # ✅ Sécurité
-        if not token or token != order.transaction_id:
-            logger.warning("Token invalide")
-            return JsonResponse({"error": "Token invalide"}, status=400)
+            if status == "completed":
+                order.payment_status = Order.PaymentStatus.PAID
+                order.save()
+                return JsonResponse({"message": "Paiement confirmé"}, status=200)
 
-        if amount != float(order.total_price or 0):
-            logger.warning("Montant invalide")
-            return JsonResponse({"error": "Montant invalide"}, status=400)
+            elif status == "cancelled":
+                order.payment_status = Order.PaymentStatus.CANCELLED
+                order.save()
+                return JsonResponse({"message": "Paiement annulé"}, status=200)
 
-        # ✅ Anti double paiement
-        if order.payment_status == Order.PaymentStatus.PAID:
-            return JsonResponse({"message": "Déjà traité"}, status=200)
+            else:
+                return JsonResponse({"message": "Statut inconnu"}, status=400)
 
-        # =====================================================
-        # ✅ PAIEMENT VALIDÉ
-        # =====================================================
-        if status == "completed":
-            order.payment_status = Order.PaymentStatus.PAID
-            order.save()
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
 
-            # ✅ Créer transaction si elle n'existe pas
-            if not Transaction.objects.filter(external_reference=token).exists():
-                Transaction.objects.create(
-                    order=order,
-                    external_reference=token,
-                    description=f"Paiement PayDunya #{order.id}",
-                    type=Transaction.TypeChoices.INCOME,
-                    amount=order.total_price,
-                    status=Transaction.StatusChoices.COMPLETED,
-                )
+    return JsonResponse({"message": "Méthode non autorisée"}, status=405)
 
-                # ✅ EMAILS (CLIENT + FACTURE + ADMIN)
-                try:
-                    send_order_confirmation_email(order)  # 📩 client + facture PDF
-                    send_new_order_admin_email(order)     # 📩 admin
-                except Exception as e:
-                    logger.error(f"Erreur envoi email: {e}")
 
-        # =====================================================
-        # ❌ PAIEMENT ANNULÉ
-        # =====================================================
-        elif status == "cancelled":
-            order.payment_status = Order.PaymentStatus.CANCELLED
-            order.save()
-
-        else:
-            logger.warning(f"Statut inconnu: {status}")
-            return JsonResponse({"message": f"Statut inconnu: {status}"}, status=400)
-
-        return JsonResponse({"message": "OK"}, status=200)
-
-    except Exception as e:
-        logger.error(f"Erreur PayDunya callback: {e}", exc_info=True)
-        return JsonResponse({"error": str(e)}, status=500)
 
 
 def payment_success(request, order_id):
@@ -995,7 +939,6 @@ def payment_success(request, order_id):
 
     # Afficher la page de succès
     return render(request, "shop/orders/payment_success.html", {"order": order})
-
 @csrf_exempt
 def dexpay_callback(request, order_id):
     """
