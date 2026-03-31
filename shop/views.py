@@ -871,58 +871,45 @@ def finalize_payment(order, gateway, token):
 def paydunya_callback(request, order_id):
     order = get_object_or_404(Order, id=order_id)
 
-    if request.method != "POST":
-        return JsonResponse({"message": "Méthode non autorisée"}, status=405)
-
     try:
-        logger.info(f"Callback headers: {request.headers}")
-        logger.info(f"Callback body: {request.body}")
+        logger.info(f"Method: {request.method}")
+        logger.info(f"Headers: {request.headers}")
+        logger.info(f"Body: {request.body}")
 
-        # Parsing JSON ou form-data
-        if request.content_type == "application/json":
-            try:
+        # ✅ Accepter GET aussi (IMPORTANT)
+        if request.method == "POST":
+            if request.content_type == "application/json":
                 data = json.loads(request.body.decode("utf-8") or "{}")
-            except Exception as e:
-                logger.error(f"Erreur parsing JSON: {e}")
-                return JsonResponse({"error": "Payload JSON invalide"}, status=400)
+            else:
+                data = request.POST.dict()
         else:
-            data = request.POST.dict()
+            # ✅ fallback GET
+            data = request.GET.dict()
 
-        logger.info(f"Callback data parsed: {data}")
+        logger.info(f"Data: {data}")
 
         status = data.get("status")
         token = data.get("token")
-        try:
-            amount = float(data.get("total_amount", "0") or "0")
-        except (ValueError, TypeError):
-            amount = 0
 
-        # Sécurité
         if not token or token != order.transaction_id:
             return JsonResponse({"error": "Token invalide"}, status=400)
-        if amount != float(order.total_price or 0):
-            return JsonResponse({"error": "Montant invalide"}, status=400)
+
         if order.payment_status == Order.PaymentStatus.PAID:
             return JsonResponse({"message": "Déjà traité"}, status=200)
 
-        # Paiement validé
+        # ✅ Paiement OK
         if status == "completed":
             finalize_payment(order, "paydunya", token)
 
-        # Paiement annulé
         elif status == "cancelled":
             order.payment_status = Order.PaymentStatus.CANCELLED
             order.save()
 
-        else:
-            return JsonResponse({"message": f"Statut inconnu: {status}"}, status=400)
-
         return JsonResponse({"message": "OK"}, status=200)
 
     except Exception as e:
-        logger.error(f"Erreur PayDunya callback: {e}", exc_info=True)
+        logger.error(f"Erreur callback: {e}", exc_info=True)
         return JsonResponse({"error": str(e)}, status=500)
-
 
 # =====================================================
 # ✅ Page succès
