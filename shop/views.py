@@ -898,7 +898,7 @@ def paydunya_callback(request, order_id):
             return JsonResponse({"message": "Déjà traité"}, status=200)
 
         # ✅ Paiement OK
-        if status == "completed":
+        if status in ["completed", "success", "paid"]:
             finalize_payment(order, "paydunya", token)
 
         elif status == "cancelled":
