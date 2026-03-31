@@ -743,7 +743,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from django.conf import settings
 from .models import Order, Transaction
-from .emails import send_order_confirmation_email, send_new_order_admin_email
+
 
 logger = logging.getLogger(__name__)
 
