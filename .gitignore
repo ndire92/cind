@@ -5,4 +5,5 @@ db.sqlite3.backup
 __pycache__/
 *.pyc
 media/
-staticfiles/
+staticfiles/.env.swo
+.env.swp
